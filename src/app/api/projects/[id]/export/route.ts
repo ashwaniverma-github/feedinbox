@@ -78,7 +78,7 @@ export async function GET(
             // Table data
             const tableData = feedbacks.map(fb => [
                 fb.category.charAt(0).toUpperCase() + fb.category.slice(1),
-                fb.message.length > 60 ? fb.message.substring(0, 57) + "..." : fb.message,
+                fb.message,
                 fb.userEmail || "-",
                 fb.isRead ? "Read" : "Unread",
                 new Date(fb.createdAt).toLocaleDateString()
@@ -104,7 +104,7 @@ export async function GET(
                 },
                 columnStyles: {
                     0: { cellWidth: 25 },
-                    1: { cellWidth: 75 },
+                    1: { cellWidth: 75, overflow: 'linebreak' },
                     2: { cellWidth: 40 },
                     3: { cellWidth: 20 },
                     4: { cellWidth: 25 },
