@@ -59,16 +59,11 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
             setIsLoading(true);
             const monthly = process.env.NEXT_PUBLIC_DODO_MONTHLY_PRODUCT_ID;
             const annual = process.env.NEXT_PUBLIC_DODO_ANNUAL_PRODUCT_ID;
-            // const lifetime = process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID;
 
             let productId: string | undefined;
             let cadence: string;
 
-            /* LTD branch – commented out
-            if (billingPeriod === "lifetime") {
-                productId = lifetime;
-                cadence = "lifetime";
-            } else */ if (billingPeriod === "annual") {
+            if (billingPeriod === "annual") {
                 productId = annual;
                 cadence = "annual";
             } else {
@@ -115,13 +110,11 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
     };
 
     const getPrice = () => {
-        // if (billingPeriod === "lifetime") return "29"; // LTD removed
         if (billingPeriod === "annual") return "40";
         return "5";
     };
 
     const getPriceLabel = () => {
-        // if (billingPeriod === "lifetime") return "one-time"; // LTD removed
         if (billingPeriod === "annual") return "/year";
         return "/month";
     };
@@ -278,19 +271,6 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                             Upgrade Now
                                         </>
                                     )}
-                                    {/* LTD CTA – commented out
-                                    {billingPeriod === "lifetime" ? (
-                                        <>
-                                            <Sparkles className="h-4 w-4" />
-                                            Get Lifetime Access
-                                        </>
-                                    ) : (
-                                        <>
-                                            <img src="/feedinbox.png" alt="Pro" className="h-4 w-4 rounded-full" />
-                                            Upgrade Now
-                                        </>
-                                    )}
-                                    */}
                                 </button>
                             </div>
                         </div>

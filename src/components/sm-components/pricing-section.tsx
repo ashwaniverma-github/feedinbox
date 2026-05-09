@@ -87,16 +87,11 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
             setIsLoading(billingPeriod);
             const monthly = process.env.NEXT_PUBLIC_DODO_MONTHLY_PRODUCT_ID;
             const annual = process.env.NEXT_PUBLIC_DODO_ANNUAL_PRODUCT_ID;
-            // const lifetime = process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID; // LTD removed
 
             let productId: string | undefined;
             let cadence: string;
 
-            /* LTD branch – commented out
-            if (billingPeriod === "lifetime") {
-                productId = lifetime;
-                cadence = "lifetime";
-            } else */ if (billingPeriod === "annual") {
+            if (billingPeriod === "annual") {
                 productId = annual;
                 cadence = "annual";
             } else {
