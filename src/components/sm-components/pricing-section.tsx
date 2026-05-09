@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Check, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
+// import { Sparkles } from "lucide-react"; // LTD removed
 import { cn } from "@/lib/utils";
 
 interface PricingSectionProps {
@@ -10,11 +11,14 @@ interface PricingSectionProps {
     subscriptionStatus?: string | null;
 }
 
-type BillingPeriod = "monthly" | "annual" | "lifetime";
+// LTD removed – monthly only
+// type BillingPeriod = "monthly" | "annual" | "lifetime";
+type BillingPeriod = "monthly" | "annual";
 
 export default function PricingSection({ isLoggedIn = false, subscriptionStatus }: PricingSectionProps) {
     const isProUser = subscriptionStatus === "active";
     const [isLoading, setIsLoading] = useState<BillingPeriod | null>(null);
+    /* LTD state & fetch – commented out
     const [ltdRemaining, setLtdRemaining] = useState<number | null>(null);
     const [ltdSoldOut, setLtdSoldOut] = useState(false);
 
@@ -34,6 +38,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
         };
         fetchLtdCount();
     }, []);
+    */
 
     // Check for pending upgrade intent on mount
     useEffect(() => {
@@ -54,7 +59,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                         product_id: upgradeData.productId,
                         metadata: {
                             plan: "pro",
-                            billing_type: upgradeData.billingPeriod === "lifetime" ? "one_time" : "subscription",
+                            billing_type: "subscription", // LTD removed: was upgradeData.billingPeriod === "lifetime" ? "one_time" : "subscription"
                             cadence: upgradeData.cadence,
                         },
                     }),
@@ -82,15 +87,16 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
             setIsLoading(billingPeriod);
             const monthly = process.env.NEXT_PUBLIC_DODO_MONTHLY_PRODUCT_ID;
             const annual = process.env.NEXT_PUBLIC_DODO_ANNUAL_PRODUCT_ID;
-            const lifetime = process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID;
+            // const lifetime = process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID; // LTD removed
 
             let productId: string | undefined;
             let cadence: string;
 
+            /* LTD branch – commented out
             if (billingPeriod === "lifetime") {
                 productId = lifetime;
                 cadence = "lifetime";
-            } else if (billingPeriod === "annual") {
+            } else */ if (billingPeriod === "annual") {
                 productId = annual;
                 cadence = "annual";
             } else {
@@ -111,7 +117,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                     product_id: productId,
                     metadata: {
                         plan: "pro",
-                        billing_type: billingPeriod === "lifetime" ? "one_time" : "subscription",
+                        billing_type: "subscription", // LTD removed: was billingPeriod === "lifetime" ? "one_time" : "subscription"
                         cadence,
                     },
                 }),
@@ -174,7 +180,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                     {/* Free Tier */}
                     <div className="relative rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm hover:shadow-lg transition-shadow duration-300">
                         <div className="mb-6">
@@ -261,7 +267,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                         </div>
                     </div>
 
-                    {/* Lifetime Tier */}
+                    {/* Lifetime Tier – commented out
                     <div className="relative rounded-2xl border-2 border-amber-400 bg-white p-8 shadow-xl">
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                             <div className="rounded-full px-4 py-1 text-xs font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500">
@@ -329,6 +335,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                             ))}
                         </div>
                     </div>
+                    */}
                 </div>
 
                 <p className="text-center text-sm text-neutral-500 mt-10">

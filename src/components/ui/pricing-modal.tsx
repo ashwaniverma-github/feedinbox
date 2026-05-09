@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Check, Sparkles } from "lucide-react";
+import { X, Check } from "lucide-react";
+// import { Sparkles } from "lucide-react"; // LTD removed
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,11 +11,14 @@ interface PricingModalProps {
     onClose: () => void;
 }
 
-type BillingPeriod = "monthly" | "annual" | "lifetime";
+// LTD removed – monthly only
+// type BillingPeriod = "monthly" | "annual" | "lifetime";
+type BillingPeriod = "monthly" | "annual";
 
 export function PricingModal({ isOpen, onClose }: PricingModalProps) {
     const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
     const [isLoading, setIsLoading] = useState(false);
+    /* LTD state & fetch – commented out
     const [ltdRemaining, setLtdRemaining] = useState<number | null>(null);
     const [ltdSoldOut, setLtdSoldOut] = useState(false);
 
@@ -36,6 +40,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
             fetchLtdCount();
         }
     }, [isOpen]);
+    */
 
     // Prevent body scroll when modal is open
     useEffect(() => {
@@ -54,15 +59,16 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
             setIsLoading(true);
             const monthly = process.env.NEXT_PUBLIC_DODO_MONTHLY_PRODUCT_ID;
             const annual = process.env.NEXT_PUBLIC_DODO_ANNUAL_PRODUCT_ID;
-            const lifetime = process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID;
+            // const lifetime = process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID;
 
             let productId: string | undefined;
             let cadence: string;
 
+            /* LTD branch – commented out
             if (billingPeriod === "lifetime") {
                 productId = lifetime;
                 cadence = "lifetime";
-            } else if (billingPeriod === "annual") {
+            } else */ if (billingPeriod === "annual") {
                 productId = annual;
                 cadence = "annual";
             } else {
@@ -83,7 +89,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                     product_id: productId,
                     metadata: {
                         plan: "pro",
-                        billing_type: billingPeriod === "lifetime" ? "one_time" : "subscription",
+                        billing_type: "subscription", // LTD removed: was billingPeriod === "lifetime" ? "one_time" : "subscription"
                         cadence,
                     },
                 }),
@@ -109,13 +115,13 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
     };
 
     const getPrice = () => {
-        if (billingPeriod === "lifetime") return "29";
+        // if (billingPeriod === "lifetime") return "29"; // LTD removed
         if (billingPeriod === "annual") return "40";
         return "5";
     };
 
     const getPriceLabel = () => {
-        if (billingPeriod === "lifetime") return "one-time";
+        // if (billingPeriod === "lifetime") return "one-time"; // LTD removed
         if (billingPeriod === "annual") return "/year";
         return "/month";
     };
@@ -188,6 +194,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                             </span>
                                         </button>
                                         */}
+                                        {/* Lifetime toggle button – commented out
                                         <button
                                             onClick={() => !ltdSoldOut && setBillingPeriod("lifetime")}
                                             disabled={ltdSoldOut}
@@ -203,6 +210,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                             <Sparkles className="h-3.5 w-3.5" />
                                             Lifetime
                                         </button>
+                                        */}
                                     </div>
                                 </div>
 
@@ -214,6 +222,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                         </span>
                                         <span className="text-muted-foreground">{getPriceLabel()}</span>
                                     </div>
+                                    {/* LTD remaining / sold-out display – commented out
                                     {billingPeriod === "lifetime" && ltdRemaining !== null && (
                                         <p className="mt-2 text-sm font-semibold text-amber-600 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full inline-block">
                                             🔥 Only {ltdRemaining} of 50 remaining
@@ -224,6 +233,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                             Sold Out
                                         </p>
                                     )}
+                                    */}
                                     {/* Annual messaging - temporarily disabled
                                     {billingPeriod === "annual" && (
                                         <p className="mt-1 text-sm text-green-600 font-medium">
@@ -254,13 +264,8 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                 {/* CTA */}
                                 <button
                                     onClick={handleUpgrade}
-                                    disabled={isLoading || (billingPeriod === "lifetime" && ltdSoldOut)}
-                                    className={cn(
-                                        "w-full h-12 rounded-full font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2",
-                                        billingPeriod === "lifetime"
-                                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
-                                            : "bg-primary text-primary-foreground hover:opacity-90"
-                                    )}
+                                    disabled={isLoading}
+                                    className="w-full h-12 rounded-full font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:opacity-90"
                                 >
                                     {isLoading ? (
                                         <>
@@ -269,19 +274,23 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                         </>
                                     ) : (
                                         <>
-                                            {billingPeriod === "lifetime" ? (
-                                                <>
-                                                    <Sparkles className="h-4 w-4" />
-                                                    Get Lifetime Access
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <img src="/feedinbox.png" alt="Pro" className="h-4 w-4 rounded-full" />
-                                                    Upgrade Now
-                                                </>
-                                            )}
+                                            <img src="/feedinbox.png" alt="Pro" className="h-4 w-4 rounded-full" />
+                                            Upgrade Now
                                         </>
                                     )}
+                                    {/* LTD CTA – commented out
+                                    {billingPeriod === "lifetime" ? (
+                                        <>
+                                            <Sparkles className="h-4 w-4" />
+                                            Get Lifetime Access
+                                        </>
+                                    ) : (
+                                        <>
+                                            <img src="/feedinbox.png" alt="Pro" className="h-4 w-4 rounded-full" />
+                                            Upgrade Now
+                                        </>
+                                    )}
+                                    */}
                                 </button>
                             </div>
                         </div>
