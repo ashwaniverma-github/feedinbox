@@ -84,6 +84,15 @@ export async function PUT(
             next.enabled = body.enabled;
         }
 
+        // notifyFrequency: notification preference, allowed for any tier
+        if (
+            body.notifyFrequency === "instant" ||
+            body.notifyFrequency === "weekly" ||
+            body.notifyFrequency === "off"
+        ) {
+            next.notifyFrequency = body.notifyFrequency;
+        }
+
         // Customization fields: Pro only. Non-Pro edits to these are ignored.
         if (userIsPro) {
             if (typeof body.question === "string" && body.question.trim().length > 0) {

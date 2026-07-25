@@ -3,6 +3,8 @@ export interface IntentOption {
     label: string;
 }
 
+export type NotifyFrequency = "instant" | "weekly" | "off";
+
 export interface IntentSettings {
     enabled: boolean;
     question: string;
@@ -10,6 +12,9 @@ export interface IntentSettings {
     delaySeconds: number;
     highIntentEvent: string;
     conversionEvent: string;
+    // How the owner is notified of responses: an email per response, a weekly
+    // digest, or no emails. Preference (not customization) so it's free for all tiers.
+    notifyFrequency: NotifyFrequency;
 }
 
 export const DEFAULT_INTENT_SETTINGS: IntentSettings = {
@@ -24,6 +29,7 @@ export const DEFAULT_INTENT_SETTINGS: IntentSettings = {
     delaySeconds: 5,
     highIntentEvent: "high_intent",
     conversionEvent: "converted",
+    notifyFrequency: "weekly",
 };
 
 export const MAX_INTENT_OPTIONS = 6;

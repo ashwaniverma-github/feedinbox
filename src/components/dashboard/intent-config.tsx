@@ -149,6 +149,30 @@ export function IntentConfig({ projectId }: { projectId: string }) {
                     </div>
                 )}
 
+                {/* Email notifications (free for all tiers) */}
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">When a response comes in</label>
+                    <div className="flex gap-2">
+                        {([
+                            { v: "instant", label: "Email me instantly" },
+                            { v: "weekly", label: "Weekly digest" },
+                            { v: "off", label: "No emails" },
+                        ] as const).map((opt) => (
+                            <button
+                                key={opt.v}
+                                type="button"
+                                onClick={() => update("notifyFrequency", opt.v)}
+                                className={`flex-1 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${settings.notifyFrequency === opt.v
+                                    ? "border-primary bg-primary/10 text-primary"
+                                    : "border-border hover:border-primary/50"
+                                    }`}
+                            >
+                                {opt.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 {/* Customization (Pro). For non-Pro, a transparent overlay captures
                     clicks to open pricing, since disabled inputs don't emit focus/mouse events. */}
                 <div className="relative space-y-6">

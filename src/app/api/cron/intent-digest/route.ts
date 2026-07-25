@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { readIntentSettings } from "@/lib/intent";
 import { resend, FROM_EMAIL, isEmailConfigured } from "@/lib/email";
 import IntentWeeklyDigest, {
     type DigestOption,
@@ -73,6 +74,13 @@ export async function GET(request: Request) {
         // Idempotency: skip if a digest already went out for this project this week
         // (guards against cron retries / re-invocations re-emailing everyone).
         if (project.lastIntentDigestAt && project.lastIntentDigestAt >= weekAgo) {
+            skipped++;
+            continue;
+        }
+
+        // Only send the weekly digest to projects that chose it. "instant" is handled
+        // in the widget route; "off" gets no emails.
+        if (readIntentSettings(project.settings).notifyFrequency !== "weekly") {
             skipped++;
             continue;
         }

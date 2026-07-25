@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createIntentResponseSchema } from "@/lib/validations";
 import { canReceiveIntentResponse } from "@/lib/tiers";
 import { readIntentSettings } from "@/lib/intent";
+import { resend, FROM_EMAIL, isEmailConfigured } from "@/lib/email";
+import NewIntentResponseEmail from "@/emails/new-intent-response";
 
 // POST /api/widget/intent - Public endpoint for the exit-intent card to submit a response
 export async function POST(request: Request) {
@@ -27,7 +29,9 @@ export async function POST(request: Request) {
             select: {
                 id: true,
                 userId: true,
+                name: true,
                 settings: true,
+                user: { select: { email: true, name: true } },
             },
         });
 
@@ -93,8 +97,39 @@ export async function POST(request: Request) {
             },
         });
 
-        // Notifications are handled by the weekly digest cron (/api/cron/intent-digest),
-        // not per-response here, to avoid unauthenticated inbox flooding and request-path latency.
+        // Notify per the owner's chosen frequency. "weekly" (default) is handled by
+        // the digest cron; "instant" sends an email here, but off the request path
+        // via after() so it adds no latency. "off" sends nothing. The per-session
+        // replay guard above keeps this from flooding on repeat submits.
+        if (intentSettings.notifyFrequency === "instant" && isEmailConfigured && project.user?.email) {
+            const ownerEmail = project.user.email;
+            const ownerName = project.user.name;
+            const projectName = project.name;
+            const ctx = (validated.data.context as Record<string, unknown>) || {};
+            const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+            const { optionLabel, text, pageUrl } = validated.data;
+            after(async () => {
+                try {
+                    await resend.emails.send({
+                        from: FROM_EMAIL,
+                        to: ownerEmail,
+                        subject: `Why-Not-Buy: ${optionLabel || "new response"} on ${projectName}`,
+                        react: NewIntentResponseEmail({
+                            projectName,
+                            ownerName: ownerName || "there",
+                            optionLabel,
+                            text,
+                            country,
+                            plan: typeof ctx.plan === "string" ? ctx.plan : null,
+                            pageUrl,
+                            dashboardUrl: `${baseUrl}/projects/${project.id}?tab=intent`,
+                        }),
+                    });
+                } catch (err) {
+                    console.error("Failed to send instant intent email:", err);
+                }
+            });
+        }
 
         return corsResponse(
             NextResponse.json({ success: true, id: response.id }, { status: 201 }),
