@@ -98,7 +98,6 @@ export async function POST(req: Request) {
         const ANNUAL_ID = process.env.DODO_ANNUAL_PRODUCT_ID || null;
         const LTD_ENV_ID =
             process.env.DODO_LTD_PRODUCT_ID ||
-            process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID ||
             null;
 
         // Derive cadence from product_id when metadata is absent
@@ -152,7 +151,6 @@ export async function POST(req: Request) {
         // Detect Lifetime Deal purchases (prefer server-only env, fallback to NEXT_PUBLIC)
         const ltdProductId =
             process.env.DODO_LTD_PRODUCT_ID ||
-            process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID ||
             null;
         // Check if this is an LTD purchase - also check metadata cadence as fallback
         const isLifetimeDeal = (ltdProductId && productId === ltdProductId) || cadence === "lifetime";

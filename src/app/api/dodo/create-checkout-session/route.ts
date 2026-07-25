@@ -3,7 +3,10 @@ import DodoPayments from 'dodopayments';
 import { auth } from '@/lib/auth';
 
 type CreateCheckoutBody = {
-    product_id: string;
+    // Preferred: the client sends a cadence and the server resolves the product id.
+    cadence?: 'monthly' | 'annual' | 'lifetime';
+    // Optional/legacy: an explicit product id (allowlisted).
+    product_id?: string;
     metadata?: Record<string, any>;
     return_url?: string;
 };
@@ -33,20 +36,31 @@ export async function POST(req: Request) {
         });
 
         const body = (await req.json()) as CreateCheckoutBody;
-        const productId = body.product_id;
 
-        if (!productId) {
-            return NextResponse.json({ error: 'product_id is required' }, { status: 400 });
-        }
-
-        // Map known product IDs to cadence and enforce allowlist if configured
+        // Server-side product ids (single source of truth). No NEXT_PUBLIC copies needed.
         const MONTHLY_ID = process.env.DODO_MONTHLY_PRODUCT_ID || null;
         const ANNUAL_ID = process.env.DODO_ANNUAL_PRODUCT_ID || null;
-        const LTD_ID =
-            process.env.DODO_LTD_PRODUCT_ID ||
-            process.env.NEXT_PUBLIC_DODO_LTD_PRODUCT_ID ||
-            null;
+        const LTD_ID = process.env.DODO_LTD_PRODUCT_ID || null;
 
+        // Resolve the product id from the requested cadence (preferred), falling back
+        // to an explicit product_id or a cadence in metadata.
+        const requestedCadence = body.cadence || (body as any)?.metadata?.cadence;
+        let productId = body.product_id || null;
+        if (!productId && requestedCadence) {
+            productId =
+                requestedCadence === 'annual' ? ANNUAL_ID :
+                    requestedCadence === 'lifetime' ? LTD_ID :
+                        MONTHLY_ID;
+        }
+
+        if (!productId) {
+            return NextResponse.json(
+                { error: 'No product configured for this plan. Set DODO_MONTHLY_PRODUCT_ID / DODO_ANNUAL_PRODUCT_ID.' },
+                { status: 400 }
+            );
+        }
+
+        // Enforce allowlist if any product ids are configured
         const allowedProducts = [MONTHLY_ID, ANNUAL_ID, LTD_ID].filter(Boolean) as string[];
         if (allowedProducts.length > 0 && !allowedProducts.includes(productId)) {
             return NextResponse.json(
@@ -55,13 +69,13 @@ export async function POST(req: Request) {
             );
         }
 
-        // Derive cadence from product_id or incoming metadata
+        // Derive cadence from product_id or incoming request
         let cadence: 'monthly' | 'annual' | 'lifetime' | undefined;
         if (productId === MONTHLY_ID) cadence = 'monthly';
         else if (productId === ANNUAL_ID) cadence = 'annual';
         else if (productId === LTD_ID) cadence = 'lifetime';
-        if (!cadence && (body as any)?.metadata?.cadence) {
-            cadence = (body as any).metadata.cadence;
+        if (!cadence && requestedCadence) {
+            cadence = requestedCadence;
         }
         const baseReturn =
             body.return_url ||

@@ -69,34 +69,16 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
     const handleUpgrade = async () => {
         try {
             setIsLoading(true);
-            const monthly = process.env.NEXT_PUBLIC_DODO_MONTHLY_PRODUCT_ID;
-            const annual = process.env.NEXT_PUBLIC_DODO_ANNUAL_PRODUCT_ID;
-
-            let productId: string | undefined;
-            let cadence: string;
-
-            if (billingPeriod === "annual") {
-                productId = annual;
-                cadence = "annual";
-            } else {
-                productId = monthly;
-                cadence = "monthly";
-            }
-
-            if (!productId) {
-                console.error("Missing Dodo product id environment variables");
-                setIsLoading(false);
-                return;
-            }
+            const cadence = billingPeriod === "annual" ? "annual" : "monthly";
 
             const res = await fetch("/api/dodo/create-checkout-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    product_id: productId,
+                    cadence,
                     metadata: {
                         plan: "pro",
-                        billing_type: "subscription", // LTD removed: was billingPeriod === "lifetime" ? "one_time" : "subscription"
+                        billing_type: "subscription",
                         cadence,
                     },
                 }),

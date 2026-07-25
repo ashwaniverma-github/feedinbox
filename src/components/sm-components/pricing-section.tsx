@@ -51,16 +51,17 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                 localStorage.removeItem("pending_upgrade_intent");
 
                 // Trigger checkout automatically
+                const cadence = upgradeData.cadence || upgradeData.billingPeriod || "monthly";
                 setIsLoading(upgradeData.billingPeriod || "monthly");
                 const res = await fetch("/api/dodo/create-checkout-session", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        product_id: upgradeData.productId,
+                        cadence,
                         metadata: {
                             plan: "pro",
-                            billing_type: "subscription", // LTD removed: was upgradeData.billingPeriod === "lifetime" ? "one_time" : "subscription"
-                            cadence: upgradeData.cadence,
+                            billing_type: "subscription",
+                            cadence,
                         },
                     }),
                 });
@@ -85,34 +86,16 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
     const handleUpgrade = async (billingPeriod: BillingPeriod) => {
         try {
             setIsLoading(billingPeriod);
-            const monthly = process.env.NEXT_PUBLIC_DODO_MONTHLY_PRODUCT_ID;
-            const annual = process.env.NEXT_PUBLIC_DODO_ANNUAL_PRODUCT_ID;
-
-            let productId: string | undefined;
-            let cadence: string;
-
-            if (billingPeriod === "annual") {
-                productId = annual;
-                cadence = "annual";
-            } else {
-                productId = monthly;
-                cadence = "monthly";
-            }
-
-            if (!productId) {
-                console.error("Missing Dodo product id environment variables");
-                setIsLoading(null);
-                return;
-            }
+            const cadence = billingPeriod === "annual" ? "annual" : "monthly";
 
             const res = await fetch("/api/dodo/create-checkout-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    product_id: productId,
+                    cadence,
                     metadata: {
                         plan: "pro",
-                        billing_type: "subscription", // LTD removed: was billingPeriod === "lifetime" ? "one_time" : "subscription"
+                        billing_type: "subscription",
                         cadence,
                     },
                 }),
@@ -122,7 +105,6 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                 // Store upgrade intent before redirecting to login
                 try {
                     localStorage.setItem("pending_upgrade_intent", JSON.stringify({
-                        productId,
                         billingPeriod,
                         cadence,
                     }));
