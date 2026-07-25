@@ -24,25 +24,26 @@ export default function DashboardSection() {
                                     {/* Stats Row */}
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="rounded-lg border border-neutral-100 p-4">
-                                            <div className="text-xs text-neutral-500 mb-1">Total Feedback</div>
+                                            <div className="text-xs text-neutral-500 mb-1">Reasons captured</div>
                                             <div className="text-2xl font-bold text-neutral-900">128</div>
                                             <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
                                                 <span className="font-medium">↑ 12%</span> from last week
                                             </div>
                                         </div>
                                         <div className="rounded-lg border border-neutral-100 p-4">
-                                            <div className="text-xs text-neutral-500 mb-1">Bug Reports</div>
-                                            <div className="text-2xl font-bold text-neutral-900">14</div>
+                                            <div className="text-xs text-neutral-500 mb-1">#1 reason</div>
+                                            <div className="text-sm font-bold text-neutral-900 mt-1">Too expensive</div>
                                             <div className="h-1.5 w-full bg-neutral-100 rounded-full mt-3 overflow-hidden">
-                                                <div className="h-full bg-red-500 w-[60%] rounded-full" />
+                                                <div className="h-full bg-red-500 w-[42%] rounded-full" />
                                             </div>
+                                            <div className="text-[10px] text-neutral-400 mt-1">42% of responses</div>
                                         </div>
                                     </div>
 
                                     {/* Chart Area */}
                                     <div className="rounded-lg border border-neutral-100 p-4">
                                         <div className="flex items-center justify-between mb-4">
-                                            <div className="text-xs font-medium text-neutral-700">Feedback Activity</div>
+                                            <div className="text-xs font-medium text-neutral-700">Drop-off reasons over time</div>
                                         </div>
                                         <div className="h-24 relative">
                                             {/* Line Chart SVG */}
@@ -100,17 +101,17 @@ export default function DashboardSection() {
                                         </div>
                                     </div>
 
-                                    {/* Recent Feedback List */}
+                                    {/* Recent responses list */}
                                     <div className="space-y-3">
-                                        <div className="text-xs font-medium text-neutral-700">Recent Reports</div>
+                                        <div className="text-xs font-medium text-neutral-700">Recent responses</div>
                                         {[
-                                            { title: "Login button not working", tag: "Bug", color: "text-red-600 bg-red-50 border-red-100" },
-                                            { title: "Add dark mode support", tag: "Feature", color: "text-amber-600 bg-amber-50 border-amber-100" },
-                                            { title: "Typo on pricing page", tag: "Fix", color: "text-blue-600 bg-blue-50 border-blue-100" }
+                                            { title: "Too expensive", tag: "US · pro", color: "text-red-600 bg-red-50 border-red-100", dot: "bg-red-500" },
+                                            { title: "Not sure what I get", tag: "IN · pro", color: "text-amber-600 bg-amber-50 border-amber-100", dot: "bg-amber-500" },
+                                            { title: "Just looking", tag: "GB · free", color: "text-blue-600 bg-blue-50 border-blue-100", dot: "bg-blue-500" }
                                         ].map((item, i) => (
                                             <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-neutral-100 bg-white hover:border-neutral-200 transition-colors cursor-default">
                                                 <div className="flex items-center gap-3">
-                                                    <div className={`h-2 w-2 rounded-full ${item.tag === 'Bug' ? 'bg-red-500' : item.tag === 'Feature' ? 'bg-amber-500' : 'bg-blue-500'}`} />
+                                                    <div className={`h-2 w-2 rounded-full ${item.dot}`} />
                                                     <span className="text-sm text-neutral-700 font-medium">{item.title}</span>
                                                 </div>
                                                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${item.color}`}>
@@ -126,20 +127,20 @@ export default function DashboardSection() {
                     <div className="order-1 lg:order-2">
                         <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700 mb-6 border border-purple-100">
                             <LayoutDashboard className="h-3 w-3" />
-                            Rich Analytics
+                            Your dashboard
                         </div>
                         <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-6">
-                            A powerful home for your insights.
+                            Every reason they didn't buy, in one place.
                         </h2>
                         <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
-                            Emails are great for alerts, but the dashboard is where you find patterns. Organize, filter, and analyze all feedback in one managed view.
+                            See exactly what's blocking your sales, ranked, tagged by plan and country, and trending over time. A weekly digest lands in your inbox so you never have to check.
                         </p>
                         <ul className="space-y-4">
                             {[
-                                "Filter by category (Bug, Feature, etc.)",
-                                "Track feedback trends over time",
-                                "Mark items as resolved",
-                                "Export data for your team"
+                                "See the #1 reason people don't buy",
+                                "Tagged by plan viewed and country",
+                                "Weekly summary email",
+                                "Plus a feedback widget for everything else"
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-3 text-neutral-700">
                                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100 text-green-600">

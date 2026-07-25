@@ -198,8 +198,9 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                             <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">Includes:</div>
                             {[
                                 "1 project",
-                                "20 feedback submissions/month",
-                                "Basic email notifications",
+                                "Why-Not-Buy + feedback widget",
+                                "20 responses/month",
+                                "Weekly Why-Not-Buy digest",
                                 "Feedinbox branding on widget"
                             ].map((feature, i) => (
                                 <div key={i} className="flex items-center gap-3 text-sm text-neutral-600">
@@ -247,11 +248,10 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                             <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">Everything in Free, plus:</div>
                             {[
                                 "Unlimited projects",
-                                "1,000 feedback submissions/month",
+                                "1,000 responses/month",
+                                "Customize the Why-Not-Buy question & options",
+                                "Customize & unbrand the widget",
                                 "Unlimited data retention",
-                                "Remove Feedinbox branding",
-                                "Customize widgets",
-                                "Priority email notifications",
                                 "Export to CSV/PDF"
                             ].map((feature, i) => (
                                 <div key={i} className="flex items-center gap-3 text-sm text-neutral-700 font-medium">
@@ -316,11 +316,10 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                             <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">Everything in Free, plus:</div>
                             {[
                                 "Unlimited projects",
-                                "1,000 feedback submissions/month",
+                                "1,000 responses/month",
+                                "Customize the Why-Not-Buy question & options",
+                                "Customize & unbrand the widget",
                                 "Unlimited data retention",
-                                "Remove Feedinbox branding",
-                                "Customize widgets",
-                                "Priority email notifications",
                                 "Export to CSV/PDF"
                             ].map((feature, i) => (
                                 <div key={i} className="flex items-center gap-3 text-sm text-neutral-700 font-medium">

@@ -12,9 +12,8 @@ interface HeroSectionProps {
 export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
-    const [hasScrolled, setHasScrolled] = useState(false);
 
-    const animatedTexts = ["feedback", "bug reports", "feature requests"];
+    const animatedTexts = ["don't buy.", "abandon checkout.", "skip your pricing."];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -28,45 +27,33 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         return () => clearInterval(interval);
     }, []);
 
-    // Hide arrow on scroll
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setHasScrolled(true);
-            }
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
     return (
         <section className="relative overflow-hidden pt-32 pb-20 sm:pt-48 sm:pb-24">
             <div className="mx-auto max-w-6xl px-4 sm:px-6">
                 <div className="grid gap-16 lg:grid-cols-2 lg:gap-8 items-center">
                     <div className="max-w-2xl">
                         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 lg:text-6xl mb-6 leading-[1.1]">
-                            User{" "}
-                            <span className="inline-block relative overflow-hidden align-bottom" style={{ height: '1.15em' }}>
-                                <span className="invisible" aria-hidden="true">feature requests</span>
+                            Know why visitors
+                            <br />
+                            <span className="inline-block relative overflow-hidden align-bottom pr-2" style={{ height: '1.15em' }}>
+                                <span className="invisible" aria-hidden="true">abandon checkout.</span>
                                 <span
                                     className={cn(
                                         "absolute left-0 top-0 transition-all duration-500 ease-out whitespace-nowrap",
                                         isAnimating
                                             ? "opacity-0 -translate-y-full"
                                             : "opacity-100 translate-y-0",
-                                        currentTextIndex === 0 && "text-neutral-900",
-                                        currentTextIndex === 1 && "text-red-500",
-                                        currentTextIndex === 2 && "text-amber-500"
+                                        currentTextIndex === 0 && "text-red-500",
+                                        currentTextIndex === 1 && "text-amber-500",
+                                        currentTextIndex === 2 && "text-neutral-900"
                                     )}
                                 >
                                     {animatedTexts[currentTextIndex]}
                                 </span>
                             </span>
-                            <br />
-                            <span className="text-neutral-400">straight to your inbox.</span>
                         </h1>
                         <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
-                            Simply embed a snippet of code and start receiving bug reports, feature requests, and user thoughts directly to your mailbox and dashboard.
+                            When a visitor leaves your pricing without buying, one question asks why. The reason lands in your dashboard, plus a weekly digest straight to your inbox.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 items-center flex-wrap">
                             <Link
@@ -124,108 +111,19 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                             <div className="p-6 overflow-x-auto bg-white">
                                 <pre className="text-sm font-mono leading-relaxed">
                                     <code className="language-html">
-                                        <span className="text-neutral-400">&lt;!-- Add to &lt;body&gt; --&gt;</span>
+                                        <span className="text-neutral-400">// when they open pricing / start checkout</span>
                                         <br />
-                                        <span className="text-purple-600">&lt;script</span> <span className="text-neutral-600">async src=</span><span className="text-green-600">&quot;https://feedinbox.co/widget.js&quot;</span>
+                                        <span className="text-neutral-900">feedinbox</span><span className="text-neutral-600">(</span><span className="text-green-600">'event'</span><span className="text-neutral-600">, </span><span className="text-green-600">'high_intent'</span><span className="text-neutral-600">, {'{'} plan: </span><span className="text-green-600">'pro'</span><span className="text-neutral-600"> {'}'})</span>
                                         <br />
-                                        <span className="text-neutral-600">  data-project-key=</span><span className="text-green-600">&quot;proj_xxx&quot;</span><span className="text-purple-600">&gt;&lt;/script&gt;</span>
+                                        <br />
+                                        <span className="text-neutral-400">// they buy? this cancels the question</span>
+                                        <br />
+                                        <span className="text-neutral-900">feedinbox</span><span className="text-neutral-600">(</span><span className="text-green-600">'event'</span><span className="text-neutral-600">, </span><span className="text-green-600">'converted'</span><span className="text-neutral-600">)</span>
                                     </code>
                                 </pre>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Arrow pointing to widget - glow animation, hidden on scroll */}
-            <div
-                className={cn(
-                    "hidden lg:block fixed bottom-16 right-20 z-40 pointer-events-none transition-opacity duration-500 delay-1000",
-                    hasScrolled ? "opacity-0" : "opacity-100"
-                )}
-            >
-                <div className="relative">
-                    {/* Label */}
-                    <span className="absolute -top-4 -left-12 text-sm font-medium text-red-500 whitespace-nowrap bg-white/90 px-2 py-1 rounded-full shadow-sm">
-                        Like this
-                    </span>
-                    {/* Arrow SVG with glow animation and loop */}
-                    <svg
-                        width="240"
-                        height="160"
-                        viewBox="0 0 240 160"
-                        fill="none"
-                        className="text-red-500"
-                    >
-                        <defs>
-                            <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="currentColor" stopOpacity="0.1">
-                                    <animate
-                                        attributeName="offset"
-                                        values="-0.5;1"
-                                        dur="2s"
-                                        repeatCount="indefinite"
-                                    />
-                                </stop>
-                                <stop offset="30%" stopColor="currentColor" stopOpacity="1">
-                                    <animate
-                                        attributeName="offset"
-                                        values="-0.2;1.3"
-                                        dur="2s"
-                                        repeatCount="indefinite"
-                                    />
-                                </stop>
-                                <stop offset="60%" stopColor="currentColor" stopOpacity="0.1">
-                                    <animate
-                                        attributeName="offset"
-                                        values="0.1;1.6"
-                                        dur="2s"
-                                        repeatCount="indefinite"
-                                    />
-                                </stop>
-                            </linearGradient>
-                            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                        </defs>
-
-                        {/* Looped Path Definition */}
-                        {/* Starts top-left, loops, then goes to bottom-right */}
-                        <path
-                            id="arrowPath"
-                            d="M20 20 C 80 20, 80 80, 50 80 C 20 80, 20 40, 60 30 C 130 10, 180 100, 220 140"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            fill="none"
-                            opacity="0.2"
-                        />
-
-                        {/* Animated Glow Path */}
-                        <path
-                            d="M20 20 C 80 20, 80 80, 50 80 C 20 80, 20 40, 60 30 C 130 10, 180 100, 220 140"
-                            stroke="url(#glowGradient)"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            fill="none"
-                            filter="url(#glow)"
-                        />
-
-                        {/* Open Arrow Head (Not Triangle) */}
-                        <path
-                            d="M200 135 L 220 140 L 215 120"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            fill="none"
-                            filter="url(#glow)"
-                        />
-                    </svg>
                 </div>
             </div>
         </section>

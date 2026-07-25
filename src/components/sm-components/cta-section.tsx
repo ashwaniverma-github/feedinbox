@@ -15,10 +15,10 @@ export default function CTASection({ isLoggedIn = false }: CTASectionProps) {
 
             <div className="mx-auto max-w-3xl px-4 sm:px-6 relative">
                 <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6">
-                    Ready to start listening?
+                    Stop guessing why they don't buy.
                 </h2>
                 <p className="text-lg text-neutral-400 mb-10 max-w-xl mx-auto">
-                    Join founders who are building better products by gathering insights directly from their users.
+                    Turn the visitors who almost bought into your clearest roadmap. Set it up in minutes: one script tag and one line on your pricing page.
                 </p>
                 <Link
                     href={isLoggedIn ? "/dashboard" : "/login"}

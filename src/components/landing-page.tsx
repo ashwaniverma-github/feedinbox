@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import Navbar from "./sm-components/navbar";
 import HeroSection from "./sm-components/hero-section";
 import HowItWorksSection from "./sm-components/how-it-works-section";
+import TwoToolsSection from "./sm-components/two-tools-section";
 import DashboardSection from "./sm-components/dashboard-section";
 import PricingSection from "./sm-components/pricing-section";
 import CTASection from "./sm-components/cta-section";
@@ -17,6 +18,7 @@ export default async function LandingPage() {
             <Navbar isLoggedIn={isLoggedIn} />
             <HeroSection isLoggedIn={isLoggedIn} />
             <HowItWorksSection />
+            <TwoToolsSection />
             <DashboardSection />
             <PricingSection isLoggedIn={isLoggedIn} subscriptionStatus={subscriptionStatus} />
             <CTASection isLoggedIn={isLoggedIn} />

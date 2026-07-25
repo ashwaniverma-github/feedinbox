@@ -54,6 +54,18 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
         };
     }, [isOpen]);
 
+    // Dogfood Why-Not-Buy: opening the pricing modal is a high-intent signal.
+    // If the visitor doesn't convert within the configured delay, the card asks why.
+    useEffect(() => {
+        if (isOpen) {
+            (window as unknown as { feedinbox?: (...args: unknown[]) => void }).feedinbox?.(
+                "event",
+                "high_intent",
+                { plan: "pro" }
+            );
+        }
+    }, [isOpen]);
+
     const handleUpgrade = async () => {
         try {
             setIsLoading(true);
@@ -240,11 +252,10 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                                 <div className="space-y-3">
                                     {[
                                         "Unlimited projects",
-                                        "1,000 feedback submissions/month",
+                                        "1,000 responses/month",
+                                        "Customize the Why-Not-Buy question & options",
+                                        "Customize & unbrand the widget",
                                         "Unlimited data retention",
-                                        "Remove Feedinbox branding",
-                                        "Customize widgets",
-                                        "Priority email notifications",
                                         "Export to CSV/PDF"
                                     ].map((feature, i) => (
                                         <div key={i} className="flex items-center gap-3 text-sm">

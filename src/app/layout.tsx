@@ -20,11 +20,11 @@ const siteUrl = "https://feedinbox.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Feedinbox - Collect User Feedback to Your Inbox",
+    default: "Feedinbox: Find out why visitors don't buy",
     template: "%s | Feedinbox",
   },
-  description: "The simplest user feedback widget for your website. Collect bug reports, feature requests, and feedback—delivered straight to your email inbox. One script tag, 2-minute setup, free to start.",
-  keywords: ["feedback widget", "user feedback tool", "website feedback widget", "feedback to email", "bug report widget", "feature request tool", "customer feedback widget", "feedback collection", "in-app feedback", "saas feedback tool", "feedback widget for website free", "simple feedback tool", "embedded feedback widget"],
+  description: "When someone abandons your pricing or checkout, Feedinbox asks one question and tells you why, tagged by plan and country. Plus a feedback widget. One script tag, free to start.",
+  keywords: ["exit intent", "why visitors don't buy", "checkout abandonment", "pricing page abandonment", "conversion feedback", "cart abandonment survey", "exit survey", "feedback widget", "user feedback tool", "customer feedback widget", "in-app feedback", "saas feedback tool"],
   authors: [{ name: "Feedinbox" }],
   creator: "Feedinbox",
   publisher: "Feedinbox",
@@ -84,9 +84,14 @@ export default function RootLayout({
         >
           {children}
           <Analytics />
+          {/* Queue stub so events fired before widget.js loads (e.g. high_intent on
+              pricing modal open) aren't lost */}
+          <Script id="feedinbox-stub" strategy="beforeInteractive">
+            {`window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}`}
+          </Script>
           <Script
-            src="https://www.feedinbox.com/widget.js"
-            data-project-key="cmjb5cwds000312f8j91p28yl"
+            src="/widget.js"
+            data-project-key={process.env.NEXT_PUBLIC_FEEDINBOX_WIDGET_KEY || "cmjb5cwds000312f8j91p28yl"}
             strategy="lazyOnload"
           />
 
