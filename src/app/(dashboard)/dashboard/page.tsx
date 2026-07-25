@@ -63,6 +63,15 @@ export default function DashboardPage() {
         fetchProjects();
     }, []);
 
+    // Persist the selected project so it's remembered across visits
+    useEffect(() => {
+        if (selectedProject) {
+            try {
+                localStorage.setItem("feedinbox_selected_project", selectedProject);
+            } catch { /* ignore */ }
+        }
+    }, [selectedProject]);
+
     useEffect(() => {
         if (selectedProject) {
             fetchDashboardData(selectedProject, dateRange);
@@ -88,7 +97,13 @@ export default function DashboardPage() {
             }
 
             setProjects(data);
-            setSelectedProject(data[0].id);
+            // Restore the last selected project if it still exists, else default to the first
+            let stored: string | null = null;
+            try {
+                stored = localStorage.getItem("feedinbox_selected_project");
+            } catch { /* ignore */ }
+            const initial = data.find((p: Project) => p.id === stored)?.id ?? data[0].id;
+            setSelectedProject(initial);
         } catch (error) {
             console.error("Failed to fetch projects:", error);
             setLoading(false);
