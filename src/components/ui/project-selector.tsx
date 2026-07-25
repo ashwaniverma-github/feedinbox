@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Check, FolderKanban } from "lucide-react";
+import { ChevronDown, Check, FolderKanban, Plus } from "lucide-react";
 
 interface Project {
     id: string;
@@ -187,6 +188,18 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
                                 );
                             })}
                         </ul>
+
+                        {/* New project */}
+                        <Link
+                            href="/projects/new"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2.5 border-t border-border hover:bg-accent transition-colors"
+                        >
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-dashed border-border text-muted-foreground">
+                                <Plus className="h-4 w-4" />
+                            </div>
+                            <span className="text-sm font-medium text-foreground">New project</span>
+                        </Link>
 
                         {/* Footer hint */}
                         <div className="px-3 py-2 border-t border-border bg-muted/30">
