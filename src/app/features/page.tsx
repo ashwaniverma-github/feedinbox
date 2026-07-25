@@ -15,9 +15,9 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export const metadata: Metadata = {
-    title: "Email-First Feedback Features | Feedinbox",
-    description: "Discover how Feedinbox delivers user feedback directly to your email inbox. No dashboards, no context switching. Just feedback in your inbox.",
-    keywords: ["feedback to email", "email feedback widget", "inbox feedback tool", "email notifications feedback"],
+    title: "Features - Why-Not-Buy + Feedback, In Your Inbox | Feedinbox",
+    description: "Feedinbox tells you why visitors don't buy with an exit-intent question, and collects feedback. A weekly digest plus instant emails, no dashboard required.",
+    keywords: ["why visitors don't buy", "exit intent question", "conversion feedback", "feedback to email", "inbox feedback tool"],
 };
 
 export default function FeaturesIndexPage() {
@@ -30,13 +30,13 @@ export default function FeaturesIndexPage() {
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
                     <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 mb-6 border border-blue-100">
                         <Mail className="h-3 w-3" />
-                        Email-First Approach
+                        Inbox-First Approach
                     </div>
                     <h1 className="text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl mb-6">
-                        Feedback, direct to your inbox
+                        Why they didn&apos;t buy, in your inbox
                     </h1>
                     <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-                        Feedinbox is built on one core principle: feedback should come to you, not the other way around.
+                        Feedinbox is built on one core principle: the answers you need should come to you, not sit in a dashboard you forget to check.
                     </p>
                 </div>
             </section>

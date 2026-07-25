@@ -25,148 +25,148 @@ export interface Feature {
 export const features: Feature[] = [
     {
         slug: "feedback-to-email",
-        title: "Feedback Direct to Your Inbox",
-        metaTitle: "Get User Feedback Directly to Your Email Inbox",
-        metaDescription: "Stop logging into dashboards. Receive user feedback, bug reports, and feature requests directly in your email inbox. Set up in 2 minutes.",
-        description: "Every piece of feedback lands straight in your inbox. No dashboard hopping, no context switching. Just open your email and respond.",
+        title: "Answers and feedback in your inbox",
+        metaTitle: "Get Feedback and Drop-off Reasons in Your Email Inbox",
+        metaDescription: "Feedinbox tells you why visitors don't buy and collects feedback, delivered to your inbox. A weekly Why-Not-Buy digest plus instant feedback emails. Set up in minutes.",
+        description: "Feedinbox is two things in one: a Why-Not-Buy question that catches abandoning visitors, and a feedback widget. Both land in your inbox, no dashboard hopping required.",
         icon: "Mail",
-        heroHeadline: "User feedback, directly in your inbox",
-        heroSubheadline: "Stop logging into yet another dashboard. Feedinbox sends every submission straight to your email the moment it arrives.",
+        heroHeadline: "Why they didn't buy, straight to your inbox",
+        heroSubheadline: "Feedinbox asks abandoning visitors one question and emails you a weekly summary of the reasons, plus instant emails for any feedback your users send.",
         benefits: [
             {
-                title: "Zero Dashboard Fatigue",
-                description: "No need to check another app. Feedback comes to you, where you already work—your inbox."
+                title: "Weekly Why-Not-Buy digest",
+                description: "The top reasons people didn't buy, summarized and emailed to you every week. No dashboard to babysit."
             },
             {
-                title: "Instant Notifications",
-                description: "Get notified the second a user submits feedback. Never miss critical bug reports again."
+                title: "Instant feedback alerts",
+                description: "Bug reports and ideas from the feedback widget hit your inbox the second they're submitted."
             },
             {
-                title: "Reply Ready Context",
-                description: "Each email includes all the details: feedback type, user info, and timestamp. Ready for action."
+                title: "Context included",
+                description: "Every Why-Not-Buy answer is tagged with the plan the visitor viewed and their country, so you know who is dropping off."
             },
             {
-                title: "Works with Any Email Client",
-                description: "Gmail, Outlook, Apple Mail, Superhuman—if it reads email, it works with Feedinbox."
+                title: "Works with any email client",
+                description: "Gmail, Outlook, Apple Mail, Superhuman. If it reads email, it works with Feedinbox."
             }
         ],
-        keywords: ["feedback to email", "feedback email notification", "user feedback inbox", "feedback direct to email"]
+        keywords: ["why visitors don't buy", "drop-off reasons email", "feedback to email", "exit intent email", "conversion feedback"]
     },
     {
         slug: "email-feedback-widget",
-        title: "Email-First Feedback Widget",
-        metaTitle: "Email-First Feedback Widget for Websites & Apps",
-        metaDescription: "An embeddable feedback widget that sends submissions directly to your email. No complex dashboards. Just feedback in your inbox.",
-        description: "A lightweight widget that prioritizes what matters: getting feedback to you fast, via email.",
+        title: "One widget, two jobs",
+        metaTitle: "Exit-Intent Question and Feedback Widget in One Script",
+        metaDescription: "One embeddable script gives you a Why-Not-Buy exit-intent question and a feedback widget. Find out why visitors don't buy and collect feedback, all in your inbox.",
+        description: "A single lightweight script that does two jobs: catches abandoning visitors with one question, and collects feedback the rest of the time.",
         icon: "Inbox",
-        heroHeadline: "The feedback widget that emails you",
-        heroSubheadline: "Most feedback tools make you log in to see submissions. Feedinbox sends them to your inbox instead.",
+        heroHeadline: "The widget that tells you why they left",
+        heroSubheadline: "Most tools only collect general feedback. Feedinbox also asks the one commercial question that matters: what stopped you from buying?",
         benefits: [
             {
-                title: "Email-First Architecture",
-                description: "Built from the ground up to deliver feedback via email, not hide it behind a login."
+                title: "Why-Not-Buy at the core",
+                description: "When a visitor abandons pricing or checkout, a small card asks why. Two taps, and you have the reason."
             },
             {
-                title: "Lightweight Embed",
-                description: "Just one script tag. No heavy SDKs, no performance impact on your site."
+                title: "Feedback widget included",
+                description: "A floating button for bugs, ideas, and questions, on the same script and dashboard."
             },
             {
-                title: "Customizable Widget",
-                description: "Match your brand colors and position the widget anywhere on your site."
+                title: "One lightweight embed",
+                description: "Just one script tag. No heavy SDKs, no performance hit on your site."
             },
             {
-                title: "Rich Email Formatting",
-                description: "Emails are beautifully formatted with all submission details, ready for action."
+                title: "Turn either on or off",
+                description: "Run Why-Not-Buy on its own, the feedback button on its own, or both. Toggle it in the dashboard."
             }
         ],
-        keywords: ["email feedback widget", "feedback inbox widget", "email-first feedback", "inbox feedback tool"]
+        keywords: ["exit intent widget", "why not buy widget", "feedback widget", "abandonment survey widget", "one line feedback"]
     },
     {
         slug: "instant-email-alerts",
-        title: "Instant Email Alerts",
-        metaTitle: "Instant Email Alerts for User Feedback & Bug Reports",
-        metaDescription: "Get real-time email notifications when users submit feedback. Bug reports, feature requests, and thoughts—instantly in your inbox.",
-        description: "Real-time email alerts mean you never miss urgent feedback. Critical bugs? You'll know in seconds.",
+        title: "Instant alerts and weekly summaries",
+        metaTitle: "Instant Feedback Alerts and Weekly Why-Not-Buy Summaries",
+        metaDescription: "Get instant email alerts for user feedback and a weekly summary of why visitors didn't buy. Never miss a critical bug or a costly drop-off pattern.",
+        description: "Feedback reaches you instantly. Why-Not-Buy reasons are rolled up into a weekly summary so you see the pattern, not the noise.",
         icon: "Bell",
-        heroHeadline: "Feedback alerts in real-time",
-        heroSubheadline: "When a user reports a critical bug, every second counts. Get instant email alerts the moment feedback is submitted.",
+        heroHeadline: "Never miss a reason or a bug",
+        heroSubheadline: "Critical bug from the feedback widget? Emailed in seconds. Why people didn't buy this week? Summarized every Monday.",
         benefits: [
             {
-                title: "Sub-Second Delivery",
-                description: "Emails are sent within milliseconds of submission. No batching, no delays."
+                title: "Instant feedback delivery",
+                description: "Feedback emails are sent within milliseconds of submission. No batching, no delays."
             },
             {
-                title: "Priority Indicators",
-                description: "Bug reports, feature requests, and general feedback are clearly labeled in the subject line."
+                title: "Weekly Why-Not-Buy roundup",
+                description: "The reasons people abandoned, ranked, so you can act on the pattern instead of one-off replies."
             },
             {
-                title: "Mobile Ready",
-                description: "Get push notifications on your phone via your email app. Respond from anywhere."
+                title: "Clear subject lines",
+                description: "Feedback type and drop-off reason are labeled in the subject so you can triage from the inbox."
             },
             {
-                title: "Team Distribution",
-                description: "Send alerts to multiple team members. Everyone stays in the loop."
+                title: "Reply from anywhere",
+                description: "It's all email, so you get it on your phone and can act from wherever you are."
             }
         ],
-        keywords: ["instant feedback notification", "real-time feedback email", "feedback alerts", "bug report notifications"]
+        keywords: ["feedback alerts", "why not buy summary", "conversion drop-off report", "bug report notifications", "weekly feedback digest"]
     },
     {
         slug: "no-dashboard-feedback",
-        title: "Feedback Without Dashboard Fatigue",
-        metaTitle: "Simple Feedback Tool - No Dashboard Required",
-        metaDescription: "Tired of logging into another dashboard? Feedinbox sends user feedback directly to your email. Simple, fast, effective.",
-        description: "You already have too many dashboards. Feedinbox eliminates another one by sending feedback straight to email.",
+        title: "Insights without dashboard fatigue",
+        metaTitle: "Know Why Visitors Don't Buy, No Dashboard Required",
+        metaDescription: "Feedinbox emails you why visitors didn't buy and any feedback they send. Less dashboard hopping, more acting on what's blocking your sales.",
+        description: "You already have too many dashboards. Feedinbox pushes the reasons people don't buy, and any feedback, straight to your email.",
         icon: "Eye",
         heroHeadline: "One less dashboard to check",
-        heroSubheadline: "Dashboard fatigue is real. You already check Slack, email, analytics, CRM... Feedinbox doesn't add another tab. It uses the one you already have open.",
+        heroSubheadline: "You already live in your inbox. Feedinbox delivers Why-Not-Buy reasons and feedback there, with a dashboard waiting only when you want to dig deeper.",
         benefits: [
             {
-                title: "Reduce Tool Overload",
-                description: "Stop adding more logins to your workflow. Feedback belongs in your inbox."
+                title: "Comes to you",
+                description: "Drop-off reasons and feedback arrive by email. Your inbox is the command center."
             },
             {
-                title: "Single Source of Truth",
-                description: "Your email is already your command center. Keep feedback there too."
+                title: "Dashboard when you want it",
+                description: "A full dashboard is there for trends and filtering, but you're not forced to check it."
             },
             {
-                title: "Optional Dashboard",
-                description: "We have a dashboard if you need it. But you probably won't."
+                title: "Act on patterns fast",
+                description: "See the number one reason people don't buy without logging into anything."
             },
             {
-                title: "Focus on What Matters",
-                description: "Less time checking dashboards. More time building your product."
+                title: "Focus on building",
+                description: "Less tab-switching, more time fixing the leak that's blocking your revenue."
             }
         ],
-        keywords: ["simple feedback tool", "no login feedback", "no dashboard feedback", "minimal feedback tool"]
+        keywords: ["simple exit intent tool", "no dashboard feedback", "why not buy email", "minimal conversion tool", "drop-off reasons"]
     },
     {
         slug: "inbox-feedback-tool",
-        title: "Inbox-First Feedback Collection",
-        metaTitle: "Inbox-First Feedback Tool for Developers & Founders",
-        metaDescription: "Collect user feedback and receive it in your email inbox. Built for developers and founders who value simplicity.",
-        description: "A feedback tool designed for people who live in their inbox. Simple setup, instant email delivery.",
+        title: "Built for founders who live in their inbox",
+        metaTitle: "Why-Not-Buy and Feedback Tool for Founders and Developers",
+        metaDescription: "Find out why visitors don't buy and collect feedback, delivered to your inbox. Built for founders and developers who value simplicity. Free to start.",
+        description: "A tool for people who'd rather get answers in email than log into another app. One script, Why-Not-Buy plus feedback.",
         icon: "Zap",
-        heroHeadline: "Feedback collection, inbox-first",
-        heroSubheadline: "Built for developers and founders who value simplicity. Embed the widget, get feedback in your email. That's it.",
+        heroHeadline: "Answers where you already work",
+        heroSubheadline: "Built for founders and developers who move fast. Add one script, find out why visitors don't buy, and collect feedback, all in your inbox.",
         benefits: [
             {
-                title: "Developer Friendly",
-                description: "One script tag. Takes under 2 minutes."
+                title: "Developer friendly",
+                description: "One script tag, and one line to fire the high-intent event. Under a few minutes with your AI agent."
             },
             {
-                title: "Founder Focused",
-                description: "Perfect for indie hackers and early-stage startups who need to move fast."
+                title: "Founder focused",
+                description: "Perfect for indie hackers and early-stage startups trying to fix a leaky funnel."
             },
             {
-                title: "No Vendor Lock-in",
-                description: "Feedback arrives in standard email format. Export anytime, no data hostage."
+                title: "No vendor lock-in",
+                description: "Answers arrive by email and export anytime. No data held hostage."
             },
             {
-                title: "Generous Free Tier",
-                description: "Start collecting feedback for free. Upgrade only when you're ready."
+                title: "Generous free tier",
+                description: "Start for free. Upgrade only when you're ready to customize."
             }
         ],
-        keywords: ["inbox feedback tool", "feedback to mailbox", "email feedback collection", "simple feedback widget"]
+        keywords: ["why not buy tool", "exit intent for founders", "conversion feedback tool", "indie hacker conversion tool", "inbox feedback tool"]
     }
 ];
 

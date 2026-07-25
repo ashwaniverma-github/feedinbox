@@ -18,219 +18,219 @@ export interface UseCase {
 export const useCases: UseCase[] = [
     {
         slug: "saas-feedback",
-        title: "Feedback for SaaS Applications",
-        metaTitle: "Feedback Widget for SaaS Applications | Feedinbox",
-        metaDescription: "Collect user feedback, bug reports, and feature requests from your SaaS application. Embed in 2 minutes, receive feedback in your email inbox.",
-        description: "The easiest way to collect feedback from your SaaS users. Embed the widget, receive submissions in your inbox.",
+        title: "Why-Not-Buy for SaaS",
+        metaTitle: "Find Out Why SaaS Trials Don't Convert | Feedinbox",
+        metaDescription: "Feedinbox asks abandoning SaaS visitors why they didn't upgrade, and collects product feedback too. Learn why trials don't convert and fix the leak. Free to start.",
+        description: "The easiest way to learn why SaaS visitors don't upgrade, plus a feedback widget for bugs and ideas.",
         icon: "Cloud",
-        heroHeadline: "SaaS feedback, simplified",
-        heroSubheadline: "Your SaaS users have opinions. Make it easy for them to share—and easy for you to receive them in your inbox.",
-        problemStatement: "SaaS founders spend too much time checking multiple dashboards for user feedback. You need a solution that brings feedback to you, not the other way around.",
+        heroHeadline: "Know why trials don't upgrade",
+        heroSubheadline: "Most people who open your pricing never subscribe. Feedinbox asks them why, and gives your users a feedback widget for everything else.",
+        problemStatement: "SaaS founders can see the drop-off in analytics but never learn the reason. You have theories about why trials don't convert, not data.",
         benefits: [
-            { title: "In-App Widget", description: "Embed directly in your SaaS app. Users never leave your product." },
-            { title: "Categorized Feedback", description: "Bug reports, feature requests, and general thoughts—all labeled clearly." },
-            { title: "Email Delivery", description: "Every submission lands in your inbox. No dashboard required." },
-            { title: "User Context", description: "Capture user info automatically for better context." }
+            { title: "Catch upgrade drop-off", description: "When a trial user opens pricing and doesn't subscribe, one question asks why." },
+            { title: "Tagged by plan", description: "Every reason is tagged with the plan they viewed, so you see which tier is losing people." },
+            { title: "Feedback widget included", description: "Bug reports and feature requests, on the same script and dashboard." },
+            { title: "Answers in your inbox", description: "A weekly summary of why people didn't upgrade, plus instant feedback emails." }
         ],
-        keywords: ["saas feedback widget", "saas user feedback", "feedback tool for saas", "saas bug reports"]
+        keywords: ["why saas trials don't convert", "saas conversion feedback", "saas exit intent", "saas upgrade drop-off", "saas feedback widget"]
     },
     {
         slug: "mobile-app-feedback",
-        title: "Feedback for Mobile Apps",
-        metaTitle: "Mobile App Feedback Collection | Feedinbox",
-        metaDescription: "Collect bug reports and feature requests from your mobile app users. Get feedback delivered directly to your email inbox.",
-        description: "Mobile app users are on the go. Give them a quick way to share feedback without leaving your app.",
+        title: "Why-Not-Buy and feedback for apps",
+        metaTitle: "App Paywall Drop-off and Feedback Collection | Feedinbox",
+        metaDescription: "Find out why app users don't hit the paywall's buy button, and collect bug reports. Feedinbox works in your web app or WebView. Delivered to your inbox.",
+        description: "Learn why users bounce off your paywall, and give them a quick way to report bugs, all in your web app.",
         icon: "Smartphone",
-        heroHeadline: "Mobile app feedback, delivered",
-        heroSubheadline: "Your app users encounter bugs in the wild. Make it easy for them to tell you—and get it in your inbox instantly.",
-        problemStatement: "Mobile app bugs are hard to reproduce. You need user feedback with context: what they were doing, what went wrong, and when it happened.",
+        heroHeadline: "Why users don't tap buy",
+        heroSubheadline: "When someone reaches your paywall and backs out, Feedinbox asks why. Plus a feedback widget so users can report bugs in the wild.",
+        problemStatement: "Paywall drop-off and hard-to-reproduce bugs both cost you. You need the reason people don't upgrade and the context behind bugs.",
         benefits: [
-            { title: "Mobile-Optimized Widget", description: "Touch-friendly interface that works on any screen size." },
-            { title: "Screenshot Ready", description: "Users can describe issues visually with clear submissions." },
-            { title: "Instant Notifications", description: "Know about critical bugs before they hit your reviews." },
-            { title: "Web Integration", description: "Use our script tag in your WebView or mobile web app." }
+            { title: "Paywall drop-off reasons", description: "Fire the high-intent event when the paywall opens and learn why people don't buy." },
+            { title: "Bug reports with context", description: "The feedback widget captures what users were doing when something broke." },
+            { title: "Web and WebView ready", description: "Use the script in your web app or mobile WebView." },
+            { title: "Instant and weekly", description: "Instant bug alerts, plus a weekly summary of why people didn't buy." }
         ],
-        keywords: ["mobile app feedback", "app feedback collection", "mobile bug reports", "app feature requests"]
+        keywords: ["app paywall drop-off", "why users don't upgrade app", "mobile app feedback", "app conversion feedback", "webview feedback"]
     },
     {
         slug: "e-commerce-feedback",
-        title: "Feedback for E-Commerce",
-        metaTitle: "E-Commerce Customer Feedback Widget | Feedinbox",
-        metaDescription: "Collect customer feedback from your online store. Understand what buyers want and fix checkout issues fast.",
-        description: "E-commerce customers have strong opinions. Capture them before they leave a bad review somewhere else.",
+        title: "Why-Not-Buy for e-commerce",
+        metaTitle: "Find Out Why Shoppers Abandon Checkout | Feedinbox",
+        metaDescription: "Feedinbox asks abandoning shoppers why they didn't buy and collects store feedback. Understand cart abandonment and fix conversion leaks. Easy setup.",
+        description: "Every abandoned cart has a reason. Feedinbox asks for it, and collects general store feedback too.",
         icon: "ShoppingCart",
-        heroHeadline: "E-commerce feedback, captured",
-        heroSubheadline: "Every abandoned cart has a story. Every completed purchase has feedback. Capture both with a simple widget.",
-        problemStatement: "E-commerce sites lose customers due to friction they never hear about. By the time you see a bad review, it's too late.",
+        heroHeadline: "Know why carts get abandoned",
+        heroSubheadline: "Analytics show you the abandonment rate but never the reason. Feedinbox asks shoppers what stopped them, right as they leave.",
+        problemStatement: "E-commerce sites lose buyers to friction they never hear about. By the time you see a bad review, the sale is long gone.",
         benefits: [
-            { title: "Checkout Insights", description: "Understand why customers abandon carts or complete purchases." },
-            { title: "Product Feedback", description: "Learn which products need better descriptions or photos." },
-            { title: "Support Reduction", description: "Catch issues before they become support tickets." },
-            { title: "Conversion Optimization", description: "Use feedback to improve your conversion rate." }
+            { title: "Checkout abandonment reasons", description: "Fire high-intent at checkout and learn why shoppers don't complete the purchase." },
+            { title: "Price vs product vs trust", description: "Preset answers reveal whether it's price, unclear value, or a missing detail." },
+            { title: "Store feedback included", description: "A feedback widget for product and site issues, on the same script." },
+            { title: "Fix the leak", description: "Turn drop-off reasons into concrete checkout and pricing fixes." }
         ],
-        keywords: ["ecommerce feedback", "customer feedback widget", "store feedback", "checkout feedback"]
+        keywords: ["why shoppers abandon checkout", "cart abandonment feedback", "ecommerce exit intent", "checkout drop-off reasons", "ecommerce conversion feedback"]
     },
     {
         slug: "startup-feedback",
-        title: "Feedback for Startups",
-        metaTitle: "Feedback Tool for Startups & Indie Hackers | Feedinbox",
-        metaDescription: "Perfect for MVP validation and early-stage products. Collect user feedback without complex setup. Free tier available.",
-        description: "Startups need fast feedback loops. Get user insights without adding another tool to your stack.",
+        title: "Why-Not-Buy for startups",
+        metaTitle: "Find Out Why Visitors Don't Buy | Startup Tool | Feedinbox",
+        metaDescription: "Perfect for early-stage products. Learn why visitors don't buy and collect feedback without complex setup. Free tier available.",
+        description: "Startups can't afford to guess at their funnel. Feedinbox tells you why visitors don't buy, plus collects feedback.",
         icon: "Rocket",
-        heroHeadline: "Startup-speed feedback",
-        heroSubheadline: "You're moving fast. Your feedback tool should too. 2-minute setup, instant email delivery, free to start.",
-        problemStatement: "Early-stage startups can't afford complex feedback tools. You need something simple, fast, and cheap—preferably free.",
+        heroHeadline: "Stop guessing why they don't buy",
+        heroSubheadline: "You're moving fast but flying blind on conversion. Feedinbox asks abandoning visitors why, and collects feedback, in one 2-minute setup.",
+        problemStatement: "Early-stage startups have theories about why people don't convert, not data. You need the real reason to fix the leak blocking revenue.",
         benefits: [
-            { title: "Free Tier", description: "Start collecting feedback without spending a dime." },
-            { title: "2-Minute Setup", description: "Copy-paste one snippet. That's the entire onboarding." },
-            { title: "MVP Validation", description: "Get real user feedback to validate your ideas quickly." },
-            { title: "Founder-Friendly", description: "Built by indie hackers, for indie hackers." }
+            { title: "Free tier", description: "Start learning why visitors don't buy without spending a dime." },
+            { title: "Minutes to set up", description: "One script plus one event, or hand it to your AI agent." },
+            { title: "Funnel validation", description: "Find out if it's price, positioning, or a missing feature stopping sales." },
+            { title: "Feedback too", description: "A feedback widget for the bugs and ideas that also matter early on." }
         ],
-        keywords: ["startup feedback tool", "mvp feedback", "indie hacker feedback", "early stage feedback"]
+        keywords: ["why visitors don't buy", "startup conversion feedback", "mvp conversion", "indie hacker conversion tool", "early stage exit intent"]
     },
     {
         slug: "landing-page-feedback",
-        title: "Feedback for Landing Pages",
-        metaTitle: "Landing Page Feedback Widget | Feedinbox",
-        metaDescription: "Understand what visitors think before you launch. Collect landing page feedback and improve conversion rates.",
-        description: "Your landing page is your first impression. Get feedback on what's working and what's not.",
+        title: "Why-Not-Buy for landing pages",
+        metaTitle: "Why Landing Page Visitors Don't Convert | Feedinbox",
+        metaDescription: "Find out why landing page visitors don't sign up or buy. Feedinbox asks them, and collects feedback. Improve conversion before spending more on ads.",
+        description: "Your landing page gets traffic but not conversions. Feedinbox asks visitors why, and collects feedback.",
         icon: "Layout",
-        heroHeadline: "Landing page insights",
-        heroSubheadline: "Before you spend money on ads, find out if your landing page actually resonates with visitors.",
-        problemStatement: "You can track clicks and bounces, but you can't read minds. Sometimes you just need to ask visitors what they think.",
+        heroHeadline: "Why visitors don't convert",
+        heroSubheadline: "Before you spend more on ads, find out why the traffic you already have doesn't sign up or buy.",
+        problemStatement: "You can track clicks and bounces, but not why. Sometimes you just need to ask visitors what stopped them.",
         benefits: [
-            { title: "Pre-Launch Validation", description: "Test your messaging before going live." },
-            { title: "Conversion Insights", description: "Learn why visitors convert—or don't." },
-            { title: "Copy Optimization", description: "Get feedback on headlines, CTAs, and value props." },
-            { title: "Quick Iterations", description: "Make changes fast based on real user input." }
+            { title: "Conversion drop-off reasons", description: "Ask visitors who reach your CTA and leave why they didn't take the next step." },
+            { title: "Message validation", description: "Learn whether your headline, offer, or pricing is the blocker." },
+            { title: "Feedback widget", description: "Collect general reactions to your page alongside the buy-intent question." },
+            { title: "Quick iterations", description: "Change copy and offers based on what real visitors tell you." }
         ],
-        keywords: ["landing page feedback", "website feedback widget", "conversion feedback", "visitor feedback"]
+        keywords: ["why visitors don't convert", "landing page conversion feedback", "landing page exit intent", "conversion drop-off", "why not signup"]
     },
     {
         slug: "beta-testing-feedback",
-        title: "Feedback for Beta Testing",
-        metaTitle: "Beta Testing Feedback Collection | Feedinbox",
-        metaDescription: "Manage beta tester feedback efficiently. Collect bug reports and suggestions from your beta users in one place.",
-        description: "Beta testers are your most valuable users. Make it easy for them to share detailed feedback.",
+        title: "Feedback and drop-off for betas",
+        metaTitle: "Beta Feedback and Why Testers Don't Convert | Feedinbox",
+        metaDescription: "Collect beta tester feedback and learn why testers don't convert to paid. Feedinbox delivers both to your inbox. Simple script setup.",
+        description: "Beta testers are your most valuable users. Collect their feedback, and learn why they don't upgrade to paid.",
         icon: "TestTube",
-        heroHeadline: "Beta feedback, organized",
-        heroSubheadline: "Your beta testers want to help. Give them an easy way to report bugs and suggest improvements.",
-        problemStatement: "Beta feedback often gets scattered across Slack, email, and DMs. You need a centralized, easy way to collect it all.",
+        heroHeadline: "Beta feedback, plus why they don't pay",
+        heroSubheadline: "Give testers an easy way to report bugs, and ask the ones who don't convert what stopped them.",
+        problemStatement: "Beta feedback scatters across Slack, email, and DMs, and you rarely learn why engaged testers don't become paying customers.",
         benefits: [
-            { title: "Structured Feedback", description: "Bug reports and feature requests are clearly categorized." },
-            { title: "Email Aggregation", description: "All feedback lands in your inbox, organized and ready." },
-            { title: "Tester-Friendly", description: "Simple widget that doesn't interrupt the testing flow." },
-            { title: "Iteration Ready", description: "Turn feedback into action faster." }
+            { title: "Structured feedback", description: "Bug reports and feature requests, clearly categorized in your inbox." },
+            { title: "Conversion drop-off", description: "Ask testers who hit pricing and don't buy why not." },
+            { title: "One place", description: "Feedback and drop-off reasons in one dashboard and one inbox." },
+            { title: "Iteration ready", description: "Turn both into a prioritized list of fixes." }
         ],
-        keywords: ["beta testing feedback", "beta user feedback", "beta bug reports", "beta feature requests"]
+        keywords: ["beta testing feedback", "why beta testers don't convert", "beta conversion", "beta user feedback", "beta feedback tool"]
     },
     {
         slug: "website-feedback",
-        title: "Feedback for Websites",
-        metaTitle: "Website Feedback Tool | Feedinbox",
-        metaDescription: "Collect visitor feedback on your website with a simple embedded widget. Understand user needs and improve your site.",
-        description: "Every website has visitors with opinions. Give them a voice and improve your site based on real feedback.",
+        title: "Why-Not-Buy and feedback for websites",
+        metaTitle: "Find Out Why Website Visitors Don't Buy | Feedinbox",
+        metaDescription: "Ask website visitors why they didn't buy, and collect general feedback. One simple script. Understand user intent and improve your site.",
+        description: "Analytics tell you what visitors do. Feedinbox tells you why they didn't buy, and collects feedback.",
         icon: "Globe",
-        heroHeadline: "Website feedback made simple",
-        heroSubheadline: "Your visitors know what's working and what's not. Give them an easy way to tell you.",
-        problemStatement: "Analytics tell you what users do, but not why. The only way to understand user intent is to ask them directly.",
+        heroHeadline: "Understand why visitors leave",
+        heroSubheadline: "Your visitors know what stopped them. Feedinbox asks the ones who don't buy, and gives everyone a way to send feedback.",
+        problemStatement: "Analytics show what users do, not why. The only way to understand intent is to ask them directly, at the right moment.",
         benefits: [
-            { title: "Non-Intrusive Widget", description: "Sits quietly until users need it. No annoying popups." },
-            { title: "All Site Types", description: "Works on blogs, portfolios, business sites, and more." },
-            { title: "Easy Installation", description: "One script tag, works on any website." },
-            { title: "Improvement Insights", description: "Get actionable feedback to improve your site." }
+            { title: "Ask at the right moment", description: "Fire the question when a visitor shows buying intent and then leaves." },
+            { title: "Non-intrusive feedback", description: "A quiet feedback button that sits until users need it. No annoying popups." },
+            { title: "Any site type", description: "Works on marketing sites, apps, blogs, and portfolios." },
+            { title: "One script", description: "Both features from a single embed, toggled in the dashboard." }
         ],
-        keywords: ["website feedback", "website feedback tool", "site feedback widget", "visitor feedback"]
+        keywords: ["why website visitors don't buy", "website exit intent", "website feedback tool", "visitor intent feedback", "site conversion feedback"]
     },
     {
         slug: "product-feedback",
-        title: "Product Feedback Management",
-        metaTitle: "Product Feedback Tool | Feedinbox",
-        metaDescription: "Centralize all product feedback in one place. Collect feature requests, bug reports, and user suggestions efficiently.",
-        description: "Product feedback shouldn't be scattered. Collect it all in one place—your inbox.",
+        title: "Product feedback and drop-off reasons",
+        metaTitle: "Product Feedback and Why Users Don't Buy | Feedinbox",
+        metaDescription: "Centralize product feedback and learn why users don't convert. Feature requests, bug reports, and drop-off reasons in one inbox.",
+        description: "Collect product feedback and the reasons people don't buy, all in one place: your inbox.",
         icon: "Package",
-        heroHeadline: "Product feedback, centralized",
-        heroSubheadline: "Feature requests in Slack, bugs in email, suggestions in DMs? Bring it all together with one simple widget.",
-        problemStatement: "Product feedback gets lost across multiple channels. Important insights slip through the cracks.",
+        heroHeadline: "Feedback and the reasons behind lost sales",
+        heroSubheadline: "Feature requests in Slack, bugs in email, and no idea why people don't upgrade? Feedinbox brings it all together.",
+        problemStatement: "Product signals get lost across channels, and the most important one, why people don't buy, usually isn't captured at all.",
         benefits: [
-            { title: "Single Collection Point", description: "One widget, all feedback types, one inbox destination." },
-            { title: "Feedback Types", description: "Bug reports, feature requests, and general feedback—sorted." },
-            { title: "Prioritization Ready", description: "See what users want most to prioritize your roadmap." },
-            { title: "Team Visibility", description: "Share feedback access with your entire team." }
+            { title: "One collection point", description: "Feedback and Why-Not-Buy answers land in one dashboard and one inbox." },
+            { title: "Commercial signal", description: "See the top reason people don't convert, not just general opinions." },
+            { title: "Prioritize with data", description: "Know what to fix first based on what's actually blocking sales." },
+            { title: "Team visibility", description: "Share access with your whole team." }
         ],
-        keywords: ["product feedback", "product feedback tool", "feature request collection", "user feedback management"]
+        keywords: ["product feedback tool", "why users don't buy", "conversion feedback", "feature request collection", "product drop-off reasons"]
     },
     {
         slug: "wordpress-feedback",
-        title: "Feedback for WordPress Sites",
-        metaTitle: "WordPress Feedback Widget | Feedinbox",
-        metaDescription: "Add a feedback widget to your WordPress site in 2 minutes. Collect visitor feedback and receive it in your email inbox. No plugin required.",
-        description: "Add a feedback widget to your WordPress site without installing a plugin. One script tag—that's it.",
+        title: "Why-Not-Buy and feedback for WordPress",
+        metaTitle: "Why Visitors Don't Buy on WordPress | Feedinbox",
+        metaDescription: "Find out why WordPress visitors don't buy and collect feedback. No plugin required, just one script tag. Delivered to your inbox.",
+        description: "Add Why-Not-Buy and a feedback widget to your WordPress site without a plugin. One script tag.",
         icon: "Globe",
-        heroHeadline: "WordPress feedback, no plugin needed",
-        heroSubheadline: "Most WordPress feedback plugins are bloated. Feedinbox is just one script tag—paste it in your theme and start collecting feedback.",
-        problemStatement: "WordPress plugins add bloat, slow down your site, and create security risks. For simple feedback collection, you don't need another plugin.",
+        heroHeadline: "Why WordPress visitors don't buy",
+        heroSubheadline: "Most WordPress feedback plugins are bloated. Feedinbox is one script tag that asks why visitors don't buy, and collects feedback.",
+        problemStatement: "Plugins add bloat and security risk, and none of them tell you why visitors leave without buying.",
         benefits: [
-            { title: "No Plugin Needed", description: "Just one script tag in your theme's footer. No plugin updates to worry about." },
-            { title: "Works with Any Theme", description: "Compatible with Elementor, Divi, GeneratePress, Astra—any WordPress theme." },
-            { title: "Lightweight", description: "No database queries or PHP processing. Just a client-side widget." },
-            { title: "Email Delivery", description: "Feedback goes straight to your inbox, not another WordPress admin page." }
+            { title: "No plugin needed", description: "One script tag in your theme footer. No plugin updates to manage." },
+            { title: "Why-Not-Buy built in", description: "Ask abandoning visitors why they didn't buy, right on your WordPress site." },
+            { title: "Works with any theme", description: "Elementor, Divi, GeneratePress, Astra, any theme." },
+            { title: "Answers by email", description: "A weekly Why-Not-Buy summary plus instant feedback emails." }
         ],
-        keywords: ["wordpress feedback widget", "wordpress feedback plugin", "wordpress feedback form", "wordpress user feedback", "wordpress feedback tool free"]
+        keywords: ["wordpress exit intent", "why wordpress visitors don't buy", "wordpress conversion feedback", "wordpress feedback widget", "wordpress feedback no plugin"]
     },
     {
         slug: "shopify-feedback",
-        title: "Feedback for Shopify Stores",
-        metaTitle: "Shopify Feedback Widget | Feedinbox",
-        metaDescription: "Collect customer feedback from your Shopify store. Understand shopper needs and fix checkout issues fast. Easy script tag setup.",
-        description: "Your Shopify customers want to tell you something. Give them a way to speak up—before they leave a bad review elsewhere.",
+        title: "Why-Not-Buy for Shopify",
+        metaTitle: "Find Out Why Shopify Shoppers Don't Buy | Feedinbox",
+        metaDescription: "Feedinbox asks abandoning Shopify shoppers why they didn't buy, and collects store feedback. Understand cart abandonment. Easy theme.liquid setup.",
+        description: "Learn why Shopify shoppers abandon, and collect store feedback, with one script tag.",
         icon: "ShoppingCart",
-        heroHeadline: "Shopify customer feedback, simplified",
-        heroSubheadline: "Add a feedback widget to your Shopify store in 2 minutes. Understand what customers want—and what's stopping them from buying.",
-        problemStatement: "Shopify analytics tell you what customers do, but not why. Every abandoned cart has a story. Every return has a reason. You need to hear directly from your customers.",
+        heroHeadline: "Why Shopify shoppers don't buy",
+        heroSubheadline: "Add Feedinbox to your Shopify store in minutes. Ask abandoning shoppers what stopped them, and collect feedback too.",
+        problemStatement: "Shopify analytics tell you what shoppers do, not why. Every abandoned cart and return has a reason you never hear.",
         benefits: [
-            { title: "Easy Shopify Setup", description: "Paste one script tag in your theme.liquid file. Done." },
-            { title: "Checkout Insights", description: "Understand why customers abandon carts or hesitate at checkout." },
-            { title: "Product Feedback", description: "Learn which products need better descriptions, sizing guides, or photos." },
-            { title: "Reduce Returns", description: "Fix confusion before it becomes a return or negative review." }
+            { title: "Checkout drop-off reasons", description: "Fire high-intent at checkout and learn why shoppers don't complete the order." },
+            { title: "Easy Shopify setup", description: "Paste one script in your theme.liquid file. Done." },
+            { title: "Store feedback", description: "A feedback widget for product and site issues, on the same script." },
+            { title: "Reduce returns", description: "Fix confusion before it becomes a return or a bad review." }
         ],
-        keywords: ["shopify feedback widget", "shopify customer feedback", "shopify feedback app", "shopify store feedback", "shopify feedback form"]
+        keywords: ["why shopify shoppers don't buy", "shopify cart abandonment", "shopify exit intent", "shopify conversion feedback", "shopify feedback widget"]
     },
     {
         slug: "agency-feedback",
-        title: "Feedback for Digital Agencies",
-        metaTitle: "Client Feedback Tool for Agencies | Feedinbox",
-        metaDescription: "Collect client feedback on websites during development. Simple script tag, no client training. Feedback goes straight to your inbox.",
-        description: "Agencies need client feedback without the back-and-forth. Give clients a simple way to share thoughts directly on the site.",
+        title: "Why-Not-Buy and client feedback for agencies",
+        metaTitle: "Conversion Insight and Client Feedback for Agencies | Feedinbox",
+        metaDescription: "Show clients why their visitors don't buy, and collect feedback during development. One script per project, straight to your inbox.",
+        description: "Give clients proof of why their visitors don't convert, and collect feedback during builds, with one script per project.",
         icon: "Users",
-        heroHeadline: "Client feedback without the chaos",
-        heroSubheadline: "Stop collecting feedback in email threads, Slack messages, and PDFs. Give clients one simple button on the site.",
-        problemStatement: "Client feedback gets scattered across email, Slack, WhatsApp, and Google Docs. You spend more time organizing feedback than acting on it.",
+        heroHeadline: "Show clients why visitors don't buy",
+        heroSubheadline: "Add Feedinbox to client sites to surface why visitors don't convert, and collect review feedback during development.",
+        problemStatement: "Clients ask why their site isn't converting, and feedback during builds scatters across email, Slack, and docs.",
         benefits: [
-            { title: "No Client Training", description: "Clients see a simple button. Click, type, submit. That's it." },
-            { title: "Email Delivery", description: "You receive feedback in your inbox. No new tools for your team." },
-            { title: "Multi-Project", description: "Each client project gets its own widget and feedback stream." },
-            { title: "Quick Setup", description: "Add to staging sites during development. Remove when done." }
+            { title: "Conversion proof", description: "Bring clients real reasons their visitors don't buy, not guesses." },
+            { title: "No client training", description: "The feedback button is one click for review comments." },
+            { title: "Per-project setup", description: "Each client project gets its own script and data stream." },
+            { title: "Delivered by email", description: "Drop-off reasons and feedback in your inbox, no new tool for the team." }
         ],
-        keywords: ["client feedback tool agency", "agency feedback collection", "client website feedback", "agency client communication tool"]
+        keywords: ["agency conversion tool", "why client site doesn't convert", "client feedback tool agency", "agency exit intent", "client website feedback"]
     },
     {
         slug: "portfolio-feedback",
-        title: "Feedback for Portfolio Sites",
-        metaTitle: "Portfolio Website Feedback Widget | Feedinbox",
-        metaDescription: "Collect visitor feedback on your portfolio website. Understand what potential clients think of your work. Free to start.",
-        description: "Your portfolio speaks for you. Find out what visitors actually think—and what's stopping them from reaching out.",
+        title: "Why-Not-Buy and feedback for portfolios",
+        metaTitle: "Why Portfolio Visitors Don't Reach Out | Feedinbox",
+        metaDescription: "Find out why portfolio visitors don't contact you, and collect feedback on your work. Free to start. One simple script.",
+        description: "Your portfolio gets traffic but few inquiries. Feedinbox asks visitors why they didn't reach out, and collects feedback.",
         icon: "Palette",
-        heroHeadline: "Portfolio feedback from real visitors",
-        heroSubheadline: "Your portfolio gets traffic but not enough inquiries? Understand why with a simple feedback widget.",
-        problemStatement: "Designers, developers, and freelancers spend hours perfecting their portfolio but never get direct feedback from visitors about what works and what doesn't.",
+        heroHeadline: "Why visitors don't reach out",
+        heroSubheadline: "Traffic but not enough inquiries? Feedinbox asks visitors who leave without contacting you why, and collects feedback on your work.",
+        problemStatement: "Freelancers polish their portfolio for hours but never learn what stops visitors from getting in touch.",
         benefits: [
-            { title: "Visitor Insights", description: "Understand what potential clients think of your work." },
-            { title: "Improve Conversions", description: "Learn why visitors don't contact you—and fix it." },
-            { title: "Free to Start", description: "20 submissions/mo free. Perfect for personal sites." },
-            { title: "Non-Intrusive", description: "Small button that doesn't distract from your work." }
+            { title: "Inquiry drop-off reasons", description: "Ask visitors who view your contact section and leave what held them back." },
+            { title: "Feedback on your work", description: "Collect honest reactions to your portfolio with the feedback widget." },
+            { title: "Free to start", description: "20 responses a month free. Perfect for personal sites." },
+            { title: "Non-intrusive", description: "A small card that doesn't distract from your work." }
         ],
-        keywords: ["portfolio feedback widget", "freelancer feedback tool", "portfolio website feedback", "designer portfolio feedback"]
+        keywords: ["why portfolio visitors don't contact", "portfolio conversion", "freelancer conversion tool", "portfolio feedback widget", "portfolio exit intent"]
     }
 ];
 

@@ -11,8 +11,8 @@ interface SEOCTAProps {
 }
 
 export default function SEOCTA({
-    headline = "Ready to collect feedback?",
-    subheadline = "Start for free. Get feedback in your inbox in under 2 minutes.",
+    headline = "Find out why visitors don't buy",
+    subheadline = "Feedinbox asks abandoning visitors one question and tells you why, plus a feedback widget for everything else. Free to start, set up in minutes.",
     primaryButtonText = "Start for free",
     primaryButtonHref = "/login",
     secondaryButtonText = "See pricing",

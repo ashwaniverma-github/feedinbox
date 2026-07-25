@@ -141,7 +141,7 @@ export default function AlternativePage({ alternative }: AlternativePageProps) {
                         Switching from {alternative.competitorName}?
                     </h2>
                     <p className="text-lg text-neutral-300 mb-8 max-w-2xl mx-auto">
-                        Get set up with Feedinbox in under 2 minutes. No complex migration needed—just add our widget to your site.
+                        Get set up with Feedinbox in minutes. No complex migration needed, just add one script and start learning why visitors don't buy.
                     </p>
                     <div className="grid sm:grid-cols-3 gap-6 text-center mb-8">
                         <div className="p-4 rounded-lg bg-neutral-800">
@@ -154,7 +154,7 @@ export default function AlternativePage({ alternative }: AlternativePageProps) {
                         </div>
                         <div className="p-4 rounded-lg bg-neutral-800">
                             <div className="text-2xl font-bold text-white mb-1">3.</div>
-                            <div className="text-sm text-neutral-400">Get feedback in inbox</div>
+                            <div className="text-sm text-neutral-400">See why they don't buy</div>
                         </div>
                     </div>
                 </div>

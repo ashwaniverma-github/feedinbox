@@ -8,8 +8,8 @@ import SEOCTA from "@/components/seo-pages/seo-cta";
 
 export const metadata: Metadata = {
     title: "Alternatives - Compare Feedinbox to Other Tools | Feedinbox",
-    description: "Compare Feedinbox to Canny, UserVoice, Productboard, Typeform, Hotjar, Intercom, and Zendesk. See why developers choose simpler feedback collection.",
-    keywords: ["canny alternative", "uservoice alternative", "productboard alternative", "feedback tool comparison"],
+    description: "Compare Feedinbox to Canny, Hotjar, Survicate, Typeform, and more. Feedinbox tells you why visitors don't buy and collects feedback, simpler and cheaper.",
+    keywords: ["why visitors don't buy", "exit intent survey alternative", "hotjar alternative", "survicate alternative", "conversion feedback tool"],
 };
 
 export default function AlternativesIndexPage() {
@@ -28,7 +28,7 @@ export default function AlternativesIndexPage() {
                         Compare Feedinbox
                     </h1>
                     <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-                        Looking for a simpler, more affordable feedback tool? See how Feedinbox compares to popular alternatives.
+                        Want to know why visitors don&apos;t buy, plus collect feedback, without the bloat or the price tag? See how Feedinbox compares.
                     </p>
                 </div>
             </section>
@@ -84,7 +84,7 @@ export default function AlternativesIndexPage() {
             </section>
 
             <SEOCTA
-                headline="Ready to try a simpler feedback tool?"
+                headline="Ready to find out why they don't buy?"
                 subheadline="Free tier available. No credit card required."
             />
 

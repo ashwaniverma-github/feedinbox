@@ -106,10 +106,10 @@ export default function UseCasePage({ useCase }: UseCasePageProps) {
             <section className="py-16 bg-neutral-900 text-white">
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
                     <h2 className="text-2xl font-bold sm:text-3xl mb-4">
-                        Feedback, straight to your inbox
+                        Answers, straight to your inbox
                     </h2>
                     <p className="text-lg text-neutral-300 mb-8 max-w-2xl mx-auto">
-                        No dashboard to check. No new app to learn. Every piece of feedback lands in your email, the moment it&apos;s submitted.
+                        No dashboard to babysit. A weekly summary of why visitors didn&apos;t buy, plus instant emails for any feedback they send.
                     </p>
                     <div className="grid sm:grid-cols-3 gap-6 text-center">
                         <div className="p-4 rounded-lg bg-neutral-800">

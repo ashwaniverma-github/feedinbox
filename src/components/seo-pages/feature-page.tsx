@@ -154,8 +154,8 @@ export default function FeaturePage({ feature }: FeaturePageProps) {
             </section>
 
             <SEOCTA
-                headline="Start collecting feedback today"
-                subheadline="Free tier available. Get feedback in your inbox in under 2 minutes."
+                headline="Find out why visitors don't buy"
+                subheadline="Free tier available. Ask abandoning visitors one question and collect feedback, all in your inbox. Set up in minutes."
             />
 
             <Footer />

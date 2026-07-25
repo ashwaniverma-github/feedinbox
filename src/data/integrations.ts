@@ -17,25 +17,32 @@ export interface Integration {
   keywords: string[];
 }
 
+// Shared queue stub. Placed before the widget script so events fired early
+// (e.g. high_intent on pricing open) are not lost.
+const STUB = `<script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>`;
+
 export const integrations: Integration[] = [
   {
     slug: "nextjs",
     name: "Next.js",
-    metaTitle: "Feedback Widget for Next.js | Feedinbox",
-    metaDescription: "Add a feedback widget to your Next.js app in 2 minutes. Collect user feedback, bug reports, and feature requests. Just a script tag.",
-    description: "The fastest way to add feedback collection to your Next.js application.",
+    metaTitle: "Add Feedinbox to Next.js | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why visitors don't buy on your Next.js app, and collect feedback. Add one script, fire a high_intent event, done. Works with App and Pages Router.",
+    description: "The fastest way to add Why-Not-Buy and feedback collection to your Next.js application.",
     logo: "/integrations/nextjs.svg",
-    heroHeadline: "Feedback for Next.js apps",
-    heroSubheadline: "Add user feedback collection to your Next.js app with a simple script tag. Works with App Router and Pages Router.",
+    heroHeadline: "Feedinbox for Next.js apps",
+    heroSubheadline: "Add the script, then fire a high_intent event when someone opens pricing. Works with App Router and Pages Router.",
     installMethod: "script",
     codeExample: `import Script from 'next/script'
 
-// Add to your app/layout.tsx
+// app/layout.tsx
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
         {children}
+        <Script id="feedinbox-stub" strategy="beforeInteractive">
+          {\`window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}\`}
+        </Script>
         <Script
           src="https://feedinbox.com/widget.js"
           data-project-key="your_project_key"
@@ -44,232 +51,262 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}`,
+}
+
+// Then, when a visitor opens pricing / starts checkout:
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
+// And on your payment-success step:
+window.feedinbox('event', 'converted')`,
     steps: [
-      { title: "Open your layout", description: "Find your app/layout.tsx file", code: "" },
-      { title: "Add the Script component", description: "Add a single Script tag with your project key", code: '<Script src="https://feedinbox.com/widget.js" data-project-key="your_key" strategy="lazyOnload" />' },
-      { title: "Done!", description: "The widget will appear on all your pages", code: "" }
+      { title: "Add the scripts", description: "Drop the stub and widget Script tags into app/layout.tsx", code: "" },
+      { title: "Fire high_intent", description: "Call it when a visitor opens pricing or starts checkout", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
+      { title: "Fire converted", description: "Call it on your payment-success step so buyers aren't asked", code: "window.feedinbox('event', 'converted')" }
     ],
-    keywords: ["nextjs feedback widget", "next.js feedback", "nextjs user feedback", "next.js bug reports"]
+    keywords: ["nextjs exit intent", "why visitors don't buy nextjs", "next.js conversion feedback", "nextjs feedback widget", "next.js why not buy"]
   },
   {
     slug: "react",
     name: "React",
-    metaTitle: "React Feedback Widget Component | Feedinbox",
-    metaDescription: "Add feedback collection to your React app. Simple component that works with any React setup. Vite, CRA, Remix, and more.",
-    description: "A React component for collecting user feedback, designed to work with any React setup.",
+    metaTitle: "Add Feedinbox to React | Why-Not-Buy + Feedback",
+    metaDescription: "Learn why React app visitors don't buy, and collect feedback. One script plus a high_intent event. Works with Vite, CRA, Remix, and more.",
+    description: "Add Why-Not-Buy and feedback collection to any React setup.",
     logo: "/integrations/react.svg",
-    heroHeadline: "Feedback for React apps",
-    heroSubheadline: "Add a script tag to start collecting feedback. Works with Vite, CRA, Remix, and any React setup.",
+    heroHeadline: "Feedinbox for React apps",
+    heroSubheadline: "Add one script, then fire a high_intent event from your pricing code. Works with Vite, CRA, Remix, and any React setup.",
     installMethod: "script",
-    codeExample: `<!-- Add to your index.html before </body> -->
-<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>`,
+    codeExample: `<!-- public/index.html, before </body> -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+<!-- In your pricing component: -->
+<script>
+  // when the pricing modal opens
+  window.feedinbox('event', 'high_intent', { plan: 'pro' })
+  // on purchase success
+  window.feedinbox('event', 'converted')
+</script>`,
     steps: [
-      { title: "Open your HTML file", description: "Find your index.html (in public/ for CRA/Vite)", code: "" },
-      { title: "Add the script tag", description: "Paste before </body>", code: '<script async src="https://feedinbox.com/widget.js" data-project-key="your_key"></script>' },
-      { title: "Done!", description: "The widget will appear on your site", code: "" }
+      { title: "Add the scripts", description: "Paste the stub and widget script into public/index.html before </body>", code: "" },
+      { title: "Fire high_intent", description: "Call it when your pricing modal opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
+      { title: "Fire converted", description: "Call it on purchase success", code: "window.feedinbox('event', 'converted')" }
     ],
-    keywords: ["react feedback component", "react feedback widget", "react user feedback", "react bug report"]
+    keywords: ["react exit intent", "why react visitors don't buy", "react conversion feedback", "react feedback widget", "react why not buy"]
   },
   {
     slug: "vue",
     name: "Vue.js",
-    metaTitle: "Vue.js Feedback Widget | Feedinbox",
-    metaDescription: "Add feedback collection to your Vue.js application. Works with Vue 2, Vue 3, and Nuxt. Simple script tag integration.",
-    description: "Collect user feedback in your Vue.js app with a simple script tag integration.",
+    metaTitle: "Add Feedinbox to Vue.js | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why Vue app visitors don't buy, and collect feedback. One script plus a high_intent event. Works with Vue 2, Vue 3, and Nuxt.",
+    description: "Add Why-Not-Buy and feedback to your Vue.js app with a simple script.",
     logo: "/integrations/vue.svg",
-    heroHeadline: "Feedback for Vue apps",
-    heroSubheadline: "Add the Feedinbox widget to your Vue.js application in under 2 minutes.",
+    heroHeadline: "Feedinbox for Vue apps",
+    heroSubheadline: "Add the script, then fire a high_intent event when a visitor reaches pricing.",
     installMethod: "script",
-    codeExample: `<!-- In your index.html or main template -->
-<script>
-  window.feedinboxConfig = {
-    projectKey: "your_project_key"
-  };
-</script>
-<script async src="https://feedinbox.com/widget.js"></script>`,
+    codeExample: `<!-- index.html, before </body> -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+// In your pricing component method:
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
+// On purchase success:
+window.feedinbox('event', 'converted')`,
     steps: [
-      { title: "Add config script", description: "Add to your HTML head or body", code: "window.feedinboxConfig = { projectKey: 'your_key' };" },
-      { title: "Load the widget", description: "Add the widget script", code: '<script async src="https://feedinbox.com/widget.js"></script>' },
-      { title: "Done!", description: "The widget will appear on your site automatically", code: "" }
+      { title: "Add the scripts", description: "Paste the stub and widget script into index.html", code: "" },
+      { title: "Fire high_intent", description: "Call it when the pricing view opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
+      { title: "Fire converted", description: "Call it on purchase success", code: "window.feedinbox('event', 'converted')" }
     ],
-    keywords: ["vue feedback widget", "vue.js feedback", "vue user feedback", "vue bug reports"]
+    keywords: ["vue exit intent", "why vue visitors don't buy", "vue conversion feedback", "vue feedback widget", "vue why not buy"]
   },
   {
     slug: "angular",
     name: "Angular",
-    metaTitle: "Angular Feedback Widget | Feedinbox",
-    metaDescription: "Add a feedback widget to your Angular application. Simple script integration that works with any Angular version.",
-    description: "Integrate Feedinbox into your Angular app with a simple script tag.",
+    metaTitle: "Add Feedinbox to Angular | Why-Not-Buy + Feedback",
+    metaDescription: "Learn why Angular app visitors don't buy, and collect feedback. Simple script plus a high_intent event. Works with any Angular version.",
+    description: "Add Why-Not-Buy and feedback to your Angular app with a simple script.",
     logo: "/integrations/angular.svg",
-    heroHeadline: "Feedback for Angular apps",
-    heroSubheadline: "Add user feedback collection to your Angular application without complex setup.",
+    heroHeadline: "Feedinbox for Angular apps",
+    heroSubheadline: "Add the script, then fire a high_intent event when a visitor opens pricing.",
     installMethod: "script",
-    codeExample: `<!-- In your index.html -->
-<script>
-  window.feedinboxConfig = {
-    projectKey: "your_project_key"
-  };
-</script>
-<script async src="https://feedinbox.com/widget.js"></script>`,
+    codeExample: `<!-- index.html, before </body> -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+// In your pricing component:
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
+// On purchase success:
+window.feedinbox('event', 'converted')`,
     steps: [
-      { title: "Open index.html", description: "Find your main index.html file", code: "" },
-      { title: "Add the config", description: "Add before closing body tag", code: "window.feedinboxConfig = { projectKey: 'your_key' };" },
-      { title: "Add the script", description: "Load the widget", code: '<script async src="https://feedinbox.com/widget.js"></script>' }
+      { title: "Add the scripts", description: "Paste the stub and widget script into index.html", code: "" },
+      { title: "Fire high_intent", description: "Call it when the pricing view opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
+      { title: "Fire converted", description: "Call it on purchase success", code: "window.feedinbox('event', 'converted')" }
     ],
-    keywords: ["angular feedback widget", "angular feedback", "angular user feedback", "angular bug reports"]
+    keywords: ["angular exit intent", "why angular visitors don't buy", "angular conversion feedback", "angular feedback widget", "angular why not buy"]
   },
   {
     slug: "wordpress",
     name: "WordPress",
-    metaTitle: "WordPress Feedback Widget | Feedinbox",
-    metaDescription: "Add a feedback widget to your WordPress site. No plugin required. Just paste the code snippet in your theme.",
-    description: "Add Feedinbox to any WordPress site without installing a plugin.",
+    metaTitle: "Add Feedinbox to WordPress | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why WordPress visitors don't buy, and collect feedback. No plugin required, just a code snippet in your theme.",
+    description: "Add Why-Not-Buy and feedback to any WordPress site without a plugin.",
     logo: "/integrations/wordpress.svg",
-    heroHeadline: "Feedback for WordPress",
-    heroSubheadline: "Collect visitor feedback on your WordPress site. No plugin required—just a simple code snippet.",
+    heroHeadline: "Feedinbox for WordPress",
+    heroSubheadline: "Learn why visitors don't buy and collect feedback. No plugin required, just a snippet in your theme footer.",
     installMethod: "script",
-    codeExample: `<!-- Add to your theme's footer.php or via 'Insert Headers and Footers' plugin -->
+    codeExample: `<!-- theme footer.php, or via an 'Insert Headers and Footers' plugin -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+<!-- If you sell on WordPress (WooCommerce etc.), fire on your pricing/checkout: -->
 <script>
-  window.feedinboxConfig = {
-    projectKey: "your_project_key"
-  };
-</script>
-<script async src="https://feedinbox.com/widget.js"></script>`,
+  window.feedinbox('event', 'high_intent', { plan: 'pro' })
+</script>`,
     steps: [
-      { title: "Access your theme", description: "Go to Appearance > Theme Editor, or use a header/footer plugin", code: "" },
-      { title: "Paste the code", description: "Add before </body> in footer.php", code: "" },
-      { title: "Save and test", description: "Visit your site to see the widget", code: "" }
+      { title: "Access your theme", description: "Go to Appearance > Theme File Editor, or use a header/footer plugin", code: "" },
+      { title: "Paste before </body>", description: "Add the stub and widget script", code: "" },
+      { title: "Fire high_intent", description: "On your pricing or checkout page, if you sell online", code: "window.feedinbox('event', 'high_intent')" }
     ],
-    keywords: ["wordpress feedback widget", "wordpress feedback plugin", "wordpress user feedback", "wordpress bug reports"]
+    keywords: ["wordpress exit intent", "why wordpress visitors don't buy", "wordpress conversion feedback", "wordpress feedback widget", "wordpress why not buy"]
   },
   {
     slug: "shopify",
     name: "Shopify",
-    metaTitle: "Shopify Feedback Widget | Feedinbox",
-    metaDescription: "Collect customer feedback on your Shopify store. Understand buyer needs and improve your shopping experience.",
-    description: "Add a feedback widget to your Shopify store to collect customer insights.",
+    metaTitle: "Add Feedinbox to Shopify | Why Shoppers Don't Buy",
+    metaDescription: "Find out why Shopify shoppers abandon checkout, and collect store feedback. Paste one snippet in theme.liquid and fire a high_intent event.",
+    description: "Learn why Shopify shoppers don't buy, and collect feedback, with a theme.liquid snippet.",
     logo: "/integrations/shopify.svg",
-    heroHeadline: "Feedback for Shopify stores",
-    heroSubheadline: "Understand what your customers want. Add a feedback widget to your Shopify store in minutes.",
+    heroHeadline: "Feedinbox for Shopify stores",
+    heroSubheadline: "Add the script to theme.liquid, then fire a high_intent event at checkout to learn why shoppers don't complete the purchase.",
     installMethod: "script",
-    codeExample: `<!-- Add to theme.liquid before </body> -->
+    codeExample: `<!-- theme.liquid, before </body> -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+<!-- On your cart / checkout template: -->
 <script>
-  window.feedinboxConfig = {
-    projectKey: "your_project_key"
-  };
-</script>
-<script async src="https://feedinbox.com/widget.js"></script>`,
+  window.feedinbox('event', 'high_intent', { plan: 'checkout' })
+</script>`,
     steps: [
-      { title: "Go to Online Store", description: "Navigate to Online Store > Themes > Edit Code", code: "" },
-      { title: "Edit theme.liquid", description: "Find theme.liquid in your Layout folder", code: "" },
-      { title: "Paste before </body>", description: "Add the code snippet and save", code: "" }
+      { title: "Edit your theme code", description: "Online Store > Themes > Edit Code", code: "" },
+      { title: "Paste into theme.liquid", description: "Add the stub and widget script before </body>", code: "" },
+      { title: "Fire high_intent at checkout", description: "Add the event to your cart or checkout template", code: "window.feedinbox('event', 'high_intent')" }
     ],
-    keywords: ["shopify feedback widget", "shopify customer feedback", "shopify store feedback", "ecommerce feedback"]
+    keywords: ["shopify exit intent", "why shopify shoppers don't buy", "shopify cart abandonment feedback", "shopify conversion feedback", "shopify feedback widget"]
   },
   {
     slug: "webflow",
     name: "Webflow",
-    metaTitle: "Webflow Feedback Widget | Feedinbox",
-    metaDescription: "Add a feedback widget to your Webflow site. Collect visitor feedback without code. Just paste and publish.",
-    description: "Embed Feedinbox in your Webflow site with a simple custom code block.",
+    metaTitle: "Add Feedinbox to Webflow | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why Webflow visitors don't buy, and collect feedback. No code, just paste into Custom Code and publish.",
+    description: "Add Why-Not-Buy and feedback to your Webflow site with a custom code embed.",
     logo: "/integrations/webflow.svg",
-    heroHeadline: "Feedback for Webflow sites",
-    heroSubheadline: "Collect feedback on your Webflow site. Add via Project Settings or custom code embed.",
+    heroHeadline: "Feedinbox for Webflow sites",
+    heroSubheadline: "Add the script via Custom Code, then fire a high_intent event from an element interaction on your pricing page.",
     installMethod: "script",
-    codeExample: `<!-- Add to Project Settings > Custom Code > Footer Code -->
+    codeExample: `<!-- Project Settings > Custom Code > Footer Code -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+<!-- On your pricing button (element settings or an embed): -->
 <script>
-  window.feedinboxConfig = {
-    projectKey: "your_project_key"
-  };
-</script>
-<script async src="https://feedinbox.com/widget.js"></script>`,
+  window.feedinbox('event', 'high_intent', { plan: 'pro' })
+</script>`,
     steps: [
       { title: "Open Project Settings", description: "Go to your Webflow project settings", code: "" },
-      { title: "Custom Code tab", description: "Find the Custom Code section", code: "" },
-      { title: "Paste in Footer Code", description: "Add the snippet and publish your site", code: "" }
+      { title: "Paste in Footer Code", description: "Add the stub and widget script, then publish", code: "" },
+      { title: "Fire high_intent", description: "Trigger it from your pricing interaction or an embed", code: "window.feedinbox('event', 'high_intent')" }
     ],
-    keywords: ["webflow feedback widget", "webflow feedback", "webflow user feedback", "webflow contact form alternative"]
+    keywords: ["webflow exit intent", "why webflow visitors don't buy", "webflow conversion feedback", "webflow feedback widget", "webflow why not buy"]
   },
   {
     slug: "html",
     name: "HTML / Static Sites",
-    metaTitle: "HTML Feedback Widget | Feedinbox",
-    metaDescription: "Add a feedback widget to any HTML website. Just two script tags. Works on any static site, landing page, or web app.",
-    description: "The simplest way to add feedback collection—works on any HTML page.",
+    metaTitle: "Add Feedinbox to Any Website | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why visitors don't buy on any HTML site, and collect feedback. Two script tags plus a high_intent event. Works anywhere.",
+    description: "The simplest way to add Why-Not-Buy and feedback to any HTML page.",
     logo: "/integrations/html.svg",
-    heroHeadline: "Feedback for any website",
-    heroSubheadline: "Just two script tags. Works on any HTML page, static site, or web application.",
+    heroHeadline: "Feedinbox for any website",
+    heroSubheadline: "Two script tags, then a high_intent event on your pricing page. Works on any static site or web app.",
     installMethod: "script",
-    codeExample: `<!-- Add before </body> -->
+    codeExample: `<!-- Before </body> -->
+${STUB}
+<script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
+
+<!-- On your pricing page / buy button: -->
 <script>
-  window.feedinboxConfig = {
-    projectKey: "your_project_key"
-  };
-</script>
-<script async src="https://feedinbox.com/widget.js"></script>`,
+  window.feedinbox('event', 'high_intent', { plan: 'pro' })
+  // on success page:
+  window.feedinbox('event', 'converted')
+</script>`,
     steps: [
       { title: "Open your HTML file", description: "Find your index.html or main HTML file", code: "" },
-      { title: "Add before </body>", description: "Paste the code snippet", code: "" },
-      { title: "Upload and test", description: "Deploy your site and test the widget", code: "" }
+      { title: "Add before </body>", description: "Paste the stub and widget script", code: "" },
+      { title: "Fire the events", description: "high_intent on pricing, converted on success", code: "window.feedinbox('event', 'high_intent')" }
     ],
-    keywords: ["html feedback widget", "static site feedback", "website feedback widget", "simple feedback script"]
+    keywords: ["exit intent script", "why visitors don't buy", "static site conversion feedback", "html feedback widget", "why not buy script"]
   },
   {
     slug: "nuxt",
     name: "Nuxt.js",
-    metaTitle: "Nuxt.js Feedback Widget | Feedinbox",
-    metaDescription: "Add feedback collection to your Nuxt.js app. Works with Nuxt 2 and Nuxt 3. Simple plugin or script integration.",
-    description: "Seamless feedback collection for Nuxt.js applications.",
+    metaTitle: "Add Feedinbox to Nuxt.js | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why Nuxt app visitors don't buy, and collect feedback. Add the script in nuxt.config and fire a high_intent event. Nuxt 2 and 3.",
+    description: "Add Why-Not-Buy and feedback to your Nuxt.js app with minimal config.",
     logo: "/integrations/nuxt.svg",
-    heroHeadline: "Feedback for Nuxt apps",
-    heroSubheadline: "Add user feedback to your Nuxt.js application with minimal configuration.",
+    heroHeadline: "Feedinbox for Nuxt apps",
+    heroSubheadline: "Add the script via nuxt.config, then fire a high_intent event when a visitor opens pricing.",
     installMethod: "script",
-    codeExample: `// In nuxt.config.ts or nuxt.config.js
+    codeExample: `// nuxt.config.ts
 export default defineNuxtConfig({
   app: {
     head: {
       script: [
-        { innerHTML: 'window.feedinboxConfig = { projectKey: "your_key" };' },
-        { src: 'https://feedinbox.com/widget.js', async: true }
+        { innerHTML: 'window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}' },
+        { src: 'https://feedinbox.com/widget.js', 'data-project-key': 'your_project_key', async: true }
       ]
     }
   }
-})`,
+})
+
+// In your pricing component:
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
+window.feedinbox('event', 'converted')`,
     steps: [
       { title: "Open nuxt.config", description: "Find your nuxt.config.ts or nuxt.config.js", code: "" },
-      { title: "Add to head scripts", description: "Configure the widget scripts", code: "" },
-      { title: "Restart and test", description: "Restart your dev server and check", code: "" }
+      { title: "Add head scripts", description: "Add the stub and widget script", code: "" },
+      { title: "Fire the events", description: "high_intent on pricing, converted on success", code: "window.feedinbox('event', 'high_intent')" }
     ],
-    keywords: ["nuxt feedback widget", "nuxt.js feedback", "nuxt user feedback", "nuxt bug reports"]
+    keywords: ["nuxt exit intent", "why nuxt visitors don't buy", "nuxt conversion feedback", "nuxt feedback widget", "nuxt why not buy"]
   },
   {
     slug: "gatsby",
     name: "Gatsby",
-    metaTitle: "Gatsby Feedback Widget | Feedinbox",
-    metaDescription: "Add a feedback widget to your Gatsby site. Simple integration via gatsby-ssr.js or gatsby-browser.js.",
-    description: "Collect user feedback on your Gatsby site with minimal setup.",
+    metaTitle: "Add Feedinbox to Gatsby | Why-Not-Buy + Feedback",
+    metaDescription: "Find out why Gatsby site visitors don't buy, and collect feedback. Add the script via gatsby-ssr.js and fire a high_intent event.",
+    description: "Add Why-Not-Buy and feedback to your Gatsby site with minimal setup.",
     logo: "/integrations/gatsby.svg",
-    heroHeadline: "Feedback for Gatsby sites",
-    heroSubheadline: "Add feedback collection to your Gatsby static site with a simple configuration.",
+    heroHeadline: "Feedinbox for Gatsby sites",
+    heroSubheadline: "Add the script via gatsby-ssr.js, then fire a high_intent event on your pricing page.",
     installMethod: "script",
     codeExample: `// gatsby-ssr.js
 import React from 'react';
 
 export const onRenderBody = ({ setPostBodyComponents }) => {
   setPostBodyComponents([
-    <script key="feedinbox-config" dangerouslySetInnerHTML={{
-      __html: \`window.feedinboxConfig = { projectKey: "your_key" };\`
+    <script key="feedinbox-stub" dangerouslySetInnerHTML={{
+      __html: 'window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}'
     }} />,
-    <script key="feedinbox-widget" async src="https://feedinbox.com/widget.js" />
+    <script key="feedinbox-widget" async src="https://feedinbox.com/widget.js" data-project-key="your_project_key" />
   ]);
-};`,
+};
+
+// In your pricing component:
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
+window.feedinbox('event', 'converted')`,
     steps: [
-      { title: "Open gatsby-ssr.js", description: "Create or edit gatsby-ssr.js in your root", code: "" },
-      { title: "Add onRenderBody", description: "Configure the widget scripts", code: "" },
-      { title: "Build and deploy", description: "Run gatsby build and deploy your site", code: "" }
+      { title: "Open gatsby-ssr.js", description: "Create or edit gatsby-ssr.js in your project root", code: "" },
+      { title: "Add onRenderBody", description: "Add the stub and widget script", code: "" },
+      { title: "Fire the events", description: "high_intent on pricing, converted on success", code: "window.feedinbox('event', 'high_intent')" }
     ],
-    keywords: ["gatsby feedback widget", "gatsby feedback", "gatsby user feedback", "static site feedback"]
+    keywords: ["gatsby exit intent", "why gatsby visitors don't buy", "gatsby conversion feedback", "gatsby feedback widget", "gatsby why not buy"]
   }
 ];
 

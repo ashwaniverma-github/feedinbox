@@ -18,9 +18,9 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export const metadata: Metadata = {
-    title: "Use Cases - Feedback Collection for Every Scenario | Feedinbox",
-    description: "Discover how Feedinbox helps SaaS apps, mobile apps, e-commerce stores, startups, and more collect user feedback efficiently.",
-    keywords: ["feedback use cases", "saas feedback", "mobile app feedback", "startup feedback tool"],
+    title: "Use Cases - Find Out Why Visitors Don't Buy | Feedinbox",
+    description: "See how Feedinbox helps SaaS, e-commerce, Shopify, startups, and more find out why visitors don't buy, and collect feedback.",
+    keywords: ["why visitors don't buy", "saas conversion feedback", "checkout abandonment", "exit intent use cases"],
 };
 
 export default function UseCasesIndexPage() {
@@ -36,10 +36,10 @@ export default function UseCasesIndexPage() {
                         Use Cases
                     </div>
                     <h1 className="text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl mb-6">
-                        Feedback for every scenario
+                        Why-Not-Buy for every scenario
                     </h1>
                     <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-                        Whether you&apos;re building a SaaS app, mobile app, e-commerce store, or landing page—Feedinbox helps you collect feedback efficiently.
+                        Whether you run a SaaS app, e-commerce store, Shopify shop, or landing page, Feedinbox tells you why visitors don&apos;t buy, and collects feedback.
                     </p>
                 </div>
             </section>

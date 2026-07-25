@@ -124,10 +124,10 @@ export default function IntegrationPage({ integration }: IntegrationPageProps) {
                     </div>
                     <div className="grid sm:grid-cols-2 gap-6">
                         {[
-                            { title: "Email-first", desc: "Feedback goes to your inbox, not another dashboard" },
-                            { title: "Lightweight", desc: "Tiny script, no impact on your site's performance" },
-                            { title: "2-minute setup", desc: "Copy, paste, done. Start collecting feedback" },
-                            { title: "Free tier", desc: "Get started without a credit card" },
+                            { title: "Know why they don't buy", desc: "An exit-intent question catches abandoning visitors and asks why" },
+                            { title: "Feedback included", desc: "A feedback widget for bugs and ideas, on the same script" },
+                            { title: "Inbox-first", desc: "A weekly Why-Not-Buy summary plus instant feedback emails" },
+                            { title: "Lightweight & free to start", desc: "Tiny script, 2-minute setup, no credit card" },
                         ].map((item, i) => (
                             <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-white border border-neutral-200">
                                 <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
@@ -142,8 +142,8 @@ export default function IntegrationPage({ integration }: IntegrationPageProps) {
             </section>
 
             <SEOCTA
-                headline={`Ready to add feedback to your ${integration.name} app?`}
-                subheadline="Free tier available. Setup takes under 2 minutes."
+                headline={`Add Feedinbox to your ${integration.name} app`}
+                subheadline="Find out why visitors don't buy and collect feedback. Free tier available, setup takes minutes."
             />
 
             <Footer />

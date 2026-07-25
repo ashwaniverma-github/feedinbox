@@ -21,341 +21,332 @@ export const alternatives: Alternative[] = [
     {
         slug: "canny",
         competitorName: "Canny",
-        metaTitle: "Feedinbox vs Canny - Simpler Feedback Alternative",
-        metaDescription: "Looking for a Canny alternative? Feedinbox delivers feedback to your inbox, not another dashboard. Simpler, faster, more affordable.",
-        heroHeadline: "Canny alternative that emails you",
-        heroSubheadline: "Canny is powerful but complex. If you just want feedback in your inbox without the overhead, try Feedinbox.",
+        metaTitle: "Feedinbox vs Canny - Know Why Visitors Don't Buy",
+        metaDescription: "Canny collects feature requests. Feedinbox tells you why visitors don't buy, with an exit-intent question, plus a feedback widget. Simpler and more affordable.",
+        heroHeadline: "Canny alternative that tells you why they didn't buy",
+        heroSubheadline: "Canny is a roadmap and voting tool. Feedinbox answers the commercial question Canny can't: why did the visitor not buy? Plus a feedback widget.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard only" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "30+ minutes" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "✗ No free tier" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $79/mo" },
-            { feature: "Public Roadmap", feedinbox: "✗", competitor: "✓" },
-            { feature: "Voting System", feedinbox: "✗", competitor: "✓" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓ Boards" },
+            { feature: "Answers in your inbox", feedinbox: "✓ Weekly digest", competitor: "✗ Dashboard only" },
+            { feature: "Public Roadmap / Voting", feedinbox: "✗", competitor: "✓" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $79/mo" }
         ],
         advantages: [
-            { title: "Email-First Approach", description: "Feedback lands in your inbox, not hidden in a dashboard." },
-            { title: "10x Cheaper", description: "Get started for $5/mo instead of $79/mo." },
-            { title: "Zero Learning Curve", description: "If you can read email, you can use Feedinbox." },
-            { title: "Perfect for Indie Hackers", description: "Built for small teams who need simplicity." }
+            { title: "Answers the money question", description: "Learn why visitors don't buy, not just what features people want." },
+            { title: "Feedback included", description: "A feedback widget for bugs and ideas, on the same script." },
+            { title: "10x cheaper", description: "Start at $5/mo instead of $79/mo." },
+            { title: "Inbox-first", description: "Reasons and feedback come to your email, not another portal." }
         ],
-        keywords: ["canny alternative", "canny vs feedinbox", "simpler than canny", "cheaper than canny"]
+        keywords: ["canny alternative", "canny vs feedinbox", "why visitors don't buy", "exit intent alternative to canny", "conversion feedback tool"]
     },
     {
         slug: "uservoice",
         competitorName: "UserVoice",
-        metaTitle: "Feedinbox vs UserVoice - Lightweight Alternative",
-        metaDescription: "Need a simpler UserVoice alternative? Feedinbox sends feedback directly to your email. No complex setup, no enterprise pricing.",
+        metaTitle: "Feedinbox vs UserVoice - Why-Not-Buy + Feedback",
+        metaDescription: "UserVoice is enterprise feedback software. Feedinbox tells you why visitors don't buy and collects feedback, for indie hackers and small teams. From $5/mo.",
         heroHeadline: "UserVoice alternative for the rest of us",
-        heroSubheadline: "UserVoice is built for enterprises. Feedinbox is built for indie hackers and small teams.",
+        heroSubheadline: "UserVoice is built for enterprises. Feedinbox finds out why visitors don't buy and collects feedback, in a 2-minute setup.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Requires setup" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "Hours to days" },
-            { feature: "Self-Serve Signup", feedinbox: "✓", competitor: "✗ Sales required" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $799/mo" },
-            { feature: "Enterprise Features", feedinbox: "✗", competitor: "✓" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓" },
+            { feature: "Self-serve signup", feedinbox: "✓", competitor: "✗ Sales required" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "Hours to days" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $799/mo" }
         ],
         advantages: [
-            { title: "No Sales Calls", description: "Sign up and start collecting feedback in 2 minutes." },
-            { title: "100x Cheaper", description: "Enterprise pricing not required." },
-            { title: "Simple by Design", description: "Collect feedback, get emails. That's it." },
-            { title: "Indie-Friendly", description: "Built for makers, not corporations." }
+            { title: "The commercial question", description: "Find out why people don't buy, not just collect ideas." },
+            { title: "No sales calls", description: "Sign up and set up in minutes." },
+            { title: "100x cheaper", description: "Enterprise pricing not required." },
+            { title: "Feedback too", description: "A feedback widget on the same script." }
         ],
-        keywords: ["uservoice alternative", "uservoice vs feedinbox", "simple uservoice", "cheap uservoice alternative"]
+        keywords: ["uservoice alternative", "uservoice vs feedinbox", "why visitors don't buy", "affordable uservoice alternative", "conversion feedback"]
     },
     {
         slug: "productboard",
         competitorName: "Productboard",
-        metaTitle: "Feedinbox vs Productboard - Affordable Alternative",
-        metaDescription: "Productboard too complex? Feedinbox offers simple feedback collection with email delivery. Perfect for early-stage products.",
+        metaTitle: "Feedinbox vs Productboard - Why-Not-Buy + Feedback",
+        metaDescription: "Productboard is product management software. Feedinbox tells you why visitors don't buy and collects feedback. Simpler and cheaper for early-stage teams.",
         heroHeadline: "Productboard alternative for early-stage",
-        heroSubheadline: "Productboard is great for scaling teams. But if you're just starting, you need something simpler.",
+        heroSubheadline: "Productboard is for scaling roadmaps. If you're early and losing sales, Feedinbox tells you why visitors don't buy, plus collects feedback.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard only" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "Weeks" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "✗ Free trial only" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $25/user/mo" },
-            { feature: "Road Mapping", feedinbox: "✗", competitor: "✓" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "Weeks" },
+            { feature: "Roadmapping", feedinbox: "✗", competitor: "✓" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $25/user/mo" }
         ],
         advantages: [
-            { title: "Start Simple", description: "Collect feedback now, upgrade tools later." },
-            { title: "No Per-Seat Pricing", description: "One price, share with your whole team." },
-            { title: "Email Workflow", description: "Use your existing email workflow, not a new tool." },
-            { title: "MVP Perfect", description: "Ideal for validating early-stage products." }
+            { title: "Fix the funnel first", description: "Learn why visitors don't buy before building the roadmap." },
+            { title: "No per-seat pricing", description: "One flat price for your whole team." },
+            { title: "2-minute setup", description: "One script and one event, or hand it to your AI agent." },
+            { title: "Feedback included", description: "Bugs and ideas on the same widget." }
         ],
-        keywords: ["productboard alternative", "productboard vs feedinbox", "simple productboard", "affordable productboard"]
+        keywords: ["productboard alternative", "productboard vs feedinbox", "why visitors don't buy", "early stage conversion tool", "affordable productboard"]
     },
     {
         slug: "typeform",
         competitorName: "Typeform",
-        metaTitle: "Feedinbox vs Typeform - Embedded Feedback Alternative",
-        metaDescription: "Typeform requires leaving your app. Feedinbox embeds directly in your site for frictionless feedback collection.",
-        heroHeadline: "Feedback widget, not a survey form",
-        heroSubheadline: "Typeform is great for surveys. But for in-app feedback, you need something embedded.",
+        metaTitle: "Feedinbox vs Typeform - Exit-Intent Question Built In",
+        metaDescription: "Typeform makes you build and link surveys. Feedinbox fires one exit-intent question automatically when visitors abandon, plus a feedback widget. From $5/mo.",
+        heroHeadline: "Why-Not-Buy, not a survey you have to build",
+        heroSubheadline: "Typeform is a survey builder. Feedinbox asks the one commercial question automatically when a visitor abandons, and collects feedback too.",
         comparison: [
-            { feature: "In-App Widget", feedinbox: "✓ Always visible", competitor: "✗ Separate page" },
-            { feature: "Feedback Types", feedinbox: "Bugs, features, thoughts", competitor: "Survey responses" },
-            { feature: "User Friction", feedinbox: "Low - one click", competitor: "High - leave app" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $25/mo" },
-            { feature: "Real-time Alerts", feedinbox: "✓ Email instant", competitor: "✗ Delayed" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Fires on abandonment", competitor: "~ Build it yourself" },
+            { feature: "In-app / no context switch", feedinbox: "✓ Slides in", competitor: "✗ Separate page" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✗" },
+            { feature: "Setup", feedinbox: "1 script + 1 event", competitor: "Build + embed a form" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $25/mo" }
         ],
         advantages: [
-            { title: "Zero Context Switch", description: "Users don't leave your app to give feedback." },
-            { title: "Purpose-Built", description: "Designed for feedback, not generic surveys." },
-            { title: "Instant Notifications", description: "Get feedback the moment it's submitted." },
-            { title: "Higher Response Rate", description: "Embedded widgets get more submissions." }
+            { title: "Purpose-built", description: "The abandonment question is ready to go, not a form you design." },
+            { title: "Zero context switch", description: "The card slides in on your site. Visitors never leave." },
+            { title: "Feedback included", description: "A feedback widget on the same script." },
+            { title: "Tagged answers", description: "Every reason is tagged by plan and country." }
         ],
-        keywords: ["typeform alternative", "typeform vs feedinbox", "embedded feedback", "in-app feedback"]
+        keywords: ["typeform alternative", "typeform vs feedinbox", "exit intent survey", "why visitors don't buy", "abandonment question"]
     },
     {
         slug: "hotjar",
         competitorName: "Hotjar",
-        metaTitle: "Feedinbox vs Hotjar - Focused Feedback Alternative",
-        metaDescription: "Need feedback without heatmaps? Feedinbox focuses on collecting user feedback and delivering it to your inbox.",
-        heroHeadline: "Feedback without the analytics bloat",
-        heroSubheadline: "Hotjar does a lot. If you just need feedback collection with email delivery, try Feedinbox.",
+        metaTitle: "Feedinbox vs Hotjar - Purpose-Built Why-Not-Buy",
+        metaDescription: "Hotjar does heatmaps and generic surveys. Feedinbox is purpose-built for one question: why didn't you buy? Plus a feedback widget. Simpler and cheaper.",
+        heroHeadline: "Hotjar alternative focused on why they don't buy",
+        heroSubheadline: "Hotjar is an all-in-one analytics suite. Feedinbox does one commercial thing well: catch abandoning visitors and ask why, plus collect feedback.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard" },
-            { feature: "Heatmaps", feedinbox: "✗", competitor: "✓" },
-            { feature: "Session Recording", feedinbox: "✗", competitor: "✓" },
-            { feature: "Focus", feedinbox: "Feedback only", competitor: "All-in-one" },
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Purpose-built", competitor: "~ Generic surveys" },
+            { feature: "Tagged by plan & country", feedinbox: "✓", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓" },
+            { feature: "Heatmaps / recordings", feedinbox: "✗", competitor: "✓" },
             { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $32/mo" }
         ],
         advantages: [
-            { title: "Focused Tool", description: "Does one thing really well: feedback to inbox." },
-            { title: "Lighter Weight", description: "Smaller script, faster load times." },
-            { title: "Simpler Pricing", description: "No complex tiers based on sessions." },
-            { title: "Email Workflow", description: "Fits into how you already work." }
+            { title: "One job, done well", description: "Built for the abandonment question, not a survey buried in analytics." },
+            { title: "Commercial context", description: "Reasons tagged by plan viewed and country." },
+            { title: "Lighter weight", description: "Smaller script, faster load times." },
+            { title: "Feedback too", description: "A feedback widget on the same script." }
         ],
-        keywords: ["hotjar alternative", "hotjar vs feedinbox", "simple hotjar", "feedback only tool"]
+        keywords: ["hotjar alternative", "hotjar vs feedinbox", "exit intent survey", "why visitors don't buy", "hotjar surveys alternative"]
     },
     {
         slug: "intercom",
         competitorName: "Intercom",
-        metaTitle: "Feedinbox vs Intercom - Lightweight Feedback Alternative",
-        metaDescription: "Intercom is powerful but expensive. For simple feedback collection to your inbox, try Feedinbox.",
-        heroHeadline: "Feedback without the chat overhead",
-        heroSubheadline: "Intercom is for customer support. If you just need feedback, there's a simpler way.",
+        metaTitle: "Feedinbox vs Intercom - Why-Not-Buy Without the Overhead",
+        metaDescription: "Intercom is a support and chat suite. Feedinbox tells you why visitors don't buy and collects feedback, without the cost or complexity. From $5/mo.",
+        heroHeadline: "Why they didn't buy, without the chat suite",
+        heroSubheadline: "Intercom is for support conversations. Feedinbox answers a different question, why visitors don't buy, and collects feedback.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Requires inbox" },
-            { feature: "Live Chat", feedinbox: "✗", competitor: "✓" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "Hours" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $74/mo" },
-            { feature: "Learning Curve", feedinbox: "None", competitor: "Steep" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "~ Via chat" },
+            { feature: "Live chat", feedinbox: "✗", competitor: "✓" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "Hours" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $74/mo" }
         ],
         advantages: [
-            { title: "Feedback Focus", description: "Collect feedback without managing conversations." },
-            { title: "15x Cheaper", description: "Fraction of the cost for feedback needs." },
-            { title: "No Training Required", description: "Your team already knows how to use email." },
-            { title: "Lightweight", description: "Just the feedback feature, no bloat." }
+            { title: "The money question", description: "Learn why visitors don't buy, no conversations to manage." },
+            { title: "15x cheaper", description: "A fraction of the cost for conversion insight." },
+            { title: "No training", description: "Nothing for your team to learn." },
+            { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
-        keywords: ["intercom alternative", "intercom vs feedinbox", "simple intercom", "cheap intercom alternative"]
+        keywords: ["intercom alternative", "intercom vs feedinbox", "why visitors don't buy", "cheap intercom alternative", "conversion feedback"]
     },
     {
         slug: "zendesk",
         competitorName: "Zendesk",
-        metaTitle: "Feedinbox vs Zendesk - Simple Feedback Alternative",
-        metaDescription: "Zendesk is for support teams. For simple user feedback to your inbox, Feedinbox is the lighter choice.",
-        heroHeadline: "Simple alternative to Zendesk",
-        heroSubheadline: "Zendesk is a full support suite. Feedinbox is just feedback, delivered to your inbox.",
+        metaTitle: "Feedinbox vs Zendesk - Why-Not-Buy + Feedback",
+        metaDescription: "Zendesk is a support suite. Feedinbox tells you why visitors don't buy and collects feedback, with a lightweight script. From $5/mo.",
+        heroHeadline: "Lightweight alternative to Zendesk",
+        heroSubheadline: "Zendesk is a full support and ticketing suite. Feedinbox is focused: why visitors don't buy, plus a feedback widget.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Ticket system" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "Days to weeks" },
-            { feature: "Ticketing System", feedinbox: "✗", competitor: "✓" },
-            { feature: "Knowledge Base", feedinbox: "✗", competitor: "✓" },
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "~ Tickets" },
+            { feature: "Ticketing / knowledge base", feedinbox: "✗", competitor: "✓" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "Days to weeks" },
             { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $19/agent/mo" }
         ],
         advantages: [
-            { title: "Zero Overhead", description: "No ticket management, just feedback in email." },
-            { title: "Instant Setup", description: "Start collecting in 2 minutes." },
-            { title: "No Per-Agent Pricing", description: "One price for your whole team." },
-            { title: "Perfect for Small Teams", description: "Built for makers, not support departments." }
+            { title: "Conversion focus", description: "Find out why people don't buy, no ticket queue to run." },
+            { title: "Instant setup", description: "Live in 2 minutes." },
+            { title: "No per-agent pricing", description: "One flat price for the whole team." },
+            { title: "Feedback too", description: "A feedback widget on the same script." }
         ],
-        keywords: ["zendesk alternative", "zendesk vs feedinbox", "simple zendesk", "feedback tool alternative"]
+        keywords: ["zendesk alternative", "zendesk vs feedinbox", "why visitors don't buy", "lightweight zendesk alternative", "conversion feedback"]
     },
     {
         slug: "usersnap",
         competitorName: "Usersnap",
-        metaTitle: "Feedinbox vs Usersnap - Affordable Feedback Alternative",
-        metaDescription: "Usersnap starts at $69/mo. Feedinbox delivers user feedback to your inbox for $5/mo. No screenshots needed—just simple, fast feedback.",
+        metaTitle: "Feedinbox vs Usersnap - Why-Not-Buy + Feedback",
+        metaDescription: "Usersnap does visual bug tracking from $69/mo. Feedinbox tells you why visitors don't buy and collects feedback for $5/mo. Simpler and far cheaper.",
         heroHeadline: "Usersnap alternative without the price tag",
-        heroSubheadline: "Usersnap is great for visual bug tracking. But if you just need user feedback delivered to your inbox, there's a 14x cheaper way.",
+        heroSubheadline: "Usersnap is for visual bug tracking. Feedinbox answers a bigger question, why visitors don't buy, and collects feedback, for 14x less.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard only" },
-            { feature: "Screenshot Annotations", feedinbox: "✗", competitor: "✓" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "15+ minutes" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "Limited free trial" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $69/mo" },
-            { feature: "Session Recording", feedinbox: "✗", competitor: "✓" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓ Visual" },
+            { feature: "Screenshot annotations", feedinbox: "✗", competitor: "✓" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "15+ minutes" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $69/mo" }
         ],
         advantages: [
-            { title: "14x Cheaper", description: "Get user feedback for $5/mo instead of $69/mo." },
-            { title: "Email-First", description: "Feedback lands in your inbox, not another dashboard." },
-            { title: "Zero Learning Curve", description: "If you can read email, you can use Feedinbox." },
-            { title: "Lighter Script", description: "Smaller widget for faster page loads." }
+            { title: "Answers the money question", description: "Learn why visitors don't buy, not just track bugs." },
+            { title: "14x cheaper", description: "$5/mo instead of $69/mo." },
+            { title: "Inbox-first", description: "Reasons and feedback come to your email." },
+            { title: "Lighter script", description: "Smaller widget, faster loads." }
         ],
-        keywords: ["usersnap alternative", "usersnap vs feedinbox", "cheaper than usersnap", "usersnap free alternative", "simple usersnap"]
+        keywords: ["usersnap alternative", "usersnap vs feedinbox", "why visitors don't buy", "cheaper than usersnap", "conversion feedback tool"]
     },
     {
         slug: "userback",
         competitorName: "Userback",
-        metaTitle: "Feedinbox vs Userback - Simpler Feedback Widget",
-        metaDescription: "Need a simpler Userback alternative? Feedinbox sends feedback straight to your email. No per-seat pricing, no complex setup.",
+        metaTitle: "Feedinbox vs Userback - Why-Not-Buy + Feedback",
+        metaDescription: "Userback charges per seat for visual feedback. Feedinbox tells you why visitors don't buy and collects feedback at one flat price. From $5/mo.",
         heroHeadline: "Userback alternative without per-seat pricing",
-        heroSubheadline: "Userback charges per seat. Feedinbox is one flat price for your whole team—starting at $5/mo.",
+        heroSubheadline: "Userback is per-seat visual feedback. Feedinbox is one flat price and answers why visitors don't buy, plus collects feedback.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard only" },
-            { feature: "Visual Annotations", feedinbox: "✗", competitor: "✓" },
-            { feature: "Per-Seat Pricing", feedinbox: "✗ Flat pricing", competitor: "✓ From $7/seat/mo" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "✓ Limited (7-day access)" },
-            { feature: "Session Replay", feedinbox: "✗", competitor: "✓ On Business plan" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "10+ minutes" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓ Visual" },
+            { feature: "Per-seat pricing", feedinbox: "✗ Flat", competitor: "✓ From $7/seat/mo" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "10+ minutes" },
+            { feature: "Free tier", feedinbox: "✓ 20/mo", competitor: "~ 7-day access" }
         ],
         advantages: [
-            { title: "No Per-Seat Costs", description: "One flat price, share with your full team." },
-            { title: "Email Workflow", description: "No new dashboard to check—feedback hits your inbox." },
-            { title: "Truly Free Tier", description: "20 submissions/mo forever, not 7-day locked access." },
-            { title: "Simpler Setup", description: "One script tag vs complex SDK setup." }
+            { title: "The commercial question", description: "Find out why people don't buy, not just annotate screenshots." },
+            { title: "No per-seat costs", description: "One flat price for your full team." },
+            { title: "Inbox-first", description: "No new dashboard to check." },
+            { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
-        keywords: ["userback alternative", "userback vs feedinbox", "free userback alternative", "simpler than userback"]
+        keywords: ["userback alternative", "userback vs feedinbox", "why visitors don't buy", "flat-price feedback tool", "conversion feedback"]
     },
     {
         slug: "sleekplan",
         competitorName: "Sleekplan",
-        metaTitle: "Feedinbox vs Sleekplan - Email-First Feedback Alternative",
-        metaDescription: "Sleekplan has public roadmaps and voting. If you just need feedback in your inbox, Feedinbox is simpler and more affordable.",
-        heroHeadline: "Sleekplan alternative: feedback to inbox",
-        heroSubheadline: "Sleekplan is built for public roadmaps. If you just want feedback emailed to you, try something simpler.",
+        metaTitle: "Feedinbox vs Sleekplan - Why-Not-Buy + Feedback",
+        metaDescription: "Sleekplan does public roadmaps and voting. Feedinbox tells you why visitors don't buy and collects feedback, delivered to your inbox. Simpler and cheaper.",
+        heroHeadline: "Sleekplan alternative that finds the leak",
+        heroSubheadline: "Sleekplan is a roadmap and changelog portal. Feedinbox answers why visitors don't buy, and collects feedback, straight to your inbox.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard/portal" },
-            { feature: "Public Roadmap", feedinbox: "✗", competitor: "✓" },
-            { feature: "Voting System", feedinbox: "✗", competitor: "✓" },
-            { feature: "Changelog", feedinbox: "✗", competitor: "✓" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $13/mo" },
-            { feature: "Setup Complexity", feedinbox: "1 script tag", competitor: "Widget + portal setup" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓" },
+            { feature: "Answers in your inbox", feedinbox: "✓ Weekly digest", competitor: "✗ Portal" },
+            { feature: "Roadmap / voting / changelog", feedinbox: "✗", competitor: "✓" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $13/mo" }
         ],
         advantages: [
-            { title: "Email-First", description: "Feedback in your inbox, not a portal you forget to check." },
-            { title: "Simpler Tool", description: "No roadmaps or changelogs to maintain—just feedback." },
-            { title: "Faster Setup", description: "One script tag. Done in 2 minutes." },
-            { title: "Lower Price", description: "Start at $5/mo vs $13/mo with fewer features to pay for." }
+            { title: "Fix the funnel", description: "Learn why visitors don't buy, not just gather votes." },
+            { title: "Inbox-first", description: "Reasons in your email, not a portal you forget to check." },
+            { title: "Faster setup", description: "One script and one event. Done in minutes." },
+            { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
-        keywords: ["sleekplan alternative", "sleekplan vs feedinbox", "simpler than sleekplan", "sleekplan email alternative"]
+        keywords: ["sleekplan alternative", "sleekplan vs feedinbox", "why visitors don't buy", "conversion feedback", "exit intent alternative"]
     },
     {
         slug: "bugherd",
         competitorName: "BugHerd",
-        metaTitle: "Feedinbox vs BugHerd - Lightweight Bug Feedback Alternative",
-        metaDescription: "BugHerd starts at $50/mo for visual bug tracking. Feedinbox collects bug reports and feedback to your inbox for $5/mo.",
-        heroHeadline: "BugHerd alternative for feedback collection",
-        heroSubheadline: "BugHerd is built for agencies and dev teams. If you need simple feedback collection, there's a 10x cheaper option.",
+        metaTitle: "Feedinbox vs BugHerd - Why-Not-Buy + Feedback",
+        metaDescription: "BugHerd is visual bug tracking from $50/mo. Feedinbox tells you why visitors don't buy and collects feedback for $5/mo. Simpler and 10x cheaper.",
+        heroHeadline: "BugHerd alternative that grows revenue",
+        heroSubheadline: "BugHerd is for dev and QA teams. Feedinbox answers why visitors don't buy, and collects feedback, for 10x less.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard" },
-            { feature: "Visual Bug Pinning", feedinbox: "✗", competitor: "✓" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "15+ minutes" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "✗ 7-day trial only" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $50/mo" },
-            { feature: "Per-Seat Pricing", feedinbox: "✗ Flat pricing", competitor: "✓ Extra per member" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓ Bug pinning" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "15+ minutes" },
+            { feature: "Free tier", feedinbox: "✓ 20/mo", competitor: "~ 7-day trial" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $50/mo" }
         ],
         advantages: [
-            { title: "10x Cheaper", description: "$5/mo vs $50/mo for basic feedback needs." },
-            { title: "Not Just Bugs", description: "Collect bugs, feature requests, and general feedback." },
-            { title: "No Team Size Limits", description: "Flat pricing—no extra cost per team member." },
-            { title: "Works Everywhere", description: "Any website, not just sites in development." }
+            { title: "The money question", description: "Learn why visitors don't buy, not just track bugs." },
+            { title: "10x cheaper", description: "$5/mo vs $50/mo." },
+            { title: "No team-size limits", description: "Flat pricing, no cost per member." },
+            { title: "Works everywhere", description: "Any live site, not just sites in development." }
         ],
-        keywords: ["bugherd alternative", "bugherd vs feedinbox", "cheaper than bugherd", "bugherd free alternative"]
+        keywords: ["bugherd alternative", "bugherd vs feedinbox", "why visitors don't buy", "cheaper than bugherd", "conversion feedback"]
     },
     {
         slug: "marker-io",
         competitorName: "Marker.io",
-        metaTitle: "Feedinbox vs Marker.io - Simple Feedback Alternative",
-        metaDescription: "Marker.io starts at $39/mo for visual feedback. Feedinbox collects all types of user feedback to your inbox for just $5/mo.",
-        heroHeadline: "Marker.io alternative for user feedback",
-        heroSubheadline: "Marker.io is built for QA teams. If you need simple user feedback, there's an 8x cheaper way.",
+        metaTitle: "Feedinbox vs Marker.io - Why-Not-Buy + Feedback",
+        metaDescription: "Marker.io is visual QA feedback from $39/mo. Feedinbox tells you why visitors don't buy and collects feedback for $5/mo. Built for real visitors.",
+        heroHeadline: "Marker.io alternative for real visitors",
+        heroSubheadline: "Marker.io is for internal QA. Feedinbox faces your real visitors, asking why they don't buy, and collecting feedback, for 8x less.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard + integrations" },
-            { feature: "Screenshot Annotations", feedinbox: "✗", competitor: "✓" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "10+ minutes" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "Limited free plan" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $39/mo" },
-            { feature: "Target Users", feedinbox: "End users & visitors", competitor: "Internal QA teams" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
+            { feature: "Feedback widget", feedinbox: "✓ End users", competitor: "✓ Internal QA" },
+            { feature: "Screenshot annotations", feedinbox: "✗", competitor: "✓" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "10+ minutes" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $39/mo" }
         ],
         advantages: [
-            { title: "8x Cheaper", description: "Collect feedback for $5/mo instead of $39/mo." },
-            { title: "User-Facing Widget", description: "Built for real users, not internal QA teams." },
-            { title: "Email Workflow", description: "Feedback in your inbox, no integrations needed." },
-            { title: "Simpler Scope", description: "Feedback collection without the QA toolchain." }
+            { title: "Faces real visitors", description: "Built for the people deciding whether to buy, not internal QA." },
+            { title: "The commercial question", description: "Find out why they don't buy." },
+            { title: "8x cheaper", description: "$5/mo instead of $39/mo." },
+            { title: "Inbox-first", description: "Reasons and feedback in your email." }
         ],
-        keywords: ["marker.io alternative", "marker io alternative", "marker.io vs feedinbox", "cheaper than marker.io", "marker io free alternative"]
+        keywords: ["marker.io alternative", "marker io alternative", "marker.io vs feedinbox", "why visitors don't buy", "conversion feedback"]
     },
     {
         slug: "qualaroo",
         competitorName: "Qualaroo",
-        metaTitle: "Feedinbox vs Qualaroo - Lightweight Feedback Alternative",
-        metaDescription: "Qualaroo is an AI-driven survey tool. If you just need user feedback sent to your email, Feedinbox is simpler and cheaper.",
-        heroHeadline: "Qualaroo alternative for quick feedback",
-        heroSubheadline: "Qualaroo is great for enterprise surveys. If you want simple feedback in your inbox, try Feedinbox.",
+        metaTitle: "Feedinbox vs Qualaroo - Purpose-Built Why-Not-Buy",
+        metaDescription: "Qualaroo is a configurable survey nudge tool. Feedinbox is purpose-built for one question, why didn't you buy, plus a feedback widget. Simpler and cheaper.",
+        heroHeadline: "Qualaroo alternative, ready out of the box",
+        heroSubheadline: "Qualaroo makes you design survey nudges. Feedinbox ships the abandonment question ready to go, and collects feedback too.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard analytics" },
-            { feature: "AI Analysis", feedinbox: "✗", competitor: "✓ IBM Watson" },
-            { feature: "Survey Branching", feedinbox: "✗", competitor: "✓" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "30+ minutes" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $39.99/mo" },
-            { feature: "Learning Curve", feedinbox: "None", competitor: "Moderate" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Ready out of the box", competitor: "~ Configure nudges" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✗" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "30+ minutes" },
+            { feature: "Learning curve", feedinbox: "None", competitor: "Moderate" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $39.99/mo" }
         ],
         advantages: [
-            { title: "8x Cheaper", description: "$5/mo vs $39.99/mo for basic feedback." },
-            { title: "Zero Complexity", description: "No survey branching to design—just a feedback widget." },
-            { title: "Instant Setup", description: "One script tag vs configuring survey nudges." },
-            { title: "Email Delivery", description: "Read feedback in your inbox, not a dashboard." }
+            { title: "Ready to go", description: "The abandonment question ships built-in, no nudges to design." },
+            { title: "8x cheaper", description: "$5/mo vs $39.99/mo." },
+            { title: "Inbox-first", description: "Reasons in your email, not a dashboard." },
+            { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
-        keywords: ["qualaroo alternative", "qualaroo vs feedinbox", "simple qualaroo alternative", "cheaper than qualaroo"]
+        keywords: ["qualaroo alternative", "qualaroo vs feedinbox", "exit intent survey", "why visitors don't buy", "conversion feedback"]
     },
     {
         slug: "survicate",
         competitorName: "Survicate",
-        metaTitle: "Feedinbox vs Survicate - Affordable Feedback Alternative",
-        metaDescription: "Survicate starts at $99/mo for surveys. Feedinbox collects user feedback to your inbox for $5/mo. Simpler, faster, 20x cheaper.",
-        heroHeadline: "Survicate alternative for simple feedback",
-        heroSubheadline: "Survicate is a full survey platform. If you just need user feedback, Feedinbox does it for 20x less.",
+        metaTitle: "Feedinbox vs Survicate - Purpose-Built Why-Not-Buy",
+        metaDescription: "Survicate is a full survey platform from $99/mo. Feedinbox is purpose-built for the abandonment question, plus a feedback widget, for $5/mo.",
+        heroHeadline: "Survicate alternative for the one question that matters",
+        heroSubheadline: "Survicate is a survey platform with 125+ templates. Feedinbox skips the template paralysis and asks the one commercial question, plus collects feedback.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard" },
-            { feature: "NPS/CSAT Surveys", feedinbox: "✗", competitor: "✓" },
-            { feature: "Survey Templates", feedinbox: "✗", competitor: "✓ 125+ templates" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "20+ minutes" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $99/mo" },
-            { feature: "Free Tier", feedinbox: "✓ 20 submissions/mo", competitor: "✓ 25 responses/mo" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Purpose-built", competitor: "~ Generic surveys" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✗" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "20+ minutes" },
+            { feature: "Template paralysis", feedinbox: "✗ One card", competitor: "125+ templates" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $99/mo" }
         ],
         advantages: [
-            { title: "20x Cheaper", description: "$5/mo vs $99/mo for collecting feedback." },
-            { title: "Purpose-Built", description: "A feedback widget, not a survey platform." },
-            { title: "No Template Paralysis", description: "One widget, ready to go. No templates to choose from." },
-            { title: "Email-First", description: "Feedback in your inbox, not buried in analytics." }
+            { title: "Purpose-built", description: "One card for the abandonment question, not a survey suite." },
+            { title: "20x cheaper", description: "$5/mo vs $99/mo." },
+            { title: "No template paralysis", description: "Ready to go, nothing to configure." },
+            { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
-        keywords: ["survicate alternative", "survicate vs feedinbox", "cheaper than survicate", "survicate free alternative"]
+        keywords: ["survicate alternative", "survicate vs feedinbox", "exit intent survey", "why visitors don't buy", "cheaper than survicate"]
     },
     {
         slug: "mopinion",
         competitorName: "Mopinion",
-        metaTitle: "Feedinbox vs Mopinion - Budget-Friendly Feedback Alternative",
-        metaDescription: "Mopinion starts at $229/mo. Feedinbox delivers feedback to your inbox for $5/mo. Perfect for startups and small teams.",
+        metaTitle: "Feedinbox vs Mopinion - Why-Not-Buy for Startups",
+        metaDescription: "Mopinion is enterprise feedback analytics from $229/mo. Feedinbox tells you why visitors don't buy and collects feedback for $5/mo. Built for makers.",
         heroHeadline: "Mopinion alternative for startups",
-        heroSubheadline: "Mopinion is built for enterprises with big budgets. Feedinbox is built for makers who want feedback in their inbox.",
+        heroSubheadline: "Mopinion is enterprise feedback analytics. Feedinbox is for makers: find out why visitors don't buy, and collect feedback, from your inbox.",
         comparison: [
-            { feature: "Feedback to Email", feedinbox: "✓ Instant delivery", competitor: "✗ Dashboard analytics" },
-            { feature: "Sentiment Analysis", feedinbox: "✗", competitor: "✓" },
-            { feature: "Multi-Channel", feedinbox: "Web widget", competitor: "Web, email, mobile" },
-            { feature: "Setup Time", feedinbox: "2 minutes", competitor: "Days to weeks" },
-            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $229/mo" },
-            { feature: "Target Audience", feedinbox: "Startups & small teams", competitor: "Enterprise" }
+            { feature: "Why-Not-Buy question", feedinbox: "✓ Purpose-built", competitor: "~ Generic surveys" },
+            { feature: "Feedback widget", feedinbox: "✓", competitor: "✓" },
+            { feature: "Setup time", feedinbox: "2 minutes", competitor: "Days to weeks" },
+            { feature: "Target audience", feedinbox: "Startups & makers", competitor: "Enterprise" },
+            { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $229/mo" }
         ],
         advantages: [
-            { title: "46x Cheaper", description: "$5/mo vs $229/mo. That's not a typo." },
-            { title: "Instant Setup", description: "One script tag, not an enterprise onboarding." },
-            { title: "Made for Makers", description: "Built for indie hackers and small teams." },
-            { title: "Email Simplicity", description: "No analytics dashboards—just feedback in your inbox." }
+            { title: "The commercial question", description: "Find out why people don't buy, without an enterprise suite." },
+            { title: "46x cheaper", description: "$5/mo vs $229/mo. Not a typo." },
+            { title: "Instant setup", description: "One script tag, no enterprise onboarding." },
+            { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
-        keywords: ["mopinion alternative", "mopinion vs feedinbox", "affordable mopinion alternative", "cheaper than mopinion"]
+        keywords: ["mopinion alternative", "mopinion vs feedinbox", "why visitors don't buy", "affordable conversion feedback", "cheaper than mopinion"]
     }
 ];
 

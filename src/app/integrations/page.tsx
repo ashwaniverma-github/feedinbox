@@ -9,7 +9,7 @@ import SEOCTA from "@/components/seo-pages/seo-cta";
 export const metadata: Metadata = {
     title: "Integrations - Works With Your Stack | Feedinbox",
     description: "Add Feedinbox to Next.js, React, Vue, Angular, WordPress, Shopify, Webflow, and more. Simple integration guides with copy-paste code.",
-    keywords: ["feedback widget integration", "nextjs feedback", "react feedback widget", "wordpress feedback plugin"],
+    keywords: ["exit intent integration", "why visitors don't buy", "nextjs conversion feedback", "shopify exit intent", "feedback widget integration"],
 };
 
 export default function IntegrationsIndexPage() {
