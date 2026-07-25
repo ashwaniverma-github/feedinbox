@@ -24,9 +24,11 @@
     var _intentPosition = 'bottom-right';
     var _settingsLoaded = false;
     var _pendingEvents = [];           // events received before settings finished loading
+    var MAX_PENDING_EVENTS = 20;       // cap the queue in case init() never resolves
     var _intentTimer = null;
     var _intentEventName = '';
     var _intentContext = {};
+    var _intentKeyHandler = null;      // Escape-to-dismiss handler for the intent card
 
     function detectApiUrl() {
         var scripts = document.getElementsByTagName('script');
@@ -107,15 +109,19 @@
     // Public event dispatch: window.feedinbox('event', name, context)
     function handleEvent(name, context) {
         if (!name) return;
-        // Queue until project settings (incl. intent config) have loaded
+        // Queue until project settings (incl. intent config) have loaded (capped
+        // so a queue can't grow unbounded if init() never resolves)
         if (!_settingsLoaded) {
-            _pendingEvents.push([name, context]);
+            if (_pendingEvents.length < MAX_PENDING_EVENTS) {
+                _pendingEvents.push([name, context]);
+            }
             return;
         }
         if (!_intentSettings) return; // feature disabled or unavailable
 
         if (name === _intentSettings.conversionEvent) {
             if (_intentTimer) { clearTimeout(_intentTimer); _intentTimer = null; }
+            dismissIntentCard(); // hide the prompt if it's already on screen
             return;
         }
 
@@ -159,6 +165,26 @@
         try {
             sessionStorage.setItem('feedinbox_intent_done_' + _projectKey, '1');
         } catch (e) { /* ignore */ }
+    }
+
+    // Removes the intent card (if present) plus its styles and Escape listener.
+    // Safe to call whether or not the card is showing.
+    function dismissIntentCard() {
+        if (_intentKeyHandler) {
+            document.removeEventListener('keydown', _intentKeyHandler);
+            _intentKeyHandler = null;
+        }
+        var card = document.getElementById('feedinbox-intent');
+        var styleEl = document.getElementById('feedinbox-intent-style');
+        if (card) {
+            card.classList.remove('open');
+            setTimeout(function () {
+                if (card.parentNode) card.parentNode.removeChild(card);
+                if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+            }, 300);
+        } else if (styleEl && styleEl.parentNode) {
+            styleEl.parentNode.removeChild(styleEl);
+        }
     }
 
     function renderIntentCard() {
@@ -223,21 +249,19 @@
 
         textInput.addEventListener('input', refreshSubmit);
 
-        function dismissCard() {
-            card.classList.remove('open');
-            setTimeout(function () {
-                if (card.parentNode) card.parentNode.removeChild(card);
-                if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
-            }, 300);
-        }
+        closeBtn.addEventListener('click', dismissIntentCard);
 
-        closeBtn.addEventListener('click', dismissCard);
+        // Escape-to-dismiss (listener removed inside dismissIntentCard)
+        _intentKeyHandler = function (e) { if (e.key === 'Escape') dismissIntentCard(); };
+        document.addEventListener('keydown', _intentKeyHandler);
+
+        // Move focus into the dialog for keyboard users
+        requestAnimationFrame(function () { (optButtons[0] || textInput).focus(); });
 
         submitBtn.addEventListener('click', function () {
             if (!selectedId && !(textInput.value && textInput.value.trim())) return;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending...';
-            markIntentAnswered();
 
             fetch(_apiUrl + '/api/widget/intent', {
                 method: 'POST',
@@ -252,13 +276,15 @@
                     context: _intentContext,
                     pageUrl: window.location.href
                 })
-            }).then(function () {
+            }).then(function (response) {
+                if (!response.ok) throw new Error('Failed to submit');
+                markIntentAnswered();
                 showIntentThanks(card);
-                setTimeout(dismissCard, 1600);
+                setTimeout(dismissIntentCard, 1600);
             }).catch(function (error) {
                 console.error('Feedinbox: Failed to submit intent response', error);
-                showIntentThanks(card);
-                setTimeout(dismissCard, 1600);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send';
             });
         });
     }
