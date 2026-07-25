@@ -82,6 +82,28 @@ export async function getMonthlyFeedbackCount(userId: string): Promise<number> {
 }
 
 /**
+ * Get combined monthly response count (feedback + exit-intent responses).
+ * Both share the same monthly cap, so both are counted together.
+ */
+export async function getMonthlyResponseCount(userId: string): Promise<number> {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    const where = {
+        project: { userId },
+        createdAt: { gte: startOfMonth, lte: endOfMonth },
+    };
+
+    const [feedbackCount, intentCount] = await Promise.all([
+        prisma.feedback.count({ where }),
+        prisma.intentResponse.count({ where }),
+    ]);
+
+    return feedbackCount + intentCount;
+}
+
+/**
  * Check if user can create a new project
  */
 export async function canCreateProject(userId: string): Promise<{
@@ -118,23 +140,52 @@ export async function canReceiveFeedback(userId: string): Promise<{
     currentCount?: number;
     maxAllowed?: number;
 }> {
-    const [isPremium, feedbackCount] = await Promise.all([
+    const [isPremium, responseCount] = await Promise.all([
         isPro(userId),
-        getMonthlyFeedbackCount(userId),
+        getMonthlyResponseCount(userId),
     ]);
 
     const limits = isPremium ? TIER_LIMITS.pro : TIER_LIMITS.free;
 
-    if (feedbackCount >= limits.maxFeedbacksPerMonth) {
+    if (responseCount >= limits.maxFeedbacksPerMonth) {
         return {
             allowed: false,
             reason: "Monthly feedback limit reached. Upgrade to Pro for more submissions.",
-            currentCount: feedbackCount,
+            currentCount: responseCount,
             maxAllowed: limits.maxFeedbacksPerMonth,
         };
     }
 
-    return { allowed: true, currentCount: feedbackCount, maxAllowed: limits.maxFeedbacksPerMonth };
+    return { allowed: true, currentCount: responseCount, maxAllowed: limits.maxFeedbacksPerMonth };
+}
+
+/**
+ * Check if a project owner can receive more exit-intent responses this month.
+ * Exit-intent responses share the same monthly cap as feedback.
+ */
+export async function canReceiveIntentResponse(userId: string): Promise<{
+    allowed: boolean;
+    reason?: string;
+    currentCount?: number;
+    maxAllowed?: number;
+}> {
+    const [isPremium, responseCount] = await Promise.all([
+        isPro(userId),
+        getMonthlyResponseCount(userId),
+    ]);
+
+    const limits = isPremium ? TIER_LIMITS.pro : TIER_LIMITS.free;
+
+    if (responseCount >= limits.maxFeedbacksPerMonth) {
+        return {
+            allowed: false,
+            reason: "Monthly response limit reached. Upgrade to Pro for more submissions.",
+            currentCount: responseCount,
+            maxAllowed: limits.maxFeedbacksPerMonth,
+        };
+    }
+
+    return { allowed: true, currentCount: responseCount, maxAllowed: limits.maxFeedbacksPerMonth };
 }
 
 /**

@@ -1,7 +1,11 @@
 (function () {
     'use strict';
 
-    if (window.feedinbox) return; // Prevent duplicate injection
+    // Prevent the real script from initializing twice. Note: window.feedinbox may
+    // already exist as the stub queue function from the embed snippet, so we guard
+    // on a dedicated flag instead of the presence of window.feedinbox.
+    if (window.__feedinboxLoaded) return;
+    window.__feedinboxLoaded = true;
 
     // Icon SVG paths
     var TRIGGER_ICONS = {
@@ -12,6 +16,28 @@
         star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>'
     };
 
+    // Shared state for the exit-intent feature (set during init)
+    var _apiUrl = '';
+    var _projectKey = '';
+    var _intentSettings = null;        // resolved intentWidget config, or null if unavailable
+    var _intentPrimary = '#171717';
+    var _intentPosition = 'bottom-right';
+    var _settingsLoaded = false;
+    var _pendingEvents = [];           // events received before settings finished loading
+    var _intentTimer = null;
+    var _intentEventName = '';
+    var _intentContext = {};
+
+    function detectApiUrl() {
+        var scripts = document.getElementsByTagName('script');
+        for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i].src && scripts[i].src.indexOf('widget.js') !== -1) {
+                return scripts[i].src.replace('/widget.js', '');
+            }
+        }
+        return window.location.origin;
+    }
+
     function init(config) {
         if (!config || !config.projectKey) {
             console.error('Feedinbox: Missing projectKey in configuration');
@@ -21,18 +47,9 @@
         // Prevent duplicate widget
         if (document.getElementById('feedinbox-widget')) return;
 
-        // Detect API URL from script source
-        var scripts = document.getElementsByTagName('script');
-        var API_URL = '';
-        for (var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src && scripts[i].src.indexOf('widget.js') !== -1) {
-                API_URL = scripts[i].src.replace('/widget.js', '');
-                break;
-            }
-        }
-        if (!API_URL) {
-            API_URL = window.location.origin;
-        }
+        var API_URL = detectApiUrl();
+        _apiUrl = API_URL;
+        _projectKey = config.projectKey;
 
         // Fetch project settings first, then render widget
         fetch(API_URL + '/api/widget/project?key=' + encodeURIComponent(config.projectKey))
@@ -42,6 +59,7 @@
 
                 // Apply settings from server (Pro users get custom, free users get default)
                 var settings = {
+                    enabled: widgetSettings.enabled !== false,
                     primaryColor: widgetSettings.primaryColor || config.primaryColor || '#171717',
                     position: widgetSettings.position || config.position || 'bottom-right',
                     triggerIcon: widgetSettings.triggerIcon || 'chat',
@@ -51,10 +69,18 @@
                     hideBranding: data.hideBranding || false
                 };
 
-                renderWidget(API_URL, config, settings);
+                _intentSettings = (data.intentWidget && data.intentWidget.enabled) ? data.intentWidget : null;
+                _intentPrimary = settings.primaryColor;
+                _intentPosition = settings.position;
+
+                // Only render the feedback button if it's enabled. Why-Not-Buy still
+                // works independently via the event handler.
+                if (settings.enabled) renderWidget(API_URL, config, settings);
+                finishSettingsLoad();
             })
             .catch(function (error) {
                 console.warn('Feedinbox: Could not fetch project info, using defaults', error);
+                _intentSettings = null;
                 // Render with defaults on error
                 renderWidget(API_URL, config, {
                     primaryColor: config.primaryColor || '#171717',
@@ -65,7 +91,189 @@
                     headerText: 'Send Feedback',
                     hideBranding: false
                 });
+                finishSettingsLoad();
             });
+    }
+
+    function finishSettingsLoad() {
+        _settingsLoaded = true;
+        var pending = _pendingEvents;
+        _pendingEvents = [];
+        for (var i = 0; i < pending.length; i++) {
+            handleEvent(pending[i][0], pending[i][1]);
+        }
+    }
+
+    // Public event dispatch: window.feedinbox('event', name, context)
+    function handleEvent(name, context) {
+        if (!name) return;
+        // Queue until project settings (incl. intent config) have loaded
+        if (!_settingsLoaded) {
+            _pendingEvents.push([name, context]);
+            return;
+        }
+        if (!_intentSettings) return; // feature disabled or unavailable
+
+        if (name === _intentSettings.conversionEvent) {
+            if (_intentTimer) { clearTimeout(_intentTimer); _intentTimer = null; }
+            return;
+        }
+
+        if (name === _intentSettings.highIntentEvent) {
+            if (intentAlreadyAnswered()) return;
+            if (document.getElementById('feedinbox-intent')) return; // already showing
+            if (_intentTimer) clearTimeout(_intentTimer);
+            _intentEventName = name;
+            _intentContext = (context && typeof context === 'object') ? context : {};
+            var delayMs = Math.max(0, (_intentSettings.delaySeconds || 5) * 1000);
+            _intentTimer = setTimeout(function () {
+                _intentTimer = null;
+                renderIntentCard();
+            }, delayMs);
+        }
+    }
+
+    function intentSessionId() {
+        var key = 'feedinbox_sid_' + _projectKey;
+        try {
+            var sid = sessionStorage.getItem(key);
+            if (!sid) {
+                sid = 'fs_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+                sessionStorage.setItem(key, sid);
+            }
+            return sid;
+        } catch (e) {
+            return 'fs_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        }
+    }
+
+    function intentAlreadyAnswered() {
+        try {
+            return sessionStorage.getItem('feedinbox_intent_done_' + _projectKey) === '1';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function markIntentAnswered() {
+        try {
+            sessionStorage.setItem('feedinbox_intent_done_' + _projectKey, '1');
+        } catch (e) { /* ignore */ }
+    }
+
+    function renderIntentCard() {
+        if (document.getElementById('feedinbox-intent')) return;
+        if (!_intentSettings) return;
+
+        var posRight = _intentPosition.indexOf('right') !== -1;
+        var posBottom = _intentPosition.indexOf('bottom') !== -1;
+        var PRIMARY = _intentPrimary;
+
+        var styles = '#feedinbox-intent{position:fixed;' + (posRight ? 'right:20px;' : 'left:20px;') + (posBottom ? 'bottom:20px;' : 'top:20px;') + 'width:320px;max-width:calc(100vw - 32px);background:#fff;border-radius:16px;box-shadow:0 12px 48px rgba(0,0,0,0.18),0 4px 12px rgba(0,0,0,0.08);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;padding:18px 18px 14px;box-sizing:border-box;transform:translateY(16px);opacity:0;visibility:hidden;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .28s,visibility .28s;z-index:1000001}#feedinbox-intent.open{transform:translateY(0);opacity:1;visibility:visible}.feedinbox-intent-close{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:#a3a3a3;padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center}.feedinbox-intent-close:hover{background:#f5f5f5;color:#171717}.feedinbox-intent-q{font-size:15px;font-weight:600;color:#171717;margin:0 24px 14px 0;line-height:1.4}.feedinbox-intent-opts{display:flex;flex-direction:column;gap:8px}.feedinbox-intent-opt{width:100%;text-align:left;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;font-size:14px;color:#171717;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;box-shadow:0 1px 2px rgba(0,0,0,0.04)}.feedinbox-intent-opt:hover{border-color:' + PRIMARY + '}.feedinbox-intent-opt.selected{border-color:' + PRIMARY + ';background:' + PRIMARY + '0d;font-weight:500}.feedinbox-intent-text{width:100%;margin-top:10px;padding:9px 11px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;font-family:inherit;box-sizing:border-box;resize:none;color:#171717}.feedinbox-intent-text:focus{outline:none;border-color:' + PRIMARY + '}.feedinbox-intent-submit{width:100%;margin-top:10px;padding:10px;background:' + PRIMARY + ';color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s}.feedinbox-intent-submit:disabled{opacity:.45;cursor:not-allowed}.feedinbox-intent-footer{margin-top:10px;text-align:center}.feedinbox-intent-footer a{font-size:11px;color:#a3a3a3;text-decoration:none}.feedinbox-intent-footer a:hover{color:#171717}.feedinbox-intent-thanks{text-align:center;padding:18px 8px}.feedinbox-intent-thanks-title{font-size:16px;font-weight:600;color:#171717;margin:0 0 4px}.feedinbox-intent-thanks-text{font-size:13px;color:#737373;margin:0}@media(prefers-color-scheme:dark){#feedinbox-intent{background:#171717}.feedinbox-intent-close{color:#a3a3a3}.feedinbox-intent-close:hover{background:#262626;color:#fafafa}.feedinbox-intent-q{color:#fafafa}.feedinbox-intent-opt{background:#1f1f1f;border-color:#404040;color:#fafafa}.feedinbox-intent-text{background:#262626;border-color:#404040;color:#fafafa}.feedinbox-intent-thanks-title{color:#fafafa}.feedinbox-intent-footer a:hover{color:#fafafa}}html.dark #feedinbox-intent{background:#171717}html.dark .feedinbox-intent-q{color:#fafafa}html.dark .feedinbox-intent-opt{background:#1f1f1f;border-color:#404040;color:#fafafa}html.dark .feedinbox-intent-text{background:#262626;border-color:#404040;color:#fafafa}html.dark .feedinbox-intent-thanks-title{color:#fafafa}';
+
+        var styleEl = document.createElement('style');
+        styleEl.id = 'feedinbox-intent-style';
+        styleEl.textContent = styles;
+        document.head.appendChild(styleEl);
+
+        var opts = _intentSettings.options || [];
+        var optsHTML = '';
+        for (var i = 0; i < opts.length; i++) {
+            optsHTML += '<button type="button" class="feedinbox-intent-opt" data-oid="' + escapeAttr(opts[i].id) + '" data-olabel="' + escapeAttr(opts[i].label) + '">' + escapeHtml(opts[i].label) + '</button>';
+        }
+        var footerHTML = '<div class="feedinbox-intent-footer"><a href="https://feedinbox.com" target="_blank" rel="noopener">Powered by Feedinbox</a></div>';
+
+        var card = document.createElement('div');
+        card.id = 'feedinbox-intent';
+        card.setAttribute('role', 'dialog');
+        card.setAttribute('aria-label', 'Quick question');
+        card.innerHTML =
+            '<button class="feedinbox-intent-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>' +
+            '<p class="feedinbox-intent-q">' + escapeHtml(_intentSettings.question || 'What stopped you?') + '</p>' +
+            '<div class="feedinbox-intent-opts">' + optsHTML + '</div>' +
+            '<input type="text" class="feedinbox-intent-text" placeholder="Anything else? (optional)" maxlength="2000" />' +
+            '<button type="button" class="feedinbox-intent-submit" disabled>Send</button>' +
+            footerHTML;
+        document.body.appendChild(card);
+
+        // Trigger slide-in
+        requestAnimationFrame(function () { card.classList.add('open'); });
+
+        var selectedId = null;
+        var selectedLabel = null;
+        var optButtons = card.querySelectorAll('.feedinbox-intent-opt');
+        var textInput = card.querySelector('.feedinbox-intent-text');
+        var submitBtn = card.querySelector('.feedinbox-intent-submit');
+        var closeBtn = card.querySelector('.feedinbox-intent-close');
+
+        function refreshSubmit() {
+            // Enable Send once they've picked an option OR typed a custom answer
+            submitBtn.disabled = !(selectedId || (textInput.value && textInput.value.trim()));
+        }
+
+        for (var j = 0; j < optButtons.length; j++) {
+            optButtons[j].addEventListener('click', function () {
+                for (var k = 0; k < optButtons.length; k++) optButtons[k].classList.remove('selected');
+                this.classList.add('selected');
+                selectedId = this.getAttribute('data-oid');
+                selectedLabel = this.getAttribute('data-olabel');
+                refreshSubmit();
+            });
+        }
+
+        textInput.addEventListener('input', refreshSubmit);
+
+        function dismissCard() {
+            card.classList.remove('open');
+            setTimeout(function () {
+                if (card.parentNode) card.parentNode.removeChild(card);
+                if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+            }, 300);
+        }
+
+        closeBtn.addEventListener('click', dismissCard);
+
+        submitBtn.addEventListener('click', function () {
+            if (!selectedId && !(textInput.value && textInput.value.trim())) return;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            markIntentAnswered();
+
+            fetch(_apiUrl + '/api/widget/intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectKey: _projectKey,
+                    sessionId: intentSessionId(),
+                    eventName: _intentEventName,
+                    optionId: selectedId || undefined,
+                    optionLabel: selectedLabel || undefined,
+                    text: textInput.value || undefined,
+                    context: _intentContext,
+                    pageUrl: window.location.href
+                })
+            }).then(function () {
+                showIntentThanks(card);
+                setTimeout(dismissCard, 1600);
+            }).catch(function (error) {
+                console.error('Feedinbox: Failed to submit intent response', error);
+                showIntentThanks(card);
+                setTimeout(dismissCard, 1600);
+            });
+        });
+    }
+
+    function showIntentThanks(card) {
+        card.innerHTML = '<div class="feedinbox-intent-thanks"><h3 class="feedinbox-intent-thanks-title">Thanks for the feedback</h3><p class="feedinbox-intent-thanks-text">It helps us improve.</p></div>';
+    }
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function escapeAttr(str) {
+        return escapeHtml(str);
     }
 
     function renderWidget(API_URL, config, settings) {
@@ -187,8 +395,25 @@
         attachFormListener();
     }
 
-    // Expose init function
-    window.feedinbox = { init: init };
+    // Capture any calls queued by the stub snippet before this script loaded
+    var queued = (window.feedinbox && window.feedinbox.q) || [];
+
+    // Public API: callable dispatcher, e.g. window.feedinbox('event', 'high_intent', {plan:'pro'})
+    function feedinbox(command) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        if (command === 'event') {
+            handleEvent(args[0], args[1]);
+        } else if (command === 'init') {
+            init(args[0]);
+        }
+    }
+    feedinbox.init = init; // backward-compatible: window.feedinbox.init({...})
+    window.feedinbox = feedinbox;
+
+    // Replay queued calls (events fired before load are queued again until settings load)
+    for (var qi = 0; qi < queued.length; qi++) {
+        feedinbox.apply(null, queued[qi]);
+    }
 
     // Auto-init: check for data-project-key on the script tag first (single-tag mode)
     var scripts = document.getElementsByTagName('script');

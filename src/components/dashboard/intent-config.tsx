@@ -1,0 +1,271 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PricingModal } from "@/components/ui/pricing-modal";
+import { Check, Save, Lock, Zap } from "lucide-react";
+import {
+    DEFAULT_INTENT_SETTINGS,
+    MAX_INTENT_OPTIONS,
+    MIN_DELAY_SECONDS,
+    MAX_DELAY_SECONDS,
+    type IntentSettings,
+} from "@/lib/intent";
+
+export function IntentConfig({ projectId }: { projectId: string }) {
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false);
+    const [isPro, setIsPro] = useState(false);
+    const [isPricingOpen, setIsPricingOpen] = useState(false);
+    const [settings, setSettings] = useState<IntentSettings>(DEFAULT_INTENT_SETTINGS);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await fetch(`/api/projects/${projectId}/intent-settings`);
+                const data = await res.json();
+                if (data.settings) setSettings(data.settings);
+                setIsPro(data.isPro || false);
+            } catch (e) {
+                console.error("Failed to load intent settings", e);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, [projectId]);
+
+    const update = <K extends keyof IntentSettings>(key: K, value: IntentSettings[K]) => {
+        setSettings((prev) => ({ ...prev, [key]: value }));
+    };
+
+    const updateOption = (index: number, label: string) => {
+        setSettings((prev) => ({
+            ...prev,
+            options: prev.options.map((o, i) => (i === index ? { ...o, label } : o)),
+        }));
+    };
+
+    const addOption = () => {
+        if (settings.options.length >= MAX_INTENT_OPTIONS) return;
+        setSettings((prev) => ({
+            ...prev,
+            options: [...prev.options, { id: `option_${prev.options.length + 1}`, label: "" }],
+        }));
+    };
+
+    const removeOption = (index: number) => {
+        setSettings((prev) => ({
+            ...prev,
+            options: prev.options.filter((_, i) => i !== index),
+        }));
+    };
+
+    const save = async () => {
+        setSaving(true);
+        setSaved(false);
+        try {
+            const res = await fetch(`/api/projects/${projectId}/intent-settings`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(settings),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.settings) setSettings(data.settings);
+                setSaved(true);
+                setTimeout(() => setSaved(false), 2000);
+            }
+        } catch (e) {
+            console.error("Failed to save intent settings", e);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const gate = () => {
+        if (!isPro) {
+            setIsPricingOpen(true);
+            return false;
+        }
+        return true;
+    };
+
+    if (loading) {
+        return (
+            <Card>
+                <CardContent className="p-6">
+                    <div className="h-5 w-40 animate-pulse rounded bg-neutral-200 dark:bg-neutral-800" />
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return (
+        <Card>
+            <CardContent className="p-6 space-y-6">
+                <div className="flex items-start justify-between gap-4">
+                    <div>
+                        <h3 className="font-semibold flex items-center gap-2">
+                            <Zap className="h-4 w-4" />
+                            Why-Not-Buy question
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Ask one question when a visitor abandons a high-intent surface (pricing, checkout) without buying.
+                        </p>
+                    </div>
+                    {/* Enabled toggle (free for all tiers) */}
+                    <button
+                        onClick={() => update("enabled", !settings.enabled)}
+                        aria-label="Toggle exit-intent"
+                        className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.enabled
+                            ? "bg-black border-white"
+                            : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
+                            }`}
+                    >
+                        <div
+                            className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${settings.enabled ? "translate-x-6" : "translate-x-0.5"
+                                }`}
+                        />
+                    </button>
+                </div>
+
+                {!isPro && (
+                    <div className="flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/5 px-3 py-2 text-sm">
+                        <Lock className="h-3.5 w-3.5 text-primary" />
+                        <span>
+                            Editing the question, options, and timing is a Pro feature. You can still
+                            enable it and collect responses on the defaults.
+                        </span>
+                    </div>
+                )}
+
+                {/* Question */}
+                <div className={!isPro ? "opacity-60" : ""}>
+                    <Input
+                        label="Question"
+                        value={settings.question}
+                        maxLength={200}
+                        disabled={!isPro}
+                        onChange={(e) => update("question", e.target.value)}
+                        onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
+                    />
+                </div>
+
+                {/* Options */}
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium">Answer options</label>
+                        {isPro && settings.options.length < MAX_INTENT_OPTIONS && (
+                            <button
+                                onClick={addOption}
+                                className="text-xs font-medium text-primary hover:underline"
+                            >
+                                + Add option
+                            </button>
+                        )}
+                    </div>
+                    <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
+                        {settings.options.map((opt, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                                <input
+                                    value={opt.label}
+                                    maxLength={200}
+                                    disabled={!isPro}
+                                    onChange={(e) => updateOption(i, e.target.value)}
+                                    onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
+                                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                                    placeholder={`Option ${i + 1}`}
+                                />
+                                {isPro && settings.options.length > 1 && (
+                                    <button
+                                        onClick={() => removeOption(i)}
+                                        className="text-xs text-neutral-400 hover:text-red-500 px-2"
+                                        aria-label="Remove option"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Delay */}
+                <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
+                    <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium">
+                            Show after (seconds without converting)
+                        </label>
+                        <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
+                    </div>
+                    <input
+                        type="range"
+                        min={MIN_DELAY_SECONDS}
+                        max={MAX_DELAY_SECONDS}
+                        value={settings.delaySeconds}
+                        disabled={!isPro}
+                        onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
+                        onMouseDown={() => { if (!isPro) setIsPricingOpen(true); }}
+                        className="w-full accent-primary"
+                    />
+                </div>
+
+                {/* Event names */}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 ${!isPro ? "opacity-60" : ""}`}>
+                    <Input
+                        label="High-intent event"
+                        value={settings.highIntentEvent}
+                        maxLength={100}
+                        disabled={!isPro}
+                        onChange={(e) => update("highIntentEvent", e.target.value)}
+                        onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
+                    />
+                    <Input
+                        label="Conversion event"
+                        value={settings.conversionEvent}
+                        maxLength={100}
+                        disabled={!isPro}
+                        onChange={(e) => update("conversionEvent", e.target.value)}
+                        onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
+                    />
+                </div>
+
+                {/* Snippet hint */}
+                <div className="rounded-lg bg-neutral-100 dark:bg-neutral-800 p-3 text-xs font-mono overflow-x-auto">
+                    <div className="text-neutral-500">{"// fire when a visitor hits a high-intent surface"}</div>
+                    <div>window.feedinbox('event', '{settings.highIntentEvent}', {"{ plan: 'pro' }"})</div>
+                    <div className="mt-1.5 text-neutral-500">{"// fire on successful purchase"}</div>
+                    <div>window.feedinbox('event', '{settings.conversionEvent}')</div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <Button size="sm" onClick={save} disabled={saving}>
+                        {saving ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        ) : (
+                            <Save className="w-4 h-4 mr-2" />
+                        )}
+                        Save
+                    </Button>
+                    {saved && (
+                        <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                            <Check className="w-4 h-4" /> Saved
+                        </span>
+                    )}
+                    {!isPro && (
+                        <button
+                            onClick={() => setIsPricingOpen(true)}
+                            className="text-sm text-primary hover:underline ml-auto"
+                        >
+                            Upgrade to customize
+                        </button>
+                    )}
+                </div>
+            </CardContent>
+            <PricingModal isOpen={isPricingOpen} onClose={() => setIsPricingOpen(false)} />
+        </Card>
+    );
+}

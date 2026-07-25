@@ -5,6 +5,7 @@ import { isPro } from "@/lib/tiers";
 
 // Widget settings schema
 interface WidgetSettings {
+    enabled: boolean;
     primaryColor: string;
     position: "bottom-right" | "bottom-left" | "top-right" | "top-left";
     triggerIcon: "chat" | "feedback" | "question" | "lightbulb" | "star";
@@ -15,6 +16,7 @@ interface WidgetSettings {
 }
 
 const DEFAULT_SETTINGS: WidgetSettings = {
+    enabled: true,
     primaryColor: "#171717",
     position: "bottom-right",
     triggerIcon: "chat",
@@ -74,14 +76,7 @@ export async function PUT(
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Check if user is Pro
         const userIsPro = await isPro(session.user.id);
-        if (!userIsPro) {
-            return NextResponse.json(
-                { error: "Widget customization is a Pro feature", code: "PRO_FEATURE_REQUIRED" },
-                { status: 403 }
-            );
-        }
 
         const project = await prisma.project.findFirst({
             where: { id, userId: session.user.id },
@@ -93,6 +88,22 @@ export async function PUT(
 
         const body = await request.json();
         const newSettings: Partial<WidgetSettings> = {};
+
+        // enabled (show/hide the feedback button) is allowed for any tier
+        if (typeof body.enabled === "boolean") {
+            newSettings.enabled = body.enabled;
+        }
+
+        // Appearance customization is Pro-only. Non-Pro edits to these are ignored.
+        if (!userIsPro) {
+            const existingSettings = (project.settings as any) || {};
+            const updatedSettings = {
+                ...existingSettings,
+                widget: { ...DEFAULT_SETTINGS, ...existingSettings.widget, ...newSettings },
+            };
+            await prisma.project.update({ where: { id }, data: { settings: updatedSettings } });
+            return NextResponse.json({ success: true, settings: updatedSettings.widget });
+        }
 
         // Validate and sanitize input
         if (body.primaryColor && /^#[0-9A-Fa-f]{6}$/.test(body.primaryColor)) {

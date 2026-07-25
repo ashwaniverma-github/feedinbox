@@ -40,6 +40,25 @@ export const createFeedbackSchema = z.object({
     }),
 });
 
+export const createIntentResponseSchema = z.object({
+    projectKey: z.string().min(1, "Project key is required"),
+    sessionId: z.string().min(1).max(200),
+    eventName: z.string().min(1).max(100),
+    optionId: z.string().max(100).optional(),
+    optionLabel: z.string().max(200).optional(),
+    text: z.string().max(2000).optional().transform((val) => {
+        if (!val || val.trim() === "") return undefined;
+        return val.trim();
+    }),
+    context: z.record(z.string(), z.unknown()).optional().default({}),
+    // Lenient like createFeedbackSchema: the widget runs on any site, so strip
+    // invalid URLs to undefined rather than rejecting the whole submission.
+    pageUrl: z.string().optional().transform((val) => {
+        if (!val || val.trim() === '') return undefined;
+        try { new URL(val); return val; } catch { return undefined; }
+    }),
+});
+
 export const feedbackFilterSchema = z.object({
     category: z.enum(["all", "general", "bug", "feature", "question"]).default("all"),
     isRead: z.enum(["all", "read", "unread"]).default("all"),
@@ -51,4 +70,5 @@ export const feedbackFilterSchema = z.object({
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
 export type CreateFeedbackInput = z.infer<typeof createFeedbackSchema>;
+export type CreateIntentResponseInput = z.infer<typeof createIntentResponseSchema>;
 export type FeedbackFilterInput = z.infer<typeof feedbackFilterSchema>;

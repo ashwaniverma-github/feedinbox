@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isPro } from "@/lib/tiers";
+import { resolveIntentSettingsForWidget } from "@/lib/intent";
 
 // Default widget settings
 const DEFAULT_WIDGET_SETTINGS = {
+    enabled: true, // show the floating feedback button
     primaryColor: "#171717",
     position: "bottom-right",
     triggerIcon: "chat",
@@ -47,14 +49,20 @@ export async function GET(request: Request) {
         // Check if project owner is Pro
         const ownerIsPro = await isPro(project.userId);
 
-        // Get widget settings (only apply custom settings for Pro users)
+        // Get widget settings. Appearance customization is Pro-only, but the
+        // on/off toggle (`enabled`) is honored for every tier so a user can run
+        // Why-Not-Buy without the feedback button (or vice versa).
         const projectSettings = (project.settings as any)?.widget || {};
         const widgetSettings = ownerIsPro
             ? { ...DEFAULT_WIDGET_SETTINGS, ...projectSettings }
-            : DEFAULT_WIDGET_SETTINGS;
+            : { ...DEFAULT_WIDGET_SETTINGS };
+        widgetSettings.enabled = projectSettings.enabled !== false;
 
         // hideBranding only works if user is Pro AND has enabled it
         const hideBranding = ownerIsPro && widgetSettings.hideBranding === true;
+
+        // Exit-intent: `enabled` honored for all tiers; customization is Pro-only
+        const intentWidget = resolveIntentSettingsForWidget(project.settings, ownerIsPro);
 
         return corsResponse(
             NextResponse.json({
@@ -62,6 +70,7 @@ export async function GET(request: Request) {
                 projectName: project.name,
                 hideBranding: hideBranding,
                 widget: widgetSettings,
+                intentWidget: intentWidget,
             }),
             origin
         );

@@ -9,8 +9,10 @@ import { LoadingPage } from "@/components/ui/loading";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
 import { SwipeableFeedbackCard } from "@/components/ui/swipeable-feedback-card";
+import { IntentResponses } from "@/components/dashboard/intent-responses";
 import { formatDate } from "@/lib/utils";
-import { Settings, MessageSquare, Bug, Lightbulb, HelpCircle, Palette } from "lucide-react";
+import { Settings, MessageSquare, Bug, Lightbulb, HelpCircle, Palette, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { Feedback, Project } from "@/types";
 
 interface FeedbacksResponse {
@@ -29,12 +31,19 @@ export default function ProjectDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = use(params);
+    const [tab, setTab] = useState<"feedback" | "intent">("intent");
     const [loading, setLoading] = useState(true);
     const [project, setProject] = useState<Project | null>(null);
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
     const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
     const [category, setCategory] = useState("all");
     const [isRead, setIsRead] = useState("all");
+
+    useEffect(() => {
+        const t = new URLSearchParams(window.location.search).get("tab");
+        if (t === "feedback") setTab("feedback");
+        else if (t === "intent") setTab("intent");
+    }, []);
 
     useEffect(() => {
         fetchProject();
@@ -141,6 +150,48 @@ export default function ProjectDetailPage({
             />
 
             <div className="p-4 md:p-8">
+                {/* Tabs */}
+                <div className="mb-6 flex items-center justify-between gap-2">
+                    <div className="flex gap-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 p-1 w-fit">
+                        <button
+                            onClick={() => setTab("intent")}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all",
+                                tab === "intent"
+                                    ? "bg-white dark:bg-black text-foreground shadow-sm"
+                                    : "text-neutral-500 hover:text-foreground"
+                            )}
+                        >
+                            <Zap className="h-4 w-4" />
+                            Why-Not-Buy
+                        </button>
+                        <button
+                            onClick={() => setTab("feedback")}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all",
+                                tab === "feedback"
+                                    ? "bg-white dark:bg-black text-foreground shadow-sm"
+                                    : "text-neutral-500 hover:text-foreground"
+                            )}
+                        >
+                            <MessageSquare className="h-4 w-4" />
+                            Feedback
+                        </button>
+                    </div>
+                    {tab === "intent" && (
+                        <Link href={`/projects/${id}/why-not-buy`}>
+                            <Button variant="secondary" size="sm">
+                                <Settings className="h-4 w-4 sm:mr-2" />
+                                <span className="hidden sm:inline">Configure</span>
+                            </Button>
+                        </Link>
+                    )}
+                </div>
+
+                {tab === "intent" ? (
+                    <IntentResponses projectId={id} />
+                ) : (
+                <>
                 {/* Filters */}
                 <div className="mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4">
                     <Select
@@ -237,6 +288,8 @@ export default function ProjectDetailPage({
                             Next
                         </Button>
                     </div>
+                )}
+                </>
                 )}
             </div>
         </>

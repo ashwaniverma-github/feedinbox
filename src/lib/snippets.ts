@@ -10,6 +10,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         {children}
+        {/* Queue stub so events fired before the widget loads aren't lost */}
+        <Script id="feedinbox-stub" strategy="beforeInteractive">
+          {\`window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}\`}
+        </Script>
         <Script
           src="${origin}/widget.js"
           data-project-key="${projectKey}"
@@ -18,15 +22,29 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   )
-}`;
+}
+
+// Then, from your pricing/checkout code, fire high-intent events:
+//   window.feedinbox('event', 'high_intent', { plan: 'pro' }) // e.g. pricing modal opened
+//   window.feedinbox('event', 'converted')                    // on successful purchase`;
   }
 
   if (framework === "react") {
     return `<!-- Add to your public/index.html before </body> -->
-<script async src="${origin}/widget.js" data-project-key="${projectKey}"></script>`;
+<script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>
+<script async src="${origin}/widget.js" data-project-key="${projectKey}"></script>
+
+<!-- Then fire high-intent events from your pricing/checkout code:
+     window.feedinbox('event', 'high_intent', { plan: 'pro' })  // pricing modal opened
+     window.feedinbox('event', 'converted')                     // on successful purchase -->`;
   }
 
   // HTML
-  return `<script async src="${origin}/widget.js" data-project-key="${projectKey}"></script>`;
-}
+  return `<!-- Add before </body> -->
+<script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>
+<script async src="${origin}/widget.js" data-project-key="${projectKey}"></script>
 
+<!-- Then fire high-intent events from your pricing/checkout code:
+     window.feedinbox('event', 'high_intent', { plan: 'pro' })  // pricing modal opened
+     window.feedinbox('event', 'converted')                     // on successful purchase -->`;
+}

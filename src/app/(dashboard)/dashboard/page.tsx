@@ -15,6 +15,7 @@ import { PricingModal } from "@/components/ui/pricing-modal";
 import { SwipeableFeedbackCard } from "@/components/ui/swipeable-feedback-card";
 import { formatDate } from "@/lib/utils";
 import { OverviewGraph } from "@/components/dashboard/overview-graph";
+import { WhyNotBuyOverview } from "@/components/dashboard/why-not-buy-overview";
 import { Plus, MessageSquare, Bug, Lightbulb, HelpCircle, ArrowUpRight, Inbox, CheckCircle2 } from "lucide-react";
 
 interface Analytics {
@@ -168,9 +169,15 @@ export default function DashboardPage() {
             />
 
             <div className="p-4 md:p-8">
-                {/* Header with Export */}
+                {/* Why-Not-Buy: the headline of the product */}
+                {selectedProject && <WhyNotBuyOverview projectId={selectedProject} />}
+
+                {/* Feedback section header with Export */}
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-semibold text-foreground">Overview</h2>
+                    <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                        <MessageSquare className="h-5 w-5" />
+                        Feedback
+                    </h2>
                     {selectedProject && (
                         <ExportDropdown
                             projectId={selectedProject}

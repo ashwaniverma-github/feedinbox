@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 
 interface WidgetSettings {
+    enabled: boolean;
     primaryColor: string;
     position: "bottom-right" | "bottom-left" | "top-right" | "top-left";
     triggerIcon: "chat" | "feedback" | "question" | "lightbulb" | "star";
@@ -25,6 +26,7 @@ interface WidgetSettings {
 }
 
 const DEFAULT_SETTINGS: WidgetSettings = {
+    enabled: true,
     primaryColor: "#171717",
     position: "bottom-right",
     triggerIcon: "chat",
@@ -131,6 +133,23 @@ export default function WidgetEditorPage({
         setSettings(originalSettings);
     };
 
+    // On/off toggle for the feedback button. Free for all tiers, saved immediately
+    // (independent of the Pro-gated appearance Save button).
+    const toggleEnabled = async () => {
+        const next = !settings.enabled;
+        setSettings((prev) => ({ ...prev, enabled: next }));
+        setOriginalSettings((prev) => ({ ...prev, enabled: next }));
+        try {
+            await fetch(`/api/projects/${id}/widget-settings`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ enabled: next }),
+            });
+        } catch (error) {
+            console.error("Failed to toggle widget:", error);
+        }
+    };
+
     const updateSetting = <K extends keyof WidgetSettings>(key: K, value: WidgetSettings[K]) => {
         setSettings(prev => ({ ...prev, [key]: value }));
     };
@@ -176,8 +195,35 @@ export default function WidgetEditorPage({
             />
 
             <div className="p-4 md:p-8">
+                {/* Feedback button on/off (free for all tiers) */}
+                <Card className="mb-6">
+                    <CardContent className="py-4 flex items-center justify-between gap-4">
+                        <div>
+                            <p className="text-sm font-medium">Feedback button</p>
+                            <p className="text-sm text-muted-foreground">
+                                {settings.enabled
+                                    ? "The floating feedback button shows on your site."
+                                    : "Hidden. You can still run Why-Not-Buy on its own."}
+                            </p>
+                        </div>
+                        <button
+                            onClick={toggleEnabled}
+                            aria-label="Toggle feedback button"
+                            className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.enabled
+                                ? "bg-black border-white"
+                                : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
+                                }`}
+                        >
+                            <div
+                                className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${settings.enabled ? "translate-x-6" : "translate-x-0.5"
+                                    }`}
+                            />
+                        </button>
+                    </CardContent>
+                </Card>
+
                 {/* Pro Banner */}
-                {!isPro && (
+                {settings.enabled && !isPro && (
                     <Card className="mb-6 border-primary/50 bg-primary/5">
                         <CardContent className="py-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -194,7 +240,7 @@ export default function WidgetEditorPage({
                     </Card>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 transition-opacity ${settings.enabled ? "" : "opacity-50"}`}>
                     {/* Settings Panel */}
                     <div className="space-y-6">
                         {/* Primary Color */}
