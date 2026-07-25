@@ -136,17 +136,23 @@ export default function WidgetEditorPage({
     // On/off toggle for the feedback button. Free for all tiers, saved immediately
     // (independent of the Pro-gated appearance Save button).
     const toggleEnabled = async () => {
-        const next = !settings.enabled;
-        setSettings((prev) => ({ ...prev, enabled: next }));
-        setOriginalSettings((prev) => ({ ...prev, enabled: next }));
+        const prev = settings.enabled;
+        const next = !prev;
+        // Optimistic update
+        setSettings((s) => ({ ...s, enabled: next }));
+        setOriginalSettings((s) => ({ ...s, enabled: next }));
         try {
-            await fetch(`/api/projects/${id}/widget-settings`, {
+            const res = await fetch(`/api/projects/${id}/widget-settings`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ enabled: next }),
             });
+            if (!res.ok) throw new Error(`Toggle failed: ${res.status}`);
         } catch (error) {
             console.error("Failed to toggle widget:", error);
+            // Roll back on failure
+            setSettings((s) => ({ ...s, enabled: prev }));
+            setOriginalSettings((s) => ({ ...s, enabled: prev }));
         }
     };
 

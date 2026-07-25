@@ -38,45 +38,49 @@ export async function POST(req: Request) {
         const body = (await req.json()) as CreateCheckoutBody;
 
         // Server-side product ids (single source of truth). No NEXT_PUBLIC copies needed.
-        const MONTHLY_ID = process.env.DODO_MONTHLY_PRODUCT_ID || null;
-        const ANNUAL_ID = process.env.DODO_ANNUAL_PRODUCT_ID || null;
-        const LTD_ID = process.env.DODO_LTD_PRODUCT_ID || null;
+        const PRODUCT_BY_CADENCE: Record<'monthly' | 'annual' | 'lifetime', string | null> = {
+            monthly: process.env.DODO_MONTHLY_PRODUCT_ID || null,
+            annual: process.env.DODO_ANNUAL_PRODUCT_ID || null,
+            lifetime: process.env.DODO_LTD_PRODUCT_ID || null,
+        };
 
-        // Resolve the product id from the requested cadence (preferred), falling back
-        // to an explicit product_id or a cadence in metadata.
-        const requestedCadence = body.cadence || (body as any)?.metadata?.cadence;
-        let productId = body.product_id || null;
-        if (!productId && requestedCadence) {
-            productId =
-                requestedCadence === 'annual' ? ANNUAL_ID :
-                    requestedCadence === 'lifetime' ? LTD_ID :
-                        MONTHLY_ID;
-        }
-
-        if (!productId) {
+        // Allowlist is built ONLY from configured products; fail closed when empty.
+        const allowedProducts = (Object.values(PRODUCT_BY_CADENCE).filter(Boolean)) as string[];
+        if (allowedProducts.length === 0) {
             return NextResponse.json(
-                { error: 'No product configured for this plan. Set DODO_MONTHLY_PRODUCT_ID / DODO_ANNUAL_PRODUCT_ID.' },
+                { error: 'No products configured. Set DODO_MONTHLY_PRODUCT_ID / DODO_ANNUAL_PRODUCT_ID.' },
                 { status: 400 }
             );
         }
 
-        // Enforce allowlist if any product ids are configured
-        const allowedProducts = [MONTHLY_ID, ANNUAL_ID, LTD_ID].filter(Boolean) as string[];
-        if (allowedProducts.length > 0 && !allowedProducts.includes(productId)) {
+        // Validate cadence against the known set (never silently default).
+        const rawCadence = body.cadence ?? (body as any)?.metadata?.cadence;
+        const cadence: 'monthly' | 'annual' | 'lifetime' | undefined =
+            rawCadence === 'monthly' || rawCadence === 'annual' || rawCadence === 'lifetime'
+                ? rawCadence
+                : undefined;
+
+        // Resolve the product from cadence, or accept an explicit product_id only if
+        // it is in the configured allowlist.
+        let productId: string | null = null;
+        if (cadence) {
+            productId = PRODUCT_BY_CADENCE[cadence];
+        } else if (body.product_id && allowedProducts.includes(body.product_id)) {
+            productId = body.product_id;
+        }
+
+        if (!productId || !allowedProducts.includes(productId)) {
             return NextResponse.json(
-                { error: 'Unknown or disallowed product_id' },
+                { error: 'Invalid or unconfigured plan. Provide a valid cadence (monthly, annual, lifetime) or an allowlisted product_id.' },
                 { status: 400 }
             );
         }
 
-        // Derive cadence from product_id or incoming request
-        let cadence: 'monthly' | 'annual' | 'lifetime' | undefined;
-        if (productId === MONTHLY_ID) cadence = 'monthly';
-        else if (productId === ANNUAL_ID) cadence = 'annual';
-        else if (productId === LTD_ID) cadence = 'lifetime';
-        if (!cadence && requestedCadence) {
-            cadence = requestedCadence;
-        }
+        // Derive the cadence to record from the resolved product id.
+        const resolvedCadence: 'monthly' | 'annual' | 'lifetime' | undefined =
+            productId === PRODUCT_BY_CADENCE.monthly ? 'monthly' :
+                productId === PRODUCT_BY_CADENCE.annual ? 'annual' :
+                    productId === PRODUCT_BY_CADENCE.lifetime ? 'lifetime' : cadence;
         const baseReturn =
             body.return_url ||
             process.env.DODO_RETURN_URL_BASE ||
@@ -101,8 +105,8 @@ export async function POST(req: Request) {
                 ...(body.metadata ?? {}),
                 user_id: session.user.id,
                 email: session.user?.email ?? null,
-                ...(cadence ? { cadence } : {}),
-                ...(cadence ? { plan_cadence: cadence } : {}),
+                ...(resolvedCadence ? { cadence: resolvedCadence } : {}),
+                ...(resolvedCadence ? { plan_cadence: resolvedCadence } : {}),
             },
         };
 

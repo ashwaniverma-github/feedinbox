@@ -56,7 +56,7 @@ Use the platform's custom-code slot with the Step 1 snippet:
 - Webflow: Project Settings > Custom Code > Footer.
 - Shopify: theme.liquid, before </body>.
 - Framer: Site Settings > Custom Code > End of <body>.
-- WordPress: a "insert headers and footers" plugin, footer slot.
+- WordPress: an "insert headers and footers" plugin, footer slot.
 - Google Tag Manager: a Custom HTML tag that fires on all pages.
 
 ## Step 2: Fire the events (required only for Why-Not-Buy)

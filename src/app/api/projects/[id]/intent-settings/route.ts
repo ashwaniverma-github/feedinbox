@@ -90,15 +90,22 @@ export async function PUT(
                 next.question = body.question.trim().slice(0, 200);
             }
             if (Array.isArray(body.options)) {
-                const cleaned: IntentOption[] = body.options
-                    .filter((o: unknown): o is { id: unknown; label: unknown } =>
-                        !!o && typeof o === "object")
-                    .map((o: { id: unknown; label: unknown }, i: number) => ({
-                        id: typeof o.id === "string" && o.id.trim() ? o.id.trim().slice(0, 100) : `option_${i + 1}`,
-                        label: typeof o.label === "string" ? o.label.trim().slice(0, 200) : "",
-                    }))
-                    .filter((o: IntentOption) => o.label.length > 0)
-                    .slice(0, MAX_INTENT_OPTIONS);
+                const cleaned: IntentOption[] = [];
+                const usedIds = new Set<string>();
+                for (let i = 0; i < body.options.length && cleaned.length < MAX_INTENT_OPTIONS; i++) {
+                    const o = body.options[i];
+                    if (!o || typeof o !== "object") continue;
+                    const label = typeof o.label === "string" ? o.label.trim().slice(0, 200) : "";
+                    if (!label) continue;
+                    const base =
+                        typeof o.id === "string" && o.id.trim() ? o.id.trim().slice(0, 100) : `option_${i + 1}`;
+                    // Regenerate colliding ids deterministically so every option is unique
+                    let id = base;
+                    let n = 2;
+                    while (usedIds.has(id)) id = `${base}_${n++}`.slice(0, 100);
+                    usedIds.add(id);
+                    cleaned.push({ id, label });
+                }
                 if (cleaned.length > 0) next.options = cleaned;
             }
             if (typeof body.delaySeconds === "number" && Number.isFinite(body.delaySeconds)) {

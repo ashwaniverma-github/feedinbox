@@ -78,13 +78,11 @@ window.feedinbox('event', 'converted')`,
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-<!-- In your pricing component: -->
-<script>
-  // when the pricing modal opens
-  window.feedinbox('event', 'high_intent', { plan: 'pro' })
-  // on purchase success
-  window.feedinbox('event', 'converted')
-</script>`,
+// In your pricing component, call these from event handlers (never on page load):
+// when the pricing modal opens
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
+// on purchase success
+window.feedinbox('event', 'converted')`,
     steps: [
       { title: "Add the scripts", description: "Paste the stub and widget script into public/index.html before </body>", code: "" },
       { title: "Fire high_intent", description: "Call it when your pricing modal opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
@@ -156,10 +154,9 @@ window.feedinbox('event', 'converted')`,
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-<!-- If you sell on WordPress (WooCommerce etc.), fire on your pricing/checkout: -->
-<script>
-  window.feedinbox('event', 'high_intent', { plan: 'pro' })
-</script>`,
+<!-- If you sell on WordPress (WooCommerce etc.), fire high_intent from your
+     pricing/checkout button handler, not as a global script on every page: -->
+<!-- window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->`,
     steps: [
       { title: "Access your theme", description: "Go to Appearance > Theme File Editor, or use a header/footer plugin", code: "" },
       { title: "Paste before </body>", description: "Add the stub and widget script", code: "" },
@@ -181,14 +178,13 @@ ${STUB}
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-<!-- On your cart / checkout template: -->
-<script>
-  window.feedinbox('event', 'high_intent', { plan: 'checkout' })
-</script>`,
+<!-- Shopify checkout isn't themeable, so fire high_intent from your product or
+     cart page (e.g. a checkout-button click handler), not from checkout itself: -->
+<!-- window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->`,
     steps: [
       { title: "Edit your theme code", description: "Online Store > Themes > Edit Code", code: "" },
       { title: "Paste into theme.liquid", description: "Add the stub and widget script before </body>", code: "" },
-      { title: "Fire high_intent at checkout", description: "Add the event to your cart or checkout template", code: "window.feedinbox('event', 'high_intent')" }
+      { title: "Fire high_intent on product/cart", description: "Trigger it from a checkout-button handler on your product or cart page (checkout isn't themeable)", code: "window.feedinbox('event', 'high_intent')" }
     ],
     keywords: ["shopify exit intent", "why shopify shoppers don't buy", "shopify cart abandonment feedback", "shopify conversion feedback", "shopify feedback widget"]
   },
@@ -206,10 +202,8 @@ ${STUB}
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-<!-- On your pricing button (element settings or an embed): -->
-<script>
-  window.feedinbox('event', 'high_intent', { plan: 'pro' })
-</script>`,
+// On your pricing button's click interaction (not a global script):
+// window.feedinbox('event', 'high_intent', { plan: 'pro' })`,
     steps: [
       { title: "Open Project Settings", description: "Go to your Webflow project settings", code: "" },
       { title: "Paste in Footer Code", description: "Add the stub and widget script, then publish", code: "" },
@@ -231,12 +225,10 @@ ${STUB}
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-<!-- On your pricing page / buy button: -->
-<script>
-  window.feedinbox('event', 'high_intent', { plan: 'pro' })
-  // on success page:
-  window.feedinbox('event', 'converted')
-</script>`,
+// From your pricing/buy button's click handler (not a global script):
+// window.feedinbox('event', 'high_intent', { plan: 'pro' })
+// From your success page:
+// window.feedinbox('event', 'converted')`,
     steps: [
       { title: "Open your HTML file", description: "Find your index.html or main HTML file", code: "" },
       { title: "Add before </body>", description: "Paste the stub and widget script", code: "" },

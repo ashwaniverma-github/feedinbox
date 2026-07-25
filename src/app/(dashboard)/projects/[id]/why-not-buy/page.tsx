@@ -21,6 +21,7 @@ export default function WhyNotBuyConfigPage({
     const { id } = use(params);
     const [loading, setLoading] = useState(true);
     const [project, setProject] = useState<Project | null>(null);
+    const [error, setError] = useState(false);
     const [origin, setOrigin] = useState("");
 
     useEffect(() => {
@@ -28,9 +29,14 @@ export default function WhyNotBuyConfigPage({
         (async () => {
             try {
                 const res = await fetch(`/api/projects/${id}`);
+                if (!res.ok) {
+                    setError(true);
+                    return;
+                }
                 setProject(await res.json());
             } catch (e) {
                 console.error("Failed to fetch project", e);
+                setError(true);
             } finally {
                 setLoading(false);
             }
@@ -39,7 +45,29 @@ export default function WhyNotBuyConfigPage({
 
     if (loading || !origin) return <LoadingPage />;
 
-    const widgetKey = project?.widgetKey || "pk_xxx";
+    const widgetKey = project?.widgetKey;
+
+    if (error || !widgetKey) {
+        return (
+            <>
+                <Header title="Why-Not-Buy" />
+                <div className="mx-auto max-w-3xl p-4 md:p-8">
+                    <Card>
+                        <CardContent className="py-12 text-center">
+                            <p className="text-neutral-500">Couldn't load this project.</p>
+                            <Link
+                                href={`/projects/${id}?tab=intent`}
+                                className="mt-3 inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                            >
+                                <ArrowLeft className="h-4 w-4" /> Back to responses
+                            </Link>
+                        </CardContent>
+                    </Card>
+                </div>
+            </>
+        );
+    }
+
     const installSnippet = `<!-- 1. Add before </body> (once) -->
 <script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>
 <script async src="${origin}/widget.js" data-project-key="${widgetKey}"></script>`;

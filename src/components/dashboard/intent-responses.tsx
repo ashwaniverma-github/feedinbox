@@ -35,16 +35,23 @@ interface ApiResponse {
 export function IntentResponses({ projectId }: { projectId: string }) {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<ApiResponse | null>(null);
+    const [error, setError] = useState(false);
     const [page, setPage] = useState(1);
 
     useEffect(() => {
         (async () => {
             setLoading(true);
+            setError(false);
             try {
                 const res = await fetch(`/api/projects/${projectId}/intent-responses?page=${page}&limit=20`);
+                if (!res.ok) {
+                    setError(true);
+                    return;
+                }
                 setData(await res.json());
             } catch (e) {
                 console.error("Failed to load intent responses", e);
+                setError(true);
             } finally {
                 setLoading(false);
             }
@@ -52,6 +59,18 @@ export function IntentResponses({ projectId }: { projectId: string }) {
     }, [projectId, page]);
 
     if (loading && !data) return <LoadingPage />;
+
+    if (error) {
+        return (
+            <Card>
+                <CardContent className="py-12 text-center">
+                    <Zap className="mx-auto h-8 w-8 text-neutral-300" />
+                    <p className="mt-2 text-neutral-500">Couldn't load responses</p>
+                    <p className="mt-1 text-sm text-neutral-400">Please refresh to try again.</p>
+                </CardContent>
+            </Card>
+        );
+    }
 
     const agg = data?.aggregate;
     const total = agg?.total || 0;

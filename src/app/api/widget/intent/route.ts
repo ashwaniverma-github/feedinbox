@@ -4,8 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { createIntentResponseSchema } from "@/lib/validations";
 import { canReceiveIntentResponse } from "@/lib/tiers";
 import { readIntentSettings } from "@/lib/intent";
-import { resend, FROM_EMAIL } from "@/lib/email";
-import NewIntentResponseEmail from "@/emails/new-intent-response";
 
 // POST /api/widget/intent - Public endpoint for the exit-intent card to submit a response
 export async function POST(request: Request) {
@@ -29,9 +27,7 @@ export async function POST(request: Request) {
             select: {
                 id: true,
                 userId: true,
-                name: true,
                 settings: true,
-                user: { select: { email: true, name: true } },
             },
         });
 
@@ -47,6 +43,20 @@ export async function POST(request: Request) {
         if (!intentSettings.enabled) {
             return corsResponse(
                 NextResponse.json({ error: "Exit-intent is not enabled" }, { status: 403 }),
+                origin
+            );
+        }
+
+        // Replay protection: one response per (project, session). This is idempotent
+        // for retries and stops a session from consuming quota more than once, before
+        // the quota check runs.
+        const existing = await prisma.intentResponse.findFirst({
+            where: { projectId: project.id, sessionId: validated.data.sessionId },
+            select: { id: true },
+        });
+        if (existing) {
+            return corsResponse(
+                NextResponse.json({ success: true, id: existing.id, deduped: true }, { status: 200 }),
                 origin
             );
         }
@@ -83,32 +93,8 @@ export async function POST(request: Request) {
             },
         });
 
-        // TEMP (testing): send an instant email per response. The permanent model is
-        // the weekly digest (see /api/cron/intent-digest). Remove this block / unset
-        // INTENT_INSTANT_EMAIL to go back to digest-only.
-        if (process.env.INTENT_INSTANT_EMAIL === "true" && project.user?.email) {
-            const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-            const ctx = (validated.data.context as Record<string, unknown>) || {};
-            try {
-                await resend.emails.send({
-                    from: FROM_EMAIL,
-                    to: project.user.email,
-                    subject: `Why-Not-Buy: ${validated.data.optionLabel || "new response"} on ${project.name}`,
-                    react: NewIntentResponseEmail({
-                        projectName: project.name,
-                        ownerName: project.user.name || "there",
-                        optionLabel: validated.data.optionLabel,
-                        text: validated.data.text,
-                        country,
-                        plan: typeof ctx.plan === "string" ? ctx.plan : null,
-                        pageUrl: validated.data.pageUrl,
-                        dashboardUrl: `${baseUrl}/projects/${project.id}?tab=intent`,
-                    }),
-                });
-            } catch (err) {
-                console.error("Failed to send instant intent email:", err);
-            }
-        }
+        // Notifications are handled by the weekly digest cron (/api/cron/intent-digest),
+        // not per-response here, to avoid unauthenticated inbox flooding and request-path latency.
 
         return corsResponse(
             NextResponse.json({ success: true, id: response.id }, { status: 201 }),

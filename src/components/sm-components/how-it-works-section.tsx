@@ -68,9 +68,12 @@ export default function HowItWorksSection() {
                                 Just looking
                             </div>
                         </div>
-                        <button className="mt-3 w-full rounded-lg bg-neutral-900 py-2.5 text-sm font-medium text-white">
+                        <div
+                            aria-hidden="true"
+                            className="mt-3 w-full rounded-lg bg-neutral-900 py-2.5 text-center text-sm font-medium text-white"
+                        >
                             Send
-                        </button>
+                        </div>
                     </div>
                 </div>
             </div>

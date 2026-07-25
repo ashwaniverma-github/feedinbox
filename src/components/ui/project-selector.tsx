@@ -21,6 +21,7 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
     const [highlightedIndex, setHighlightedIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
+    const newProjectRef = useRef<HTMLAnchorElement>(null);
 
     // Safety check for projects array
     const safeProjects = Array.isArray(projects) ? projects : [];
@@ -42,6 +43,12 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
         if (!isOpen) return;
 
         const handleKeyDown = (e: KeyboardEvent) => {
+            // When the "New project" link is focused, let the browser handle
+            // Enter/Space/Tab natively so it stays keyboard-activatable.
+            if (newProjectRef.current && document.activeElement === newProjectRef.current) {
+                if (e.key === "Escape") setIsOpen(false);
+                return;
+            }
             switch (e.key) {
                 case "ArrowDown":
                     e.preventDefault();
@@ -191,6 +198,7 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
 
                         {/* New project */}
                         <Link
+                            ref={newProjectRef}
                             href="/projects/new"
                             onClick={() => setIsOpen(false)}
                             className="flex items-center gap-3 px-3 py-2.5 border-t border-border hover:bg-accent transition-colors"

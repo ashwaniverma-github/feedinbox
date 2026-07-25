@@ -50,10 +50,14 @@ export function IntentConfig({ projectId }: { projectId: string }) {
 
     const addOption = () => {
         if (settings.options.length >= MAX_INTENT_OPTIONS) return;
-        setSettings((prev) => ({
-            ...prev,
-            options: [...prev.options, { id: `option_${prev.options.length + 1}`, label: "" }],
-        }));
+        setSettings((prev) => {
+            // Generate an id that can't collide with an existing one (even after removals)
+            const existing = new Set(prev.options.map((o) => o.id));
+            let n = prev.options.length + 1;
+            let id = `option_${n}`;
+            while (existing.has(id)) id = `option_${++n}`;
+            return { ...prev, options: [...prev.options, { id, label: "" }] };
+        });
     };
 
     const removeOption = (index: number) => {
@@ -118,8 +122,11 @@ export function IntentConfig({ projectId }: { projectId: string }) {
                     </div>
                     {/* Enabled toggle (free for all tiers) */}
                     <button
+                        type="button"
+                        role="switch"
+                        aria-checked={settings.enabled}
                         onClick={() => update("enabled", !settings.enabled)}
-                        aria-label="Toggle exit-intent"
+                        aria-label="Toggle Why-Not-Buy"
                         className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.enabled
                             ? "bg-black border-white"
                             : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
@@ -142,95 +149,103 @@ export function IntentConfig({ projectId }: { projectId: string }) {
                     </div>
                 )}
 
-                {/* Question */}
-                <div className={!isPro ? "opacity-60" : ""}>
-                    <Input
-                        label="Question"
-                        value={settings.question}
-                        maxLength={200}
-                        disabled={!isPro}
-                        onChange={(e) => update("question", e.target.value)}
-                        onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
-                    />
-                </div>
+                {/* Customization (Pro). For non-Pro, a transparent overlay captures
+                    clicks to open pricing, since disabled inputs don't emit focus/mouse events. */}
+                <div className="relative space-y-6">
+                    {!isPro && (
+                        <button
+                            type="button"
+                            onClick={() => setIsPricingOpen(true)}
+                            aria-label="Upgrade to customize Why-Not-Buy"
+                            className="absolute inset-0 z-10 cursor-pointer rounded-lg"
+                        />
+                    )}
 
-                {/* Options */}
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium">Answer options</label>
-                        {isPro && settings.options.length < MAX_INTENT_OPTIONS && (
-                            <button
-                                onClick={addOption}
-                                className="text-xs font-medium text-primary hover:underline"
-                            >
-                                + Add option
-                            </button>
-                        )}
+                    {/* Question */}
+                    <div className={!isPro ? "opacity-60" : ""}>
+                        <Input
+                            label="Question"
+                            value={settings.question}
+                            maxLength={200}
+                            disabled={!isPro}
+                            onChange={(e) => update("question", e.target.value)}
+                        />
                     </div>
+
+                    {/* Options */}
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">Answer options</label>
+                            {isPro && settings.options.length < MAX_INTENT_OPTIONS && (
+                                <button
+                                    onClick={addOption}
+                                    className="text-xs font-medium text-primary hover:underline"
+                                >
+                                    + Add option
+                                </button>
+                            )}
+                        </div>
+                        <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
+                            {settings.options.map((opt, i) => (
+                                <div key={opt.id} className="flex items-center gap-2">
+                                    <input
+                                        value={opt.label}
+                                        maxLength={200}
+                                        disabled={!isPro}
+                                        onChange={(e) => updateOption(i, e.target.value)}
+                                        className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                                        placeholder={`Option ${i + 1}`}
+                                    />
+                                    {isPro && settings.options.length > 1 && (
+                                        <button
+                                            onClick={() => removeOption(i)}
+                                            className="text-xs text-neutral-400 hover:text-red-500 px-2"
+                                            aria-label="Remove option"
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Delay */}
                     <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
-                        {settings.options.map((opt, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                                <input
-                                    value={opt.label}
-                                    maxLength={200}
-                                    disabled={!isPro}
-                                    onChange={(e) => updateOption(i, e.target.value)}
-                                    onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
-                                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                                    placeholder={`Option ${i + 1}`}
-                                />
-                                {isPro && settings.options.length > 1 && (
-                                    <button
-                                        onClick={() => removeOption(i)}
-                                        className="text-xs text-neutral-400 hover:text-red-500 px-2"
-                                        aria-label="Remove option"
-                                    >
-                                        ✕
-                                    </button>
-                                )}
-                            </div>
-                        ))}
+                        <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">
+                                Show after (seconds without converting)
+                            </label>
+                            <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
+                        </div>
+                        <input
+                            type="range"
+                            min={MIN_DELAY_SECONDS}
+                            max={MAX_DELAY_SECONDS}
+                            value={settings.delaySeconds}
+                            disabled={!isPro}
+                            onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
+                            className="w-full accent-primary"
+                        />
                     </div>
-                </div>
 
-                {/* Delay */}
-                <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
-                    <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium">
-                            Show after (seconds without converting)
-                        </label>
-                        <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
+                    {/* Event names */}
+                    <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 ${!isPro ? "opacity-60" : ""}`}>
+                        <Input
+                            label="High-intent event"
+                            value={settings.highIntentEvent}
+                            maxLength={100}
+                            disabled={!isPro}
+                            onChange={(e) => update("highIntentEvent", e.target.value)}
+                        />
+                        <Input
+                            label="Conversion event"
+                            value={settings.conversionEvent}
+                            maxLength={100}
+                            disabled={!isPro}
+                            onChange={(e) => update("conversionEvent", e.target.value)}
+                        />
                     </div>
-                    <input
-                        type="range"
-                        min={MIN_DELAY_SECONDS}
-                        max={MAX_DELAY_SECONDS}
-                        value={settings.delaySeconds}
-                        disabled={!isPro}
-                        onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
-                        onMouseDown={() => { if (!isPro) setIsPricingOpen(true); }}
-                        className="w-full accent-primary"
-                    />
-                </div>
-
-                {/* Event names */}
-                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 ${!isPro ? "opacity-60" : ""}`}>
-                    <Input
-                        label="High-intent event"
-                        value={settings.highIntentEvent}
-                        maxLength={100}
-                        disabled={!isPro}
-                        onChange={(e) => update("highIntentEvent", e.target.value)}
-                        onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
-                    />
-                    <Input
-                        label="Conversion event"
-                        value={settings.conversionEvent}
-                        maxLength={100}
-                        disabled={!isPro}
-                        onChange={(e) => update("conversionEvent", e.target.value)}
-                        onFocus={() => { if (!isPro) setIsPricingOpen(true); }}
-                    />
                 </div>
 
                 {/* Snippet hint */}

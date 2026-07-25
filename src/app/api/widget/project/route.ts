@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isPro } from "@/lib/tiers";
 import { resolveIntentSettingsForWidget } from "@/lib/intent";
@@ -47,17 +47,20 @@ export async function GET(request: Request) {
         }
 
         // Record that the widget loaded on the customer's site (install detection).
-        // Throttled to at most once per hour to avoid a write on every page load.
+        // Throttled to at most once per hour. Scheduled with after() so it's guaranteed
+        // to run after the response is sent (not killed early in serverless).
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        prisma.project
-            .updateMany({
-                where: {
-                    id: project.id,
-                    OR: [{ widgetLastSeenAt: null }, { widgetLastSeenAt: { lt: oneHourAgo } }],
-                },
-                data: { widgetLastSeenAt: new Date() },
-            })
-            .catch(() => { /* non-fatal */ });
+        after(async () => {
+            try {
+                await prisma.project.updateMany({
+                    where: {
+                        id: project.id,
+                        OR: [{ widgetLastSeenAt: null }, { widgetLastSeenAt: { lt: oneHourAgo } }],
+                    },
+                    data: { widgetLastSeenAt: new Date() },
+                });
+            } catch { /* non-fatal */ }
+        });
 
         // Check if project owner is Pro
         const ownerIsPro = await isPro(project.userId);

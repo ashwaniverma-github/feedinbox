@@ -84,16 +84,22 @@ export default function RootLayout({
         >
           {children}
           <Analytics />
-          {/* Queue stub so events fired before widget.js loads (e.g. high_intent on
-              pricing modal open) aren't lost */}
-          <Script id="feedinbox-stub" strategy="beforeInteractive">
-            {`window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}`}
-          </Script>
-          <Script
-            src="/widget.js"
-            data-project-key={process.env.NEXT_PUBLIC_FEEDINBOX_WIDGET_KEY || "cmjb5cwds000312f8j91p28yl"}
-            strategy="lazyOnload"
-          />
+          {/* Self-embed only when an explicit project key is configured, so local
+              builds and previews don't load the widget with a stray key. */}
+          {process.env.NEXT_PUBLIC_FEEDINBOX_WIDGET_KEY && (
+            <>
+              {/* Queue stub so events fired before widget.js loads (e.g. high_intent
+                  on pricing modal open) aren't lost */}
+              <Script id="feedinbox-stub" strategy="beforeInteractive">
+                {`window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}`}
+              </Script>
+              <Script
+                src="/widget.js"
+                data-project-key={process.env.NEXT_PUBLIC_FEEDINBOX_WIDGET_KEY}
+                strategy="lazyOnload"
+              />
+            </>
+          )}
 
           {/* Google Analytics */}
           <Script

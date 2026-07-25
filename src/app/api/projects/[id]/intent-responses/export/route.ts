@@ -49,6 +49,23 @@ export async function GET(
         };
 
         const dateStr = new Date().toISOString().split("T")[0];
+        // Sanitize the user-controlled project name for use in Content-Disposition:
+        // strip quotes, CR/LF, and other unsafe filename chars.
+        const safeName =
+            (project.name || "project")
+                .replace(/[\r\n"]/g, "")
+                .replace(/[^\w.\- ]+/g, "_")
+                .trim()
+                .slice(0, 80) || "project";
+
+        // CSV cell escaper: quote CSV-special values and neutralize spreadsheet
+        // formula injection (leading =, +, -, @) by prefixing with a single quote.
+        const csvCell = (value: unknown): string => {
+            let s = value == null ? "" : String(value);
+            if (/^[=+\-@]/.test(s)) s = "'" + s;
+            if (/[",\r\n]/.test(s)) s = `"${s.replace(/"/g, '""')}"`;
+            return s;
+        };
 
         if (format === "pdf") {
             const doc = new jsPDF();
@@ -105,29 +122,29 @@ export async function GET(
                 status: 200,
                 headers: {
                     "Content-Type": "application/pdf",
-                    "Content-Disposition": `attachment; filename="${project.name}-why-not-buy-${dateStr}.pdf"`,
+                    "Content-Disposition": `attachment; filename="${safeName}-why-not-buy-${dateStr}.pdf"`,
                 },
             });
         }
 
-        // CSV
+        // CSV: every field goes through csvCell for consistent escaping + injection safety
         const headers = ["ID", "Reason", "Detail", "Plan", "Country", "Page URL", "Created At"];
         const rows = responses.map((r) => [
             r.id,
-            `"${(r.optionLabel || "").replace(/"/g, '""')}"`,
-            `"${(r.text || "").replace(/"/g, '""')}"`,
+            r.optionLabel || "",
+            r.text || "",
             planOf(r.context),
             r.country || "",
             r.pageUrl || "",
             r.createdAt.toISOString(),
         ]);
-        const csv = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+        const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
 
         return new NextResponse(csv, {
             status: 200,
             headers: {
                 "Content-Type": "text/csv",
-                "Content-Disposition": `attachment; filename="${project.name}-why-not-buy-${dateStr}.csv"`,
+                "Content-Disposition": `attachment; filename="${safeName}-why-not-buy-${dateStr}.csv"`,
             },
         });
     } catch (error) {

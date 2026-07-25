@@ -50,7 +50,27 @@ export const createIntentResponseSchema = z.object({
         if (!val || val.trim() === "") return undefined;
         return val.trim();
     }),
-    context: z.record(z.string(), z.unknown()).optional().default({}),
+    // Bound the arbitrary context object before it reaches the API / JSONB: cap key
+    // count and key length, and only allow primitive values (no nesting/depth) with
+    // bounded string sizes.
+    context: z
+        .record(z.string().max(100), z.unknown())
+        .optional()
+        .default({})
+        .refine((obj) => Object.keys(obj).length <= 30, {
+            message: "Too many context keys (max 30)",
+        })
+        .refine(
+            (obj) =>
+                Object.values(obj).every((v) => {
+                    if (v === null) return true;
+                    const t = typeof v;
+                    if (t === "number" || t === "boolean") return true;
+                    if (t === "string") return (v as string).length <= 500;
+                    return false; // reject objects/arrays to prevent deep/large payloads
+                }),
+            { message: "Context values must be strings (max 500 chars), numbers, or booleans" }
+        ),
     // Lenient like createFeedbackSchema: the widget runs on any site, so strip
     // invalid URLs to undefined rather than rejecting the whole submission.
     pageUrl: z.string().optional().transform((val) => {
