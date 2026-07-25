@@ -23,14 +23,36 @@ export const TIER_LIMITS = {
 export type TierType = "free" | "pro";
 
 /**
- * Check if a user has an active Pro subscription
+ * Check if a user has Pro access.
+ *
+ * Active subscriptions (including lifetime, which the webhook stores as "active")
+ * are Pro. A cancelled subscription keeps Pro until the end of the period the
+ * user already paid for (`dodoCurrentPeriodEnd`). This also makes access correct
+ * even if Dodo emits `subscription.cancelled` at cancel-time rather than at
+ * period end.
  */
 export async function isPro(userId: string): Promise<boolean> {
     const user = await prisma.user.findUnique({
         where: { id: userId },
-    }) as any;
+        select: {
+            dodoSubscriptionStatus: true,
+            dodoCurrentPeriodEnd: true,
+        },
+    });
 
-    return user?.dodoSubscriptionStatus === "active";
+    if (!user) return false;
+    if (user.dodoSubscriptionStatus === "active") return true;
+
+    // Cancelled but still within the paid period keeps access until it ends.
+    if (
+        user.dodoSubscriptionStatus === "cancelled" &&
+        user.dodoCurrentPeriodEnd &&
+        user.dodoCurrentPeriodEnd.getTime() > Date.now()
+    ) {
+        return true;
+    }
+
+    return false;
 }
 
 /**

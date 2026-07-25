@@ -89,6 +89,18 @@ export async function POST(req: Request) {
             data?.status ??
             (eventType === "payment.succeeded" ? "active" : undefined);
 
+        // Cancellation scheduled for period end (Dodo keeps status "active" until then)
+        const cancelAtPeriodEnd: boolean | undefined =
+            subscription?.cancel_at_next_billing_date ??
+            data?.cancel_at_next_billing_date;
+
+        // End of the currently paid period: expiry when cancelling, otherwise next billing date
+        const periodEndRaw: string | undefined =
+            subscription?.expires_at ??
+            data?.expires_at ??
+            subscription?.next_billing_date ??
+            data?.next_billing_date;
+
         // Cadence can be inferred from metadata or derived from known product IDs
         const meta = data?.metadata ?? subscription?.metadata ?? {};
         let cadence: 'monthly' | 'annual' | 'lifetime' | undefined =
@@ -183,9 +195,21 @@ export async function POST(req: Request) {
             if (isLifetimeDeal) {
                 dataUpdate.dodoPlanCadence = "lifetime";
                 dataUpdate.dodoSubscriptionStatus = "active";
+                // Lifetime never expires or auto-cancels
+                dataUpdate.dodoCancelAtPeriodEnd = false;
+                dataUpdate.dodoCurrentPeriodEnd = null;
             } else {
                 if (cadence) dataUpdate.dodoPlanCadence = cadence;
                 if (newStatus) dataUpdate.dodoSubscriptionStatus = newStatus;
+                if (typeof cancelAtPeriodEnd === "boolean") {
+                    dataUpdate.dodoCancelAtPeriodEnd = cancelAtPeriodEnd;
+                }
+                if (periodEndRaw) {
+                    const periodEnd = new Date(periodEndRaw);
+                    if (!isNaN(periodEnd.getTime())) {
+                        dataUpdate.dodoCurrentPeriodEnd = periodEnd;
+                    }
+                }
             }
 
             if (Object.keys(dataUpdate).length > 0) {

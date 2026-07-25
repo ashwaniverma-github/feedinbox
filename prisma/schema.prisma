@@ -61,6 +61,8 @@ model User {
   dodoProductId          String?
   dodoPlanCadence        String?  // 'monthly' | 'annual' | 'lifetime'
   dodoSubscriptionStatus String?  // 'active' | 'on_hold' | 'cancelled' | 'failed' | 'expired'
+  dodoCancelAtPeriodEnd  Boolean?  // true when a cancellation is scheduled for period end
+  dodoCurrentPeriodEnd   DateTime? // end of the paid period (next billing date, or expiry when cancelling)
 }
 
 model Project {
