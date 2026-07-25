@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Header } from "@/components/layout/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,8 @@ import { LoadingPage } from "@/components/ui/loading";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
 import { SwipeableFeedbackCard } from "@/components/ui/swipeable-feedback-card";
+import { ExportDropdown } from "@/components/ui/export-dropdown";
+import { PricingModal } from "@/components/ui/pricing-modal";
 import { IntentResponses } from "@/components/dashboard/intent-responses";
 import { formatDate } from "@/lib/utils";
 import { Settings, MessageSquare, Bug, Lightbulb, HelpCircle, Palette, Zap } from "lucide-react";
@@ -31,6 +34,9 @@ export default function ProjectDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = use(params);
+    const { data: session } = useSession();
+    const isPro = session?.user?.subscriptionStatus === "active";
+    const [isPricingOpen, setIsPricingOpen] = useState(false);
     const [tab, setTab] = useState<"feedback" | "intent">("intent");
     const [loading, setLoading] = useState(true);
     const [project, setProject] = useState<Project | null>(null);
@@ -179,12 +185,21 @@ export default function ProjectDetailPage({
                         </button>
                     </div>
                     {tab === "intent" && (
-                        <Link href={`/projects/${id}/why-not-buy`}>
-                            <Button variant="secondary" size="sm">
-                                <Settings className="h-4 w-4 sm:mr-2" />
-                                <span className="hidden sm:inline">Configure</span>
-                            </Button>
-                        </Link>
+                        <div className="flex gap-2">
+                            <ExportDropdown
+                                projectId={id}
+                                isPro={isPro}
+                                onUpgradeClick={() => setIsPricingOpen(true)}
+                                endpoint={`/api/projects/${id}/intent-responses/export`}
+                                filenamePrefix="why-not-buy-export"
+                            />
+                            <Link href={`/projects/${id}/why-not-buy`}>
+                                <Button variant="secondary" size="sm">
+                                    <Settings className="h-4 w-4 sm:mr-2" />
+                                    <span className="hidden sm:inline">Configure</span>
+                                </Button>
+                            </Link>
+                        </div>
                     )}
                 </div>
 
@@ -292,6 +307,8 @@ export default function ProjectDetailPage({
                 </>
                 )}
             </div>
+
+            <PricingModal isOpen={isPricingOpen} onClose={() => setIsPricingOpen(false)} />
         </>
     );
 }

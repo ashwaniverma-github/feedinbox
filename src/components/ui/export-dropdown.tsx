@@ -9,9 +9,13 @@ interface ExportDropdownProps {
     projectId: string;
     isPro: boolean;
     onUpgradeClick: () => void;
+    /** API endpoint to hit; defaults to the feedback export. */
+    endpoint?: string;
+    /** Fallback filename prefix when the response has no Content-Disposition. */
+    filenamePrefix?: string;
 }
 
-export function ExportDropdown({ projectId, isPro, onUpgradeClick }: ExportDropdownProps) {
+export function ExportDropdown({ projectId, isPro, onUpgradeClick, endpoint, filenamePrefix = "feedback-export" }: ExportDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState<"csv" | "pdf" | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -36,7 +40,8 @@ export function ExportDropdown({ projectId, isPro, onUpgradeClick }: ExportDropd
 
         setLoading(format);
         try {
-            const response = await fetch(`/api/projects/${projectId}/export?format=${format}`);
+            const base = endpoint || `/api/projects/${projectId}/export`;
+            const response = await fetch(`${base}?format=${format}`);
 
             if (!response.ok) {
                 const error = await response.json();
@@ -49,7 +54,7 @@ export function ExportDropdown({ projectId, isPro, onUpgradeClick }: ExportDropd
 
             // Get filename from Content-Disposition header
             const contentDisposition = response.headers.get("Content-Disposition");
-            const filename = contentDisposition?.match(/filename="(.+)"/)?.[1] || `feedback-export.${format}`;
+            const filename = contentDisposition?.match(/filename="(.+)"/)?.[1] || `${filenamePrefix}.${format}`;
 
             // Download the file
             const blob = await response.blob();

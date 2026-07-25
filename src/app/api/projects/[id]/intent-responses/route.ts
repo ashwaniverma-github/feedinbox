@@ -38,7 +38,7 @@ export async function GET(
             prisma.intentResponse.count({ where: { projectId: id } }),
             prisma.intentResponse.findMany({
                 where: { projectId: id },
-                select: { optionId: true, optionLabel: true, country: true },
+                select: { optionId: true, optionLabel: true, country: true, createdAt: true },
             }),
         ]);
 
@@ -67,6 +67,25 @@ export async function GET(
             .map(([country, count]) => ({ country, count }))
             .sort((a, b) => b.count - a.count);
 
+        // Daily time series for the last N days (default 30)
+        const days = Math.min(90, Math.max(7, parseInt(searchParams.get("days") || "30")));
+        const dayMs = 24 * 60 * 60 * 1000;
+        const start = new Date(new Date().setHours(0, 0, 0, 0) - (days - 1) * dayMs);
+        const buckets = new Map<string, number>();
+        for (let i = 0; i < days; i++) {
+            const key = new Date(start.getTime() + i * dayMs).toISOString().split("T")[0];
+            buckets.set(key, 0);
+        }
+        for (const r of all) {
+            const key = new Date(r.createdAt).toISOString().split("T")[0];
+            if (buckets.has(key)) buckets.set(key, (buckets.get(key) || 0) + 1);
+        }
+        const series = Array.from(buckets.entries()).map(([date, count]) => ({
+            date,
+            label: new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(date)),
+            count,
+        }));
+
         return NextResponse.json({
             responses,
             pagination: {
@@ -79,6 +98,7 @@ export async function GET(
                 total: all.length,
                 byOption,
                 byCountry,
+                series,
             },
         });
     } catch (error) {

@@ -16,6 +16,7 @@ interface Step {
 export function ActivationChecklist({ projectId }: { projectId: string }) {
     const [loading, setLoading] = useState(true);
     const [enabled, setEnabled] = useState(false);
+    const [widgetSeen, setWidgetSeen] = useState(false);
     const [hasResponses, setHasResponses] = useState(false);
 
     useEffect(() => {
@@ -30,6 +31,7 @@ export function ActivationChecklist({ projectId }: { projectId: string }) {
                 const responses = await responsesRes.json();
                 if (!active) return;
                 setEnabled(Boolean(settings?.settings?.enabled));
+                setWidgetSeen(Boolean(settings?.widgetSeen));
                 setHasResponses((responses?.aggregate?.total || 0) > 0);
             } catch (e) {
                 console.error("Failed to load activation state", e);
@@ -50,8 +52,10 @@ export function ActivationChecklist({ projectId }: { projectId: string }) {
         },
         {
             label: "Add the script to your site",
-            detail: "Paste the snippet before </body> (see Install below).",
-            done: hasResponses,
+            detail: widgetSeen
+                ? "Detected on your site."
+                : "Paste the snippet before </body> (see Install below).",
+            done: widgetSeen || hasResponses,
         },
         {
             label: "Fire high_intent on your pricing page",
@@ -91,9 +95,16 @@ export function ActivationChecklist({ projectId }: { projectId: string }) {
     return (
         <Card>
             <CardContent className="p-6">
-                <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4 flex items-center justify-between gap-2">
                     <h3 className="font-semibold">Get your first reason</h3>
-                    <span className="text-sm text-muted-foreground">{completed}/{steps.length}</span>
+                    <div className="flex items-center gap-2">
+                        {widgetSeen && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-600">
+                                <Check className="h-3 w-3" /> Widget detected
+                            </span>
+                        )}
+                        <span className="text-sm text-muted-foreground">{completed}/{steps.length}</span>
+                    </div>
                 </div>
                 <div className="space-y-3">
                     {steps.map((step, i) => (

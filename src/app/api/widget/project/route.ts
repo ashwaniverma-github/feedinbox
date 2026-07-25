@@ -46,6 +46,19 @@ export async function GET(request: Request) {
             );
         }
 
+        // Record that the widget loaded on the customer's site (install detection).
+        // Throttled to at most once per hour to avoid a write on every page load.
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        prisma.project
+            .updateMany({
+                where: {
+                    id: project.id,
+                    OR: [{ widgetLastSeenAt: null }, { widgetLastSeenAt: { lt: oneHourAgo } }],
+                },
+                data: { widgetLastSeenAt: new Date() },
+            })
+            .catch(() => { /* non-fatal */ });
+
         // Check if project owner is Pro
         const ownerIsPro = await isPro(project.userId);
 

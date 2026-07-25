@@ -37,7 +37,12 @@ export async function GET(
         const settings = readIntentSettings(project.settings);
         const userIsPro = await isPro(session.user.id);
 
-        return NextResponse.json({ settings, isPro: userIsPro });
+        return NextResponse.json({
+            settings,
+            isPro: userIsPro,
+            widgetSeen: !!project.widgetLastSeenAt,
+            widgetLastSeenAt: project.widgetLastSeenAt,
+        });
     } catch (error) {
         console.error("Error fetching intent settings:", error);
         return NextResponse.json(

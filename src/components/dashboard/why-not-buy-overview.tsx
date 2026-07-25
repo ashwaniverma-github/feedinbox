@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap, ArrowUpRight, Settings } from "lucide-react";
@@ -11,10 +12,16 @@ interface OptionAgg {
     label: string;
     count: number;
 }
+interface SeriesPoint {
+    date: string;
+    label: string;
+    count: number;
+}
 interface Aggregate {
     total: number;
     byOption: OptionAgg[];
     byCountry: { country: string; count: number }[];
+    series?: SeriesPoint[];
 }
 
 export function WhyNotBuyOverview({ projectId }: { projectId: string }) {
@@ -87,6 +94,7 @@ export function WhyNotBuyOverview({ projectId }: { projectId: string }) {
                     </CardContent>
                 </Card>
             ) : (
+                <div className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-3">
                     {/* Headline number */}
                     <Card>
@@ -137,6 +145,60 @@ export function WhyNotBuyOverview({ projectId }: { projectId: string }) {
                             </div>
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* Trend over time */}
+                {agg?.series && agg.series.length > 0 && (
+                    <Card>
+                        <CardContent className="p-6">
+                            <div className="mb-4 text-sm font-medium text-muted-foreground">
+                                Responses over time (30 days)
+                            </div>
+                            <div className="h-40 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={agg.series} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+                                        <defs>
+                                            <linearGradient id="wnbTrend" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stopColor="currentColor" stopOpacity={0.25} />
+                                                <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <XAxis
+                                            dataKey="label"
+                                            tick={{ fontSize: 11 }}
+                                            interval="preserveStartEnd"
+                                            minTickGap={40}
+                                            axisLine={false}
+                                            tickLine={false}
+                                            stroke="currentColor"
+                                            className="text-muted-foreground"
+                                        />
+                                        <Tooltip
+                                            cursor={{ stroke: "currentColor", strokeOpacity: 0.15 }}
+                                            contentStyle={{
+                                                fontSize: 12,
+                                                borderRadius: 8,
+                                                border: "1px solid var(--border)",
+                                                background: "var(--card)",
+                                                color: "var(--foreground)",
+                                            }}
+                                            labelStyle={{ color: "var(--muted-foreground)" }}
+                                            formatter={(value: number) => [`${value}`, "Responses"]}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="count"
+                                            stroke="currentColor"
+                                            strokeWidth={2}
+                                            fill="url(#wnbTrend)"
+                                            className="text-neutral-900 dark:text-white"
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
                 </div>
             )}
         </div>
