@@ -13,51 +13,40 @@ import {
     ArrowLeft,
     Check,
     Sparkles,
-    Building2,
-    Users,
+    Zap,
     MessageSquare,
-    Bug,
-    Lightbulb,
-    HelpCircle,
-    Copy,
-    FolderKanban,
     Rocket,
-    Code2,
-    FileCode,
-    Cpu,
-    Terminal
 } from "lucide-react";
 import { CodeBlock } from "@/components/ui/code-block";
+import { AISetupPrompt } from "@/components/dashboard/ai-setup-prompt";
 import { getEmbedCode } from "@/lib/snippets";
 import Image from "next/image";
 
 interface OnboardingData {
-    useCase: string;
-    teamSize: string;
-    feedbackTypes: string[];
+    goal: string;
     projectName: string;
     projectDomain: string;
 }
 
-const USE_CASES = [
-    { id: "saas", label: "SaaS Product", icon: Building2 },
-    { id: "ecommerce", label: "E-commerce", icon: Sparkles },
-    { id: "blog", label: "Blog / Content", icon: MessageSquare },
-    { id: "other", label: "Other", icon: FolderKanban },
-];
-
-const TEAM_SIZES = [
-    { id: "solo", label: "Just me" },
-    { id: "small", label: "2-5 people" },
-    { id: "medium", label: "6-20 people" },
-    { id: "large", label: "20+ people" },
-];
-
-const FEEDBACK_TYPES = [
-    { id: "bug", label: "Bug Reports", icon: Bug, color: "text-red-500" },
-    { id: "feature", label: "Feature Requests", icon: Lightbulb, color: "text-yellow-500" },
-    { id: "question", label: "Questions", icon: HelpCircle, color: "text-blue-500" },
-    { id: "general", label: "General Feedback", icon: MessageSquare, color: "text-green-500" },
+const GOALS = [
+    {
+        id: "why_not_buy",
+        label: "Find out why visitors don't buy",
+        desc: "Ask one question when they abandon pricing or checkout",
+        icon: Zap,
+    },
+    {
+        id: "feedback",
+        label: "Collect feedback",
+        desc: "A widget for bug reports, ideas, and questions",
+        icon: MessageSquare,
+    },
+    {
+        id: "both",
+        label: "Both",
+        desc: "Start with the full toolkit",
+        icon: Sparkles,
+    },
 ];
 
 export default function OnboardingPage() {
@@ -65,21 +54,22 @@ export default function OnboardingPage() {
     const { data: session, status } = useSession();
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [copied, setCopied] = useState(false);
-    const [framework, setFramework] = useState<"nextjs" | "react" | "html">("nextjs");
     const [projectKey, setProjectKey] = useState("");
+    const [projectId, setProjectId] = useState("");
     const [error, setError] = useState("");
     const [origin, setOrigin] = useState("");
 
     const [data, setData] = useState<OnboardingData>({
-        useCase: "",
-        teamSize: "",
-        feedbackTypes: [],
+        goal: "",
         projectName: "",
         projectDomain: "",
     });
 
-    // Set origin on client mount to avoid hydration mismatch
+    const wantsWhyNotBuy = data.goal === "why_not_buy" || data.goal === "both";
+    const setupMode: "feedback" | "why_not_buy" | "both" =
+        data.goal === "both" ? "both" : data.goal === "feedback" ? "feedback" : "why_not_buy";
+    const [showManual, setShowManual] = useState(false);
+
     useEffect(() => {
         setOrigin(window.location.origin);
     }, []);
@@ -90,7 +80,7 @@ export default function OnboardingPage() {
             try {
                 const res = await fetch("/api/projects");
                 const projects = await res.json();
-                if (projects.length > 0) {
+                if (Array.isArray(projects) && projects.length > 0) {
                     router.replace("/dashboard");
                 }
             } catch (error) {
@@ -102,19 +92,10 @@ export default function OnboardingPage() {
         }
     }, [status, router]);
 
-    const toggleFeedbackType = (id: string) => {
-        setData(prev => ({
-            ...prev,
-            feedbackTypes: prev.feedbackTypes.includes(id)
-                ? prev.feedbackTypes.filter(t => t !== id)
-                : [...prev.feedbackTypes, id]
-        }));
-    };
-
     const canProceed = () => {
         switch (currentStep) {
             case 1:
-                return data.useCase && data.teamSize && data.feedbackTypes.length > 0;
+                return !!data.goal;
             case 2:
                 return data.projectName.trim().length > 0;
             case 3:
@@ -127,7 +108,6 @@ export default function OnboardingPage() {
     const createProject = async () => {
         setLoading(true);
         setError("");
-
         try {
             const res = await fetch("/api/projects", {
                 method: "POST",
@@ -145,6 +125,21 @@ export default function OnboardingPage() {
 
             const project = await res.json();
             setProjectKey(project.widgetKey);
+            setProjectId(project.id);
+
+            // Auto-enable Why-Not-Buy if that's their goal
+            if (wantsWhyNotBuy) {
+                try {
+                    await fetch(`/api/projects/${project.id}/intent-settings`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ enabled: true }),
+                    });
+                } catch {
+                    /* non-fatal */
+                }
+            }
+
             setCurrentStep(3);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Something went wrong");
@@ -157,27 +152,23 @@ export default function OnboardingPage() {
         if (currentStep === 2) {
             createProject();
         } else if (currentStep < 3) {
-            setCurrentStep(prev => prev + 1);
+            setCurrentStep((prev) => prev + 1);
         }
     };
 
     const handleBack = () => {
-        if (currentStep > 1) {
-            setCurrentStep(prev => prev - 1);
-        }
+        if (currentStep > 1) setCurrentStep((prev) => prev - 1);
     };
 
     const handleFinish = () => {
-        router.push("/dashboard");
+        router.push(wantsWhyNotBuy ? `/projects/${projectId}?tab=intent` : "/dashboard");
     };
 
-    const copyCode = () => {
-        navigator.clipboard.writeText(getEmbedCode(framework, projectKey, origin));
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
+    const eventSnippet = `// When a visitor opens pricing or starts checkout:
+window.feedinbox('event', 'high_intent', { plan: 'pro' })
 
-    // Local getEmbedCode removed in favor of shared utility
+// When they actually buy (this cancels the question):
+window.feedinbox('event', 'converted')`;
 
     if (status === "loading") {
         return (
@@ -203,8 +194,6 @@ export default function OnboardingPage() {
                             />
                             <span className="ml-2 text-lg font-bold tracking-tight">Feedinbox</span>
                         </div>
-
-                        {/* Progress */}
                         <div className="flex items-center gap-2">
                             {[1, 2, 3].map((step) => (
                                 <div
@@ -226,102 +215,46 @@ export default function OnboardingPage() {
                 </div>
             </div>
 
-            {/* Content */}
             <div className="mx-auto max-w-3xl px-4 py-12">
-                {/* Step 1: Questions */}
+                {/* Step 1: Goal */}
                 {currentStep === 1 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-center mb-10">
                             <h1 className="text-3xl font-bold text-foreground">
-                                Welcome{session?.user?.name ? `, ${session.user.name.split(' ')[0]}` : ''}! 👋
+                                Welcome{session?.user?.name ? `, ${session.user.name.split(" ")[0]}` : ""}! 👋
                             </h1>
                             <p className="mt-2 text-muted-foreground">
-                                Let's personalize your experience in just a few steps.
+                                What do you want to do first?
                             </p>
                         </div>
 
-                        <div className="space-y-8">
-                            {/* Use Case */}
-                            <div>
-                                <h3 className="text-lg font-semibold text-foreground mb-4">
-                                    What are you building?
-                                </h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {USE_CASES.map((useCase) => (
-                                        <button
-                                            key={useCase.id}
-                                            onClick={() => setData(prev => ({ ...prev, useCase: useCase.id }))}
-                                            className={cn(
-                                                "flex items-center gap-3 rounded-xl border p-4 transition-all",
-                                                data.useCase === useCase.id
-                                                    ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                                                    : "border-border hover:border-primary/50 hover:bg-muted/50"
-                                            )}
-                                        >
-                                            <useCase.icon className={cn(
-                                                "h-5 w-5",
-                                                data.useCase === useCase.id ? "text-primary" : "text-muted-foreground"
-                                            )} />
-                                            <span className={cn(
-                                                "font-medium",
-                                                data.useCase === useCase.id ? "text-primary" : "text-foreground"
-                                            )}>
-                                                {useCase.label}
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Team Size */}
-                            <div>
-                                <h3 className="text-lg font-semibold text-foreground mb-4">
-                                    How big is your team?
-                                </h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {TEAM_SIZES.map((size) => (
-                                        <button
-                                            key={size.id}
-                                            onClick={() => setData(prev => ({ ...prev, teamSize: size.id }))}
-                                            className={cn(
-                                                "rounded-full px-4 py-2 text-sm font-medium transition-all",
-                                                data.teamSize === size.id
-                                                    ? "bg-primary text-primary-foreground"
-                                                    : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                                            )}
-                                        >
-                                            {size.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Feedback Types */}
-                            <div>
-                                <h3 className="text-lg font-semibold text-foreground mb-4">
-                                    What feedback do you want to collect?
-                                </h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {FEEDBACK_TYPES.map((type) => (
-                                        <button
-                                            key={type.id}
-                                            onClick={() => toggleFeedbackType(type.id)}
-                                            className={cn(
-                                                "flex items-center gap-3 rounded-xl border p-4 transition-all",
-                                                data.feedbackTypes.includes(type.id)
-                                                    ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                                                    : "border-border hover:border-primary/50 hover:bg-muted/50"
-                                            )}
-                                        >
-                                            <type.icon className={cn("h-5 w-5", type.color)} />
-                                            <span className="font-medium text-foreground">{type.label}</span>
-                                            {data.feedbackTypes.includes(type.id) && (
-                                                <Check className="ml-auto h-4 w-4 text-primary" />
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                        <div className="space-y-3 max-w-xl mx-auto">
+                            {GOALS.map((goal) => (
+                                <button
+                                    key={goal.id}
+                                    onClick={() => setData((prev) => ({ ...prev, goal: goal.id }))}
+                                    className={cn(
+                                        "flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all",
+                                        data.goal === goal.id
+                                            ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                                            : "border-border hover:border-primary/50 hover:bg-muted/50"
+                                    )}
+                                >
+                                    <div
+                                        className={cn(
+                                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg",
+                                            data.goal === goal.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                                        )}
+                                    >
+                                        <goal.icon className="h-5 w-5" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-semibold text-foreground">{goal.label}</div>
+                                        <div className="text-sm text-muted-foreground">{goal.desc}</div>
+                                    </div>
+                                    {data.goal === goal.id && <Check className="h-5 w-5 text-primary" />}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 )}
@@ -330,11 +263,9 @@ export default function OnboardingPage() {
                 {currentStep === 2 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-center mb-10">
-                            <h1 className="text-3xl font-bold text-foreground">
-                                Create your first project
-                            </h1>
+                            <h1 className="text-3xl font-bold text-foreground">Create your first project</h1>
                             <p className="mt-2 text-muted-foreground">
-                                A project represents your app or website where you'll collect feedback.
+                                A project is the site or app you'll install Feedinbox on.
                             </p>
                         </div>
 
@@ -344,77 +275,93 @@ export default function OnboardingPage() {
                                     label="Project Name"
                                     placeholder="My Awesome App"
                                     value={data.projectName}
-                                    onChange={(e) => setData(prev => ({ ...prev, projectName: e.target.value }))}
+                                    onChange={(e) => setData((prev) => ({ ...prev, projectName: e.target.value }))}
                                 />
-
                                 <Input
                                     label="Domain (optional)"
                                     placeholder="myapp.com"
                                     value={data.projectDomain}
-                                    onChange={(e) => setData(prev => ({ ...prev, projectDomain: e.target.value }))}
+                                    onChange={(e) => setData((prev) => ({ ...prev, projectDomain: e.target.value }))}
                                 />
-
-                                {error && (
-                                    <p className="text-sm text-destructive">{error}</p>
-                                )}
+                                {error && <p className="text-sm text-destructive">{error}</p>}
                             </CardContent>
                         </Card>
                     </div>
                 )}
 
-                {/* Step 3: Embed Code */}
+                {/* Step 3: Install */}
                 {currentStep === 3 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-center mb-10">
                             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
                                 <Rocket className="h-8 w-8 text-green-600 dark:text-green-400" />
                             </div>
-                            <h1 className="text-3xl font-bold text-foreground">
-                                You're all set! 🎉
-                            </h1>
+                            <h1 className="text-3xl font-bold text-foreground">Almost there 🎉</h1>
                             <p className="mt-2 text-muted-foreground">
-                                Copy and paste this into your site
+                                Hand this to your AI coding agent and it installs itself.
                             </p>
                         </div>
 
-                        <Card className="mx-auto max-w-2xl">
-                            <CardContent className="p-6 space-y-6">
-                                {/* Step 1: Copy the code */}
-                                <div className="space-y-4">
-                                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">1</span>
-                                        Add this to your website
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Paste this snippet before the closing <code className="text-xs bg-muted px-1.5 py-0.5 rounded">&lt;/body&gt;</code> tag on any page.
-                                    </p>
-                                    <CodeBlock
-                                        code={getEmbedCode("html", projectKey, origin)}
-                                        language="html"
-                                        filename="Your website"
-                                    />
-                                </div>
+                        <div className="mx-auto max-w-2xl space-y-4">
+                            {/* Primary path: AI agent */}
+                            <AISetupPrompt projectKey={projectKey} mode={setupMode} origin={origin} />
 
-                                {/* Step 2: Done */}
-                                <div className="space-y-4">
-                                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">2</span>
-                                        That&apos;s it!
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        The feedback widget will appear on your site. Works with any framework — React, Next.js, Vue, WordPress, or plain HTML.
-                                    </p>
+                            {wantsWhyNotBuy && (
+                                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+                                    <span className="font-medium text-foreground">✓ Why-Not-Buy is already turned on</span>{" "}
+                                    <span className="text-muted-foreground">
+                                        for this project. Edit the question and options anytime in settings.
+                                    </span>
                                 </div>
+                            )}
 
-                                {/* Customization hint */}
-                                <div className="rounded-lg border border-border bg-muted/50 p-4">
-                                    <p className="text-sm text-muted-foreground">
-                                        <strong className="text-foreground">💡 Tip:</strong> You can customize the widget's appearance
-                                        in your project settings after setup.
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
+                            {/* Secondary path: manual, collapsed by default */}
+                            <div>
+                                <button
+                                    onClick={() => setShowManual((s) => !s)}
+                                    className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                                >
+                                    {showManual ? "Hide manual setup" : "Prefer to install manually?"}
+                                </button>
+
+                                {showManual && (
+                                    <Card className="mt-3">
+                                        <CardContent className="p-6 space-y-6">
+                                            <div className="space-y-3">
+                                                <h3 className="font-semibold text-foreground flex items-center gap-2">
+                                                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">1</span>
+                                                    Add the script to your site
+                                                </h3>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Paste this before the closing{" "}
+                                                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">&lt;/body&gt;</code> tag.
+                                                </p>
+                                                <CodeBlock code={getEmbedCode("html", projectKey, origin)} language="html" filename="Your website" />
+                                            </div>
+
+                                            {wantsWhyNotBuy && (
+                                                <div className="space-y-3">
+                                                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">2</span>
+                                                        Tell it when a visitor shows intent
+                                                    </h3>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        Call this from your pricing or checkout code. If they don't buy
+                                                        within a few seconds, the question appears.
+                                                    </p>
+                                                    <CodeBlock code={eventSnippet} language="javascript" filename="Your pricing / checkout code" />
+                                                </div>
+                                            )}
+
+                                            <p className="text-sm text-muted-foreground">
+                                                Full reference:{" "}
+                                                <a href="/docs" target="_blank" rel="noopener" className="text-primary hover:underline">/docs</a>.
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 )}
 
@@ -442,7 +389,7 @@ export default function OnboardingPage() {
                         </Button>
                     ) : (
                         <Button onClick={handleFinish} className="mx-auto">
-                            Go to Dashboard
+                            {wantsWhyNotBuy ? "Go to Why-Not-Buy" : "Go to Dashboard"}
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     )}

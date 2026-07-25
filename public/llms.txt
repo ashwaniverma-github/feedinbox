@@ -1,0 +1,142 @@
+# Feedinbox integration guide
+
+Feedinbox is two features delivered by one embeddable script (widget.js):
+
+1. Feedback widget: a floating button that opens a feedback form.
+2. Why-Not-Buy: a one-question exit-intent card that appears when a visitor
+   abandons a high-intent surface (pricing page, pricing modal, checkout)
+   without buying. It asks "What stopped you?" and records the reason.
+
+Both features are controlled by the project's dashboard settings. The same
+script is used in every case. The only site code beyond the script is the
+event calls, which are required only for Why-Not-Buy.
+
+Docs page (human version): https://feedinbox.com/docs
+
+## Step 1: Add the script (required for both features)
+
+Paste this before the closing </body> tag. Replace YOUR_PROJECT_KEY with the
+project key found in Dashboard > Project > Settings > Project Key.
+
+    <script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>
+    <script async src="https://feedinbox.com/widget.js" data-project-key="YOUR_PROJECT_KEY"></script>
+
+The first line is a queue stub (same pattern as gtag.js). It ensures events
+fired before widget.js finishes loading are not lost. Always include it.
+
+### Next.js (App Router), in app/layout.tsx
+
+    import Script from 'next/script'
+
+    export default function RootLayout({ children }) {
+      return (
+        <html lang="en">
+          <body>
+            {children}
+            <Script id="feedinbox-stub" strategy="beforeInteractive">
+              {`window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}`}
+            </Script>
+            <Script
+              src="https://feedinbox.com/widget.js"
+              data-project-key="YOUR_PROJECT_KEY"
+              strategy="lazyOnload"
+            />
+          </body>
+        </html>
+      )
+    }
+
+### React (Vite / CRA)
+
+Add both script tags to public/index.html before </body>, exactly as in Step 1.
+
+### No-code platforms
+
+Use the platform's custom-code slot with the Step 1 snippet:
+- Webflow: Project Settings > Custom Code > Footer.
+- Shopify: theme.liquid, before </body>.
+- Framer: Site Settings > Custom Code > End of <body>.
+- WordPress: a "insert headers and footers" plugin, footer slot.
+- Google Tag Manager: a Custom HTML tag that fires on all pages.
+
+## Step 2: Fire the events (required only for Why-Not-Buy)
+
+From the site's own pricing / checkout code:
+
+    // Fire when a visitor reaches a buying surface
+    // (opens pricing modal, loads pricing page, starts checkout, clicks Upgrade)
+    window.feedinbox('event', 'high_intent', { plan: 'pro' })
+
+    // Fire when they actually buy. Cancels the pending question so buyers
+    // are never asked.
+    window.feedinbox('event', 'converted')
+
+Rules:
+- Event names must match the dashboard config. Defaults: 'high_intent' and
+  'converted'. Pro users can rename them; use whatever the dashboard shows.
+- The third argument (context) is optional metadata, e.g. { plan: 'pro' }.
+  It is stored and shown tagged on each response. Pass useful commercial
+  context (plan viewed, price, billing period) when available.
+- The card appears N seconds after high_intent (configurable delay) only if
+  'converted' has not fired in that window.
+
+### Where to fire high_intent
+
+At the exact moment of intent. Examples:
+- Pricing modal open handler.
+- Pricing page mount / route load.
+- Checkout start.
+- Click on an "Upgrade" / "Buy" / "Subscribe" button.
+
+React example:
+
+    function PricingButton() {
+      const openPricing = () => {
+        setPricingOpen(true)
+        window.feedinbox('event', 'high_intent', { plan: 'pro' })
+      }
+      return <button onClick={openPricing}>See pricing</button>
+    }
+
+### Where to fire converted
+
+On the real success step, so people who paid are excluded:
+- Payment success callback (Stripe/Dodo/etc. onSuccess).
+- Thank-you / welcome page load.
+- Subscription-created event echoed to the client.
+
+    // On payment success:
+    window.feedinbox('event', 'converted')
+
+## Feature combinations
+
+- Why-Not-Buy only: dashboard feedback button OFF, Why-Not-Buy ON. Needs event calls.
+- Feedback only: feedback button ON, Why-Not-Buy OFF. No event calls needed.
+- Both: both ON. Needs event calls.
+
+Toggling features is done in the dashboard, not in code:
+- Feedback button: Widget editor toggle.
+- Why-Not-Buy: Why-Not-Buy tab > Configure toggle.
+Both toggles are free. Customizing the question/options/delay is a Pro feature.
+
+## Behavior
+
+- Card shows `delaySeconds` after high_intent, unless converted fires first.
+- Once a visitor answers, they are not asked again for that browser session.
+- Responses appear in the dashboard (Why-Not-Buy tab), tagged with the context
+  (e.g. plan) and country, plus a weekly summary email.
+
+## Troubleshooting
+
+- Card never appears: confirm Why-Not-Buy is enabled, the high_intent event
+  name matches the dashboard, and converted is not firing immediately.
+- Buyers are being asked: the converted event is not firing. Fire it on the
+  real success step.
+- Nothing loads at all: verify the project key and that the script tag is
+  present on the page. Keep the queue stub line.
+
+## Verifying the install
+
+After adding the code, trigger a high_intent (e.g. open the pricing modal),
+wait past the delay without converting, and confirm the card appears. Submit
+an answer and confirm it shows in the dashboard's Why-Not-Buy tab.
