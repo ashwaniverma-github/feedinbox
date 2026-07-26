@@ -297,12 +297,12 @@ export function IntentConfig({ projectId }: { projectId: string }) {
                         Save
                     </Button>
                     {saved && (
-                        <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                        <span role="status" className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
                             <Check className="w-4 h-4" /> Saved
                         </span>
                     )}
                     {saveError && (
-                        <span className="text-sm text-red-600 font-medium">
+                        <span role="alert" className="text-sm text-red-600 font-medium">
                             Couldn't save. Please try again.
                         </span>
                     )}
