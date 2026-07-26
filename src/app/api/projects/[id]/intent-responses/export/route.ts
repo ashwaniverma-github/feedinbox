@@ -35,13 +35,18 @@ export async function GET(
             return NextResponse.json({ error: "Project not found" }, { status: 404 });
         }
 
-        // Cap the export so it can't load an unbounded result set (newest first).
+        // Cap the export so it can't load an unbounded result set (newest first),
+        // but count the true total so we can flag when the export is truncated.
         const MAX_EXPORT_ROWS = 10000;
-        const responses = await prisma.intentResponse.findMany({
-            where: { projectId: id },
-            orderBy: { createdAt: "desc" },
-            take: MAX_EXPORT_ROWS,
-        });
+        const [responses, totalResponseCount] = await Promise.all([
+            prisma.intentResponse.findMany({
+                where: { projectId: id },
+                orderBy: { createdAt: "desc" },
+                take: MAX_EXPORT_ROWS,
+            }),
+            prisma.intentResponse.count({ where: { projectId: id } }),
+        ]);
+        const truncated = totalResponseCount > responses.length;
 
         const planOf = (ctx: unknown) => {
             if (ctx && typeof ctx === "object" && "plan" in ctx) {
@@ -80,7 +85,13 @@ export async function GET(
             doc.text(`Why-Not-Buy Report - Generated on ${new Date().toLocaleDateString()}`, 14, 30);
             doc.setFontSize(12);
             doc.setTextColor(23, 23, 23);
-            doc.text(`Total responses: ${responses.length}`, 14, 42);
+            doc.text(
+                truncated
+                    ? `Total responses: ${totalResponseCount} (showing latest ${responses.length})`
+                    : `Total responses: ${totalResponseCount}`,
+                14,
+                42
+            );
 
             const tableData = responses.map((r) => [
                 r.optionLabel || "-",
@@ -126,6 +137,9 @@ export async function GET(
                 headers: {
                     "Content-Type": "application/pdf",
                     "Content-Disposition": `attachment; filename="${safeName}-why-not-buy-${dateStr}.pdf"`,
+                    "X-Total-Responses": String(totalResponseCount),
+                    "X-Exported-Responses": String(responses.length),
+                    "X-Truncated": String(truncated),
                 },
             });
         }
@@ -148,6 +162,9 @@ export async function GET(
             headers: {
                 "Content-Type": "text/csv",
                 "Content-Disposition": `attachment; filename="${safeName}-why-not-buy-${dateStr}.csv"`,
+                "X-Total-Responses": String(totalResponseCount),
+                "X-Exported-Responses": String(responses.length),
+                "X-Truncated": String(truncated),
             },
         });
     } catch (error) {
