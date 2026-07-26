@@ -56,6 +56,7 @@ export default function OnboardingPage() {
     const [loading, setLoading] = useState(false);
     const [projectKey, setProjectKey] = useState("");
     const [projectId, setProjectId] = useState("");
+    const [intentEnabled, setIntentEnabled] = useState(false);
     const [error, setError] = useState("");
     const [origin, setOrigin] = useState("");
 
@@ -127,16 +128,18 @@ export default function OnboardingPage() {
             setProjectKey(project.widgetKey);
             setProjectId(project.id);
 
-            // Auto-enable Why-Not-Buy if that's their goal
+            // Auto-enable Why-Not-Buy if that's their goal. Track whether it actually
+            // succeeded so Step 3 only claims it's on when it really is.
             if (wantsWhyNotBuy) {
                 try {
-                    await fetch(`/api/projects/${project.id}/intent-settings`, {
+                    const enableRes = await fetch(`/api/projects/${project.id}/intent-settings`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ enabled: true }),
                     });
+                    setIntentEnabled(enableRes.ok);
                 } catch {
-                    /* non-fatal */
+                    setIntentEnabled(false); // non-fatal; they can enable it in settings
                 }
             }
 
@@ -306,12 +309,17 @@ window.feedinbox('event', 'converted')`;
                             {/* Primary path: AI agent */}
                             <AISetupPrompt projectKey={projectKey} mode={setupMode} origin={origin} />
 
-                            {wantsWhyNotBuy && (
+                            {wantsWhyNotBuy && intentEnabled && (
                                 <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
                                     <span className="font-medium text-foreground">✓ Why-Not-Buy is already turned on</span>{" "}
                                     <span className="text-muted-foreground">
                                         for this project. Edit the question and options anytime in settings.
                                     </span>
+                                </div>
+                            )}
+                            {wantsWhyNotBuy && !intentEnabled && (
+                                <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-muted-foreground">
+                                    Turn on Why-Not-Buy from the project's Why-Not-Buy tab to start collecting responses.
                                 </div>
                             )}
 

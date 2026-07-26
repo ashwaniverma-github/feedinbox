@@ -22,6 +22,12 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
     const containerRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
     const newProjectRef = useRef<HTMLAnchorElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+
+    const closeAndRestoreFocus = () => {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+    };
 
     // Safety check for projects array
     const safeProjects = Array.isArray(projects) ? projects : [];
@@ -46,7 +52,7 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
             // When the "New project" link is focused, let the browser handle
             // Enter/Space/Tab natively so it stays keyboard-activatable.
             if (newProjectRef.current && document.activeElement === newProjectRef.current) {
-                if (e.key === "Escape") setIsOpen(false);
+                if (e.key === "Escape") closeAndRestoreFocus();
                 return;
             }
             switch (e.key) {
@@ -66,7 +72,7 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
                     setIsOpen(false);
                     break;
                 case "Escape":
-                    setIsOpen(false);
+                    closeAndRestoreFocus();
                     break;
             }
         };
@@ -97,6 +103,7 @@ export function ProjectSelector({ projects, selectedId, onSelect }: ProjectSelec
         <div ref={containerRef} className="relative">
             {/* Trigger Button */}
             <button
+                ref={triggerRef}
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
                     "flex items-center gap-2 h-10 p-1 rounded-xl border transition-all duration-200",

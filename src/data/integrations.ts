@@ -78,11 +78,9 @@ window.feedinbox('event', 'converted')`,
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-// In your pricing component, call these from event handlers (never on page load):
-// when the pricing modal opens
-window.feedinbox('event', 'high_intent', { plan: 'pro' })
-// on purchase success
-window.feedinbox('event', 'converted')`,
+<!-- Then, from your pricing component's event handlers (never on page load): -->
+<!--   on modal open:       window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->
+<!--   on purchase success: window.feedinbox('event', 'converted') -->`,
     steps: [
       { title: "Add the scripts", description: "Paste the stub and widget script into public/index.html before </body>", code: "" },
       { title: "Fire high_intent", description: "Call it when your pricing modal opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
@@ -104,10 +102,9 @@ window.feedinbox('event', 'converted')`,
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-// In your pricing component method:
-window.feedinbox('event', 'high_intent', { plan: 'pro' })
-// On purchase success:
-window.feedinbox('event', 'converted')`,
+<!-- Then, from your pricing component's methods / handlers: -->
+<!--   on pricing open:     window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->
+<!--   on purchase success: window.feedinbox('event', 'converted') -->`,
     steps: [
       { title: "Add the scripts", description: "Paste the stub and widget script into index.html", code: "" },
       { title: "Fire high_intent", description: "Call it when the pricing view opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
@@ -129,10 +126,9 @@ window.feedinbox('event', 'converted')`,
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-// In your pricing component:
-window.feedinbox('event', 'high_intent', { plan: 'pro' })
-// On purchase success:
-window.feedinbox('event', 'converted')`,
+<!-- Then, from your pricing component's handlers: -->
+<!--   on pricing open:     window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->
+<!--   on purchase success: window.feedinbox('event', 'converted') -->`,
     steps: [
       { title: "Add the scripts", description: "Paste the stub and widget script into index.html", code: "" },
       { title: "Fire high_intent", description: "Call it when the pricing view opens", code: "window.feedinbox('event', 'high_intent', { plan: 'pro' })" },
@@ -160,7 +156,8 @@ ${STUB}
     steps: [
       { title: "Access your theme", description: "Go to Appearance > Theme File Editor, or use a header/footer plugin", code: "" },
       { title: "Paste before </body>", description: "Add the stub and widget script", code: "" },
-      { title: "Fire high_intent", description: "On your pricing or checkout page, if you sell online", code: "window.feedinbox('event', 'high_intent')" }
+      { title: "Fire high_intent", description: "On your pricing or checkout page, if you sell online", code: "window.feedinbox('event', 'high_intent')" },
+      { title: "Fire converted", description: "On your order-confirmation / thank-you page, so buyers aren't asked", code: "window.feedinbox('event', 'converted')" }
     ],
     keywords: ["wordpress exit intent", "why wordpress visitors don't buy", "wordpress conversion feedback", "wordpress feedback widget", "wordpress why not buy"]
   },
@@ -184,7 +181,8 @@ ${STUB}
     steps: [
       { title: "Edit your theme code", description: "Online Store > Themes > Edit Code", code: "" },
       { title: "Paste into theme.liquid", description: "Add the stub and widget script before </body>", code: "" },
-      { title: "Fire high_intent on product/cart", description: "Trigger it from a checkout-button handler on your product or cart page (checkout isn't themeable)", code: "window.feedinbox('event', 'high_intent')" }
+      { title: "Fire high_intent on product/cart", description: "Trigger it from a checkout-button handler on your product or cart page (checkout isn't themeable)", code: "window.feedinbox('event', 'high_intent')" },
+      { title: "Fire converted", description: "On your order status / thank-you page after purchase, so buyers aren't asked", code: "window.feedinbox('event', 'converted')" }
     ],
     keywords: ["shopify exit intent", "why shopify shoppers don't buy", "shopify cart abandonment feedback", "shopify conversion feedback", "shopify feedback widget"]
   },
@@ -207,7 +205,8 @@ ${STUB}
     steps: [
       { title: "Open Project Settings", description: "Go to your Webflow project settings", code: "" },
       { title: "Paste in Footer Code", description: "Add the stub and widget script, then publish", code: "" },
-      { title: "Fire high_intent", description: "Trigger it from your pricing interaction or an embed", code: "window.feedinbox('event', 'high_intent')" }
+      { title: "Fire high_intent", description: "Trigger it from your pricing interaction or an embed", code: "window.feedinbox('event', 'high_intent')" },
+      { title: "Fire converted", description: "On your post-purchase / thank-you page, so buyers aren't asked", code: "window.feedinbox('event', 'converted')" }
     ],
     keywords: ["webflow exit intent", "why webflow visitors don't buy", "webflow conversion feedback", "webflow feedback widget", "webflow why not buy"]
   },
@@ -258,9 +257,10 @@ export default defineNuxtConfig({
   }
 })
 
-// In your pricing component:
-window.feedinbox('event', 'high_intent', { plan: 'pro' })
-window.feedinbox('event', 'converted')`,
+// Not called here (this runs on the server). Call them from a client component's
+// handlers instead:
+//   on pricing open:     window.feedinbox('event', 'high_intent', { plan: 'pro' })
+//   on purchase success: window.feedinbox('event', 'converted')`,
     steps: [
       { title: "Open nuxt.config", description: "Find your nuxt.config.ts or nuxt.config.js", code: "" },
       { title: "Add head scripts", description: "Add the stub and widget script", code: "" },
@@ -290,9 +290,10 @@ export const onRenderBody = ({ setPostBodyComponents }) => {
   ]);
 };
 
-// In your pricing component:
-window.feedinbox('event', 'high_intent', { plan: 'pro' })
-window.feedinbox('event', 'converted')`,
+// Not called here (this runs on the server). Call them from a client component's
+// handlers instead:
+//   on pricing open:     window.feedinbox('event', 'high_intent', { plan: 'pro' })
+//   on purchase success: window.feedinbox('event', 'converted')`,
     steps: [
       { title: "Open gatsby-ssr.js", description: "Create or edit gatsby-ssr.js in your project root", code: "" },
       { title: "Add onRenderBody", description: "Add the stub and widget script", code: "" },

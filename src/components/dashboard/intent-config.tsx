@@ -18,6 +18,7 @@ export function IntentConfig({ projectId }: { projectId: string }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [saveError, setSaveError] = useState(false);
     const [isPro, setIsPro] = useState(false);
     const [isPricingOpen, setIsPricingOpen] = useState(false);
     const [settings, setSettings] = useState<IntentSettings>(DEFAULT_INTENT_SETTINGS);
@@ -70,20 +71,21 @@ export function IntentConfig({ projectId }: { projectId: string }) {
     const save = async () => {
         setSaving(true);
         setSaved(false);
+        setSaveError(false);
         try {
             const res = await fetch(`/api/projects/${projectId}/intent-settings`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(settings),
             });
-            if (res.ok) {
-                const data = await res.json();
-                if (data.settings) setSettings(data.settings);
-                setSaved(true);
-                setTimeout(() => setSaved(false), 2000);
-            }
+            if (!res.ok) throw new Error(`Save failed: ${res.status}`);
+            const data = await res.json();
+            if (data.settings) setSettings(data.settings);
+            setSaved(true);
+            setTimeout(() => setSaved(false), 2000);
         } catch (e) {
             console.error("Failed to save intent settings", e);
+            setSaveError(true); // keep local edits so the user can retry
         } finally {
             setSaving(false);
         }
@@ -292,6 +294,11 @@ export function IntentConfig({ projectId }: { projectId: string }) {
                     {saved && (
                         <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
                             <Check className="w-4 h-4" /> Saved
+                        </span>
+                    )}
+                    {saveError && (
+                        <span className="text-sm text-red-600 font-medium">
+                            Couldn't save. Please try again.
                         </span>
                     )}
                     {!isPro && (

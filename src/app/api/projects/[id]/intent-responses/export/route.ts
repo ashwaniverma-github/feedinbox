@@ -35,9 +35,12 @@ export async function GET(
             return NextResponse.json({ error: "Project not found" }, { status: 404 });
         }
 
+        // Cap the export so it can't load an unbounded result set (newest first).
+        const MAX_EXPORT_ROWS = 10000;
         const responses = await prisma.intentResponse.findMany({
             where: { projectId: id },
             orderBy: { createdAt: "desc" },
+            take: MAX_EXPORT_ROWS,
         });
 
         const planOf = (ctx: unknown) => {

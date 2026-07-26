@@ -79,7 +79,7 @@ export const alternatives: Alternative[] = [
         advantages: [
             { title: "Fix the funnel first", description: "Learn why visitors don't buy before building the roadmap." },
             { title: "No per-seat pricing", description: "One flat price for your whole team." },
-            { title: "2-minute setup", description: "One script and one event, or hand it to your AI agent." },
+            { title: "Fast setup", description: "One script plus two events (high_intent and converted), or hand it to your AI agent." },
             { title: "Feedback included", description: "Bugs and ideas on the same widget." }
         ],
         keywords: ["productboard alternative", "productboard vs feedinbox", "why visitors don't buy", "early stage conversion tool", "affordable productboard"]
@@ -95,7 +95,7 @@ export const alternatives: Alternative[] = [
             { feature: "Why-Not-Buy question", feedinbox: "✓ Fires on abandonment", competitor: "~ Build it yourself" },
             { feature: "In-app / no context switch", feedinbox: "✓ Slides in", competitor: "✗ Separate page" },
             { feature: "Feedback widget", feedinbox: "✓", competitor: "✗" },
-            { feature: "Setup", feedinbox: "1 script + 1 event", competitor: "Build + embed a form" },
+            { feature: "Setup", feedinbox: "1 script + 2 events", competitor: "Build + embed a form" },
             { feature: "Pricing", feedinbox: "From $5/mo", competitor: "From $25/mo" }
         ],
         advantages: [
@@ -233,7 +233,7 @@ export const alternatives: Alternative[] = [
         advantages: [
             { title: "Fix the funnel", description: "Learn why visitors don't buy, not just gather votes." },
             { title: "Inbox-first", description: "Reasons in your email, not a portal you forget to check." },
-            { title: "Faster setup", description: "One script and one event. Done in minutes." },
+            { title: "Faster setup", description: "One script and two events. Done in minutes." },
             { title: "Feedback included", description: "A feedback widget on the same script." }
         ],
         keywords: ["sleekplan alternative", "sleekplan vs feedinbox", "why visitors don't buy", "conversion feedback", "exit intent alternative"]

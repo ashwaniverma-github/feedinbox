@@ -71,9 +71,12 @@ export async function GET(request: Request) {
 
         if (!project?.user?.email) { skipped++; continue; }
 
-        // Idempotency: skip if a digest already went out for this project this week
-        // (guards against cron retries / re-invocations re-emailing everyone).
-        if (project.lastIntentDigestAt && project.lastIntentDigestAt >= weekAgo) {
+        // Idempotency: skip if a digest already went out for this project within the
+        // last 6 days. The 1-day grace (vs a strict 7) means a cron run that fires a
+        // little early doesn't get skipped for another whole week, while genuine
+        // same-period retries are still deduped.
+        const digestCooldown = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
+        if (project.lastIntentDigestAt && project.lastIntentDigestAt >= digestCooldown) {
             skipped++;
             continue;
         }
@@ -85,17 +88,22 @@ export async function GET(request: Request) {
             continue;
         }
 
-        // Bounded per-project read (last 14 days for the week-over-week comparison)
-        const rows = await prisma.intentResponse.findMany({
-            where: { projectId, createdAt: { gte: twoWeeksAgo } },
-            select: { optionId: true, optionLabel: true, country: true, text: true, createdAt: true },
+        // Accurate week-over-week totals via count() so the row cap can't skew them.
+        const [total, prevWeekCount] = await Promise.all([
+            prisma.intentResponse.count({ where: { projectId, createdAt: { gte: weekAgo } } }),
+            prisma.intentResponse.count({
+                where: { projectId, createdAt: { gte: twoWeeksAgo, lt: weekAgo } },
+            }),
+        ]);
+        if (total === 0) { skipped++; continue; }
+
+        // Bounded read of this week's rows for the breakdown + quote sampling only.
+        const thisWeek = await prisma.intentResponse.findMany({
+            where: { projectId, createdAt: { gte: weekAgo } },
+            select: { optionId: true, optionLabel: true, country: true, text: true },
             orderBy: { createdAt: "desc" },
             take: MAX_ROWS_PER_PROJECT,
         });
-
-        const thisWeek = rows.filter((r) => r.createdAt >= weekAgo);
-        const prevWeekCount = rows.length - thisWeek.length;
-        if (thisWeek.length === 0) { skipped++; continue; }
 
         // Label map from THIS project's configured options only (ids like option_1
         // are positional and collide across projects, so never merge across projects).
@@ -120,9 +128,11 @@ export async function GET(request: Request) {
             if (r.text && quotes.length < 6) quotes.push(r.text);
         }
 
-        const total = thisWeek.length;
+        // Percentages are relative to the sampled rows so they stay coherent even if
+        // the row cap truncated a very busy week; the headline `total` stays accurate.
+        const sampleTotal = thisWeek.length || 1;
         const options: DigestOption[] = Array.from(optionCounts.values())
-            .map((o) => ({ label: o.label, count: o.count, percent: Math.round((o.count / total) * 100) }))
+            .map((o) => ({ label: o.label, count: o.count, percent: Math.round((o.count / sampleTotal) * 100) }))
             .sort((a, b) => b.count - a.count);
         const countries: DigestCountry[] = Array.from(countryCounts.entries())
             .map(([country, count]) => ({ country, count }))

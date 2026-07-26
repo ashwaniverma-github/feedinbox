@@ -115,7 +115,7 @@ export function WhyNotBuyOverview({ projectId }: { projectId: string }) {
                                 #1 reason
                             </div>
                             <p className="mt-2 text-lg font-semibold text-foreground truncate">
-                                {topReason?.label}
+                                {topReason?.label || "No option selected"}
                             </p>
                             <p className="text-sm text-muted-foreground">
                                 {topReason ? Math.round((topReason.count / total) * 100) : 0}% of responses

@@ -82,20 +82,37 @@ export async function POST(request: Request) {
             request.headers.get("cf-ipcountry") ||
             null;
 
-        const response = await prisma.intentResponse.create({
-            data: {
-                projectId: project.id,
-                sessionId: validated.data.sessionId,
-                eventName: validated.data.eventName,
-                optionId: validated.data.optionId || null,
-                optionLabel: validated.data.optionLabel || null,
-                text: validated.data.text || null,
-                context: (validated.data.context as Prisma.InputJsonValue) ?? {},
-                country,
-                pageUrl: validated.data.pageUrl || null,
-                userAgent: request.headers.get("user-agent") || null,
-            },
-        });
+        let response;
+        try {
+            response = await prisma.intentResponse.create({
+                data: {
+                    projectId: project.id,
+                    sessionId: validated.data.sessionId,
+                    eventName: validated.data.eventName,
+                    optionId: validated.data.optionId || null,
+                    optionLabel: validated.data.optionLabel || null,
+                    text: validated.data.text || null,
+                    context: (validated.data.context as Prisma.InputJsonValue) ?? {},
+                    country,
+                    pageUrl: validated.data.pageUrl || null,
+                    userAgent: request.headers.get("user-agent") || null,
+                },
+            });
+        } catch (e) {
+            // Concurrent submit for the same (project, session) hit the unique
+            // constraint; treat it as an idempotent dedupe, not an error.
+            if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+                const dup = await prisma.intentResponse.findFirst({
+                    where: { projectId: project.id, sessionId: validated.data.sessionId },
+                    select: { id: true },
+                });
+                return corsResponse(
+                    NextResponse.json({ success: true, id: dup?.id, deduped: true }, { status: 200 }),
+                    origin
+                );
+            }
+            throw e;
+        }
 
         // Notify per the owner's chosen frequency. "weekly" (default) is handled by
         // the digest cron; "instant" sends an email here, but off the request path
