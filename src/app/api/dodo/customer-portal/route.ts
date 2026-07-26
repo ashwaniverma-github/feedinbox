@@ -46,10 +46,9 @@ export async function POST() {
 
         return NextResponse.json({ url: portal.link });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "unknown";
         console.error("Dodo customer-portal error", err);
         return NextResponse.json(
-            { error: "Failed to open billing portal", details: message },
+            { error: "Failed to open billing portal" },
             { status: 500 }
         );
     }
