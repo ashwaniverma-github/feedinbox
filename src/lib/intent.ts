@@ -12,6 +12,8 @@ export interface IntentSettings {
     delaySeconds: number;
     highIntentEvent: string;
     conversionEvent: string;
+    // Remove the "Powered by Feedinbox" footer on the card (Pro customization).
+    hideBranding: boolean;
     // How the owner is notified of responses: an email per response, a weekly
     // digest, or no emails. Preference (not customization) so it's free for all tiers.
     notifyFrequency: NotifyFrequency;
@@ -29,6 +31,7 @@ export const DEFAULT_INTENT_SETTINGS: IntentSettings = {
     delaySeconds: 5,
     highIntentEvent: "high_intent",
     conversionEvent: "converted",
+    hideBranding: false,
     notifyFrequency: "weekly",
 };
 

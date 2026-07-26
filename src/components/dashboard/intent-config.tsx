@@ -270,6 +270,33 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                             onChange={(e) => update("conversionEvent", e.target.value)}
                         />
                     </div>
+
+                    {/* Remove branding (Pro) */}
+                    <div className={`flex items-center justify-between gap-3 ${!isPro ? "opacity-60" : ""}`}>
+                        <div>
+                            <span className="text-sm font-medium">Remove Feedinbox branding</span>
+                            <p className="text-xs text-muted-foreground">
+                                Hide the &ldquo;Powered by Feedinbox&rdquo; footer on the card.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            role="switch"
+                            aria-checked={settings.hideBranding}
+                            disabled={!isPro}
+                            onClick={() => update("hideBranding", !settings.hideBranding)}
+                            aria-label="Toggle Feedinbox branding"
+                            className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.hideBranding
+                                ? "bg-black border-white"
+                                : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
+                                }`}
+                        >
+                            <div
+                                className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${settings.hideBranding ? "translate-x-6" : "translate-x-0.5"
+                                    }`}
+                            />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Snippet hint */}

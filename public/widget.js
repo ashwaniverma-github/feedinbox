@@ -213,7 +213,7 @@
         for (var i = 0; i < opts.length; i++) {
             optsHTML += '<button type="button" class="feedinbox-intent-opt" data-oid="' + escapeAttr(opts[i].id) + '" data-olabel="' + escapeAttr(opts[i].label) + '">' + escapeHtml(opts[i].label) + '</button>';
         }
-        var footerHTML = '<div class="feedinbox-intent-footer"><a href="https://feedinbox.com" target="_blank" rel="noopener">Powered by Feedinbox</a></div>';
+        var footerHTML = _intentSettings.hideBranding ? '' : '<div class="feedinbox-intent-footer"><a href="https://feedinbox.com" target="_blank" rel="noopener">Powered by Feedinbox</a></div>';
 
         var card = document.createElement('div');
         card.id = 'feedinbox-intent';

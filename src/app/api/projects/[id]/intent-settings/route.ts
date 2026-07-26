@@ -136,6 +136,9 @@ export async function PUT(
             if (typeof body.conversionEvent === "string" && body.conversionEvent.trim().length > 0) {
                 next.conversionEvent = body.conversionEvent.trim().slice(0, 100);
             }
+            if (typeof body.hideBranding === "boolean") {
+                next.hideBranding = body.hideBranding;
+            }
         }
 
         const existingSettings = (project.settings as Record<string, unknown>) || {};
