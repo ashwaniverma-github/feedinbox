@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loading } from "@/components/ui/loading";
 import { CodeBlock } from "@/components/ui/code-block";
-import { Copy, Check, Trash2, Code2, FileCode, Cpu } from "lucide-react";
+import { Trash2, Code2, FileCode, Cpu, BookOpen, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getEmbedCode } from "@/lib/snippets";
+import { AISetupPrompt } from "@/components/dashboard/ai-setup-prompt";
 import type { Project } from "@/types";
 
 export default function ProjectSettingsPage({
@@ -26,7 +27,6 @@ export default function ProjectSettingsPage({
     const [project, setProject] = useState<Project | null>(null);
     const [name, setName] = useState("");
     const [domain, setDomain] = useState("");
-    const [copied, setCopied] = useState(false);
     const [framework, setFramework] = useState<"nextjs" | "react" | "html">("nextjs");
     const [origin, setOrigin] = useState("");
 
@@ -80,12 +80,6 @@ export default function ProjectSettingsPage({
         }
     };
 
-    const copyToClipboard = (text: string) => {
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
     // Local getEmbedCode removed coverage
 
     if (loading || !origin) {
@@ -131,12 +125,17 @@ export default function ProjectSettingsPage({
                     </CardContent>
                 </Card>
 
+                {/* AI-assisted install (fastest) */}
+                {project?.widgetKey && (
+                    <AISetupPrompt projectKey={project.widgetKey} mode="both" origin={origin} />
+                )}
+
                 {/* Widget Code */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Widget Installation</CardTitle>
+                        <CardTitle>Manual installation</CardTitle>
                         <CardDescription>
-                            Choose your preferred integration method
+                            Prefer to wire it up yourself? Copy the snippet for your framework.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -193,13 +192,33 @@ export default function ProjectSettingsPage({
                             }
                         />
 
-                        <div className="pt-2 border-t border-neutral-200 dark:border-neutral-700">
+                        <div className="pt-2 border-t border-neutral-200 dark:border-neutral-700 space-y-3">
                             <p className="text-sm text-neutral-500">
                                 <strong>Project Key:</strong>{" "}
                                 <code className="rounded bg-neutral-100 px-1 py-0.5 dark:bg-neutral-800">
                                     {project?.widgetKey}
                                 </code>
                             </p>
+                            <div className="flex flex-wrap items-center gap-4 text-sm">
+                                <a
+                                    href="/docs"
+                                    target="_blank"
+                                    rel="noopener"
+                                    className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                                >
+                                    <BookOpen className="h-4 w-4" />
+                                    Read the docs
+                                </a>
+                                <a
+                                    href={`${origin}/llms.txt`}
+                                    target="_blank"
+                                    rel="noopener"
+                                    className="inline-flex items-center gap-1.5 text-neutral-500 hover:text-foreground"
+                                >
+                                    <ExternalLink className="h-4 w-4" />
+                                    AI integration guide (llms.txt)
+                                </a>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
