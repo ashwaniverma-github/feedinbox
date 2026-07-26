@@ -23,6 +23,9 @@ export default function WhyNotBuyConfigPage({
     const [project, setProject] = useState<Project | null>(null);
     const [error, setError] = useState(false);
     const [origin, setOrigin] = useState("");
+    // Bumped when IntentConfig saves, to remount ActivationChecklist so its
+    // enabled/status state doesn't go stale after a save on the same page.
+    const [checklistKey, setChecklistKey] = useState(0);
 
     useEffect(() => {
         setOrigin(window.location.origin);
@@ -113,10 +116,10 @@ window.feedinbox('event', 'converted')`;
                 </div>
 
                 {/* Activation checklist */}
-                <ActivationChecklist projectId={id} />
+                <ActivationChecklist key={checklistKey} projectId={id} />
 
                 {/* Config */}
-                <IntentConfig projectId={id} />
+                <IntentConfig projectId={id} onSaved={() => setChecklistKey((k) => k + 1)} />
 
                 {/* Install: AI-first */}
                 <AISetupPrompt projectKey={widgetKey} mode="why_not_buy" origin={origin} />

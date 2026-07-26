@@ -75,7 +75,12 @@ export async function PUT(
         }
 
         const userIsPro = await isPro(session.user.id);
-        const body = await request.json();
+        let body;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+        }
         const current = readIntentSettings(project.settings);
         const next: IntentSettings = { ...current };
 
@@ -106,12 +111,14 @@ export async function PUT(
                     if (!o || typeof o !== "object") continue;
                     const label = typeof o.label === "string" ? o.label.trim().slice(0, 200) : "";
                     if (!label) continue;
+                    // Cap the base below 100 so a collision suffix always fits and the
+                    // generated id changes each iteration (otherwise the loop can't terminate).
                     const base =
-                        typeof o.id === "string" && o.id.trim() ? o.id.trim().slice(0, 100) : `option_${i + 1}`;
+                        typeof o.id === "string" && o.id.trim() ? o.id.trim().slice(0, 90) : `option_${i + 1}`;
                     // Regenerate colliding ids deterministically so every option is unique
                     let id = base;
                     let n = 2;
-                    while (usedIds.has(id)) id = `${base}_${n++}`.slice(0, 100);
+                    while (usedIds.has(id)) id = `${base}_${n++}`;
                     usedIds.add(id);
                     cleaned.push({ id, label });
                 }

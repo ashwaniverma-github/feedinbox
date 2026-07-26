@@ -84,6 +84,19 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
                 }),
             });
 
+            if (res.status === 401) {
+                // Not signed in: stash the intent and resume checkout after login,
+                // matching pricing-section.tsx's mechanism.
+                try {
+                    localStorage.setItem(
+                        "pending_upgrade_intent",
+                        JSON.stringify({ billingPeriod, cadence })
+                    );
+                } catch { }
+                window.location.href = `/login?callbackUrl=${encodeURIComponent("/#pricing")}`;
+                return;
+            }
+
             if (!res.ok) {
                 const err = await res.json().catch(() => ({} as any));
                 throw new Error(err?.error || "Failed to create checkout session");

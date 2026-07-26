@@ -189,7 +189,7 @@ export const useCases: UseCase[] = [
         heroSubheadline: "Add Feedinbox to your Shopify store in minutes. Ask abandoning shoppers what stopped them, and collect feedback too.",
         problemStatement: "Shopify analytics tell you what shoppers do, not why. Every abandoned cart and return has a reason you never hear.",
         benefits: [
-            { title: "Checkout drop-off reasons", description: "Fire high-intent at checkout and learn why shoppers don't complete the order." },
+            { title: "Cart drop-off reasons", description: "Fire high-intent from your cart or product page (Shopify checkout isn't themeable) to learn why shoppers don't buy." },
             { title: "Easy Shopify setup", description: "Paste one script in your theme.liquid file. Done." },
             { title: "Store feedback", description: "A feedback widget for product and site issues, on the same script." },
             { title: "Reduce returns", description: "Fix confusion before it becomes a return or a bad review." }

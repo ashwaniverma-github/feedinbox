@@ -72,7 +72,7 @@ export const features: Feature[] = [
             },
             {
                 title: "One lightweight embed",
-                description: "Just one script tag. No heavy SDKs, no performance hit on your site."
+                description: "Just one script tag. No heavy SDKs, and it loads asynchronously."
             },
             {
                 title: "Turn either on or off",
@@ -89,11 +89,11 @@ export const features: Feature[] = [
         description: "Feedback reaches you instantly. Why-Not-Buy reasons are rolled up into a weekly summary so you see the pattern, not the noise.",
         icon: "Bell",
         heroHeadline: "Never miss a reason or a bug",
-        heroSubheadline: "Critical bug from the feedback widget? Emailed in seconds. Why people didn't buy this week? Summarized every Monday.",
+        heroSubheadline: "Critical bug from the feedback widget? Emailed right away. Why people didn't buy this week? A weekly summary.",
         benefits: [
             {
                 title: "Instant feedback delivery",
-                description: "Feedback emails are sent within milliseconds of submission. No batching, no delays."
+                description: "Feedback emails are sent as soon as a submission comes in, not batched."
             },
             {
                 title: "Weekly Why-Not-Buy roundup",

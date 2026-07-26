@@ -97,9 +97,20 @@ export async function PUT(
         // Appearance customization is Pro-only. Non-Pro edits to these are ignored.
         if (!userIsPro) {
             const existingSettings = (project.settings as any) || {};
+            const currentWidget = { ...DEFAULT_SETTINGS, ...existingSettings.widget };
+            // Only `enabled` is writable for non-Pro. If nothing writable was sent
+            // (e.g. appearance-only edits), skip the DB write and signal it was ignored.
+            if (Object.keys(newSettings).length === 0) {
+                return NextResponse.json({
+                    success: false,
+                    ignored: true,
+                    code: "PRO_FEATURE_REQUIRED",
+                    settings: currentWidget,
+                });
+            }
             const updatedSettings = {
                 ...existingSettings,
-                widget: { ...DEFAULT_SETTINGS, ...existingSettings.widget, ...newSettings },
+                widget: { ...currentWidget, ...newSettings },
             };
             await prisma.project.update({ where: { id }, data: { settings: updatedSettings } });
             return NextResponse.json({ success: true, settings: updatedSettings.widget });

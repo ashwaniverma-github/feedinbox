@@ -48,7 +48,11 @@ export function WhyNotBuyOverview({ projectId }: { projectId: string }) {
     }, [projectId]);
 
     const total = agg?.total || 0;
-    const topReason = agg?.byOption?.[0];
+    // Derive the highest-count option rather than assuming byOption[0] is pre-sorted.
+    const topReason = (agg?.byOption || []).reduce<OptionAgg | undefined>(
+        (best, o) => (o.count > (best?.count ?? -1) ? o : best),
+        undefined
+    );
     const maxOption = Math.max(1, ...(agg?.byOption.map((o) => o.count) || [1]));
 
     return (

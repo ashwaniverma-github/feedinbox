@@ -122,7 +122,9 @@ Both toggles are free. Customizing the question/options/delay is a Pro feature.
 ## Behavior
 
 - Card shows `delaySeconds` after high_intent, unless converted fires first.
-- Once a visitor answers, they are not asked again for that browser session.
+- Once a visitor answers (or converts), they are not asked again for that browser session.
+- If a visitor dismisses the card without answering, the session flag is NOT set,
+  so a later high_intent event in the same session can show the card again.
 - Responses appear in the dashboard (Why-Not-Buy tab), tagged with the context
   (e.g. plan) and country, plus a weekly summary email.
 

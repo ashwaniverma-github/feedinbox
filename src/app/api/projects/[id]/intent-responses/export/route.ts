@@ -70,12 +70,17 @@ export async function GET(
         // formula injection (leading =, +, -, @) by prefixing with a single quote.
         const csvCell = (value: unknown): string => {
             let s = value == null ? "" : String(value);
-            if (/^[=+\-@]/.test(s)) s = "'" + s;
+            // Neutralize spreadsheet formula injection, including tab/CR-prefixed payloads
+            if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
             if (/[",\r\n]/.test(s)) s = `"${s.replace(/"/g, '""')}"`;
             return s;
         };
 
         if (format === "pdf") {
+            // PDFs render far fewer rows than CSV can hold; cap lower to keep them light.
+            const MAX_PDF_ROWS = 2000;
+            const pdfRows = responses.slice(0, MAX_PDF_ROWS);
+            const pdfTruncated = totalResponseCount > pdfRows.length;
             const doc = new jsPDF();
             doc.setFontSize(20);
             doc.setTextColor(23, 23, 23);
@@ -86,14 +91,14 @@ export async function GET(
             doc.setFontSize(12);
             doc.setTextColor(23, 23, 23);
             doc.text(
-                truncated
-                    ? `Total responses: ${totalResponseCount} (showing latest ${responses.length})`
+                pdfTruncated
+                    ? `Total responses: ${totalResponseCount} (showing latest ${pdfRows.length})`
                     : `Total responses: ${totalResponseCount}`,
                 14,
                 42
             );
 
-            const tableData = responses.map((r) => [
+            const tableData = pdfRows.map((r) => [
                 r.optionLabel || "-",
                 r.text || "-",
                 planOf(r.context),
@@ -138,8 +143,8 @@ export async function GET(
                     "Content-Type": "application/pdf",
                     "Content-Disposition": `attachment; filename="${safeName}-why-not-buy-${dateStr}.pdf"`,
                     "X-Total-Responses": String(totalResponseCount),
-                    "X-Exported-Responses": String(responses.length),
-                    "X-Truncated": String(truncated),
+                    "X-Exported-Responses": String(pdfRows.length),
+                    "X-Truncated": String(pdfTruncated),
                 },
             });
         }
@@ -155,12 +160,13 @@ export async function GET(
             r.pageUrl || "",
             r.createdAt.toISOString(),
         ]);
-        const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+        // Prepend a UTF-8 BOM so Excel opens non-ASCII characters correctly.
+        const csv = "﻿" + [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
 
         return new NextResponse(csv, {
             status: 200,
             headers: {
-                "Content-Type": "text/csv",
+                "Content-Type": "text/csv; charset=utf-8",
                 "Content-Disposition": `attachment; filename="${safeName}-why-not-buy-${dateStr}.csv"`,
                 "X-Total-Responses": String(totalResponseCount),
                 "X-Exported-Responses": String(responses.length),

@@ -121,6 +121,9 @@
 
         if (name === _intentSettings.conversionEvent) {
             if (_intentTimer) { clearTimeout(_intentTimer); _intentTimer = null; }
+            // Converting counts as "done" for this session, so no later high_intent
+            // event re-asks a visitor who already bought.
+            markIntentAnswered();
             dismissIntentCard(); // hide the prompt if it's already on screen
             return;
         }
@@ -131,7 +134,10 @@
             if (_intentTimer) clearTimeout(_intentTimer);
             _intentEventName = name;
             _intentContext = (context && typeof context === 'object') ? context : {};
-            var delayMs = Math.max(0, (_intentSettings.delaySeconds || 5) * 1000);
+            // Use the configured delay; only fall back to 5 when unset/non-numeric
+            // (so an explicit 0 schedules immediately).
+            var delaySeconds = typeof _intentSettings.delaySeconds === 'number' ? _intentSettings.delaySeconds : 5;
+            var delayMs = Math.max(0, delaySeconds * 1000);
             _intentTimer = setTimeout(function () {
                 _intentTimer = null;
                 renderIntentCard();

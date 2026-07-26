@@ -47,29 +47,36 @@ export async function GET(request: Request) {
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const weekRange = `${fmt(weekAgo)} - ${fmt(now)}`;
 
-    // Find the projects that actually got responses this week (one compact row each),
-    // instead of pulling every tenant's responses into memory at once.
+    // Projects that got responses this week (one compact row each).
+    const MAX_PROJECTS_PER_RUN = 100;
     const active = await prisma.intentResponse.groupBy({
         by: ["projectId"],
         where: { createdAt: { gte: weekAgo } },
         _count: { _all: true },
     });
+    const activeIds = active.map((a) => a.projectId);
+
+    // Load the fields the loop needs in a single query (no per-project findUnique),
+    // oldest-digested first so unprocessed projects roll over predictably, and
+    // bounded per invocation so a large backlog can't run unboundedly.
+    const projects = await prisma.project.findMany({
+        where: { id: { in: activeIds } },
+        select: {
+            id: true,
+            settings: true,
+            lastIntentDigestAt: true,
+            user: { select: { name: true, email: true } },
+        },
+        orderBy: { lastIntentDigestAt: { sort: "asc", nulls: "first" } },
+        take: MAX_PROJECTS_PER_RUN,
+    });
 
     let sent = 0;
     let skipped = 0;
 
-    for (const { projectId } of active) {
-        const project = await prisma.project.findUnique({
-            where: { id: projectId },
-            select: {
-                id: true,
-                settings: true,
-                lastIntentDigestAt: true,
-                user: { select: { name: true, email: true } },
-            },
-        });
-
+    for (const project of projects) {
         if (!project?.user?.email) { skipped++; continue; }
+        const projectId = project.id;
 
         // Idempotency: skip if a digest already went out for this project within the
         // last 6 days. The 1-day grace (vs a strict 7) means a cron run that fires a

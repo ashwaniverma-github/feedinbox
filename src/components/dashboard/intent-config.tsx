@@ -14,7 +14,7 @@ import {
     type IntentSettings,
 } from "@/lib/intent";
 
-export function IntentConfig({ projectId }: { projectId: string }) {
+export function IntentConfig({ projectId, onSaved }: { projectId: string; onSaved?: () => void }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -87,6 +87,7 @@ export function IntentConfig({ projectId }: { projectId: string }) {
                 setSettings((cur) => (JSON.stringify(cur) === sent ? data.settings : cur));
             }
             setSaved(true);
+            onSaved?.(); // let the parent refresh dependent UI (e.g. activation checklist)
             setTimeout(() => setSaved(false), 2000);
         } catch (e) {
             console.error("Failed to save intent settings", e);
@@ -94,14 +95,6 @@ export function IntentConfig({ projectId }: { projectId: string }) {
         } finally {
             setSaving(false);
         }
-    };
-
-    const gate = () => {
-        if (!isPro) {
-            setIsPricingOpen(true);
-            return false;
-        }
-        return true;
     };
 
     if (loading) {

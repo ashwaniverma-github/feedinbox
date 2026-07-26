@@ -200,8 +200,8 @@ ${STUB}
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-// On your pricing button's click interaction (not a global script):
-// window.feedinbox('event', 'high_intent', { plan: 'pro' })`,
+<!-- On your pricing button's click interaction (not a global script): -->
+<!--   window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->`,
     steps: [
       { title: "Open Project Settings", description: "Go to your Webflow project settings", code: "" },
       { title: "Paste in Footer Code", description: "Add the stub and widget script, then publish", code: "" },
@@ -224,10 +224,10 @@ ${STUB}
 ${STUB}
 <script async src="https://feedinbox.com/widget.js" data-project-key="your_project_key"></script>
 
-// From your pricing/buy button's click handler (not a global script):
-// window.feedinbox('event', 'high_intent', { plan: 'pro' })
-// From your success page:
-// window.feedinbox('event', 'converted')`,
+<!-- From your pricing/buy button's click handler (not a global script): -->
+<!--   window.feedinbox('event', 'high_intent', { plan: 'pro' }) -->
+<!-- From your success page: -->
+<!--   window.feedinbox('event', 'converted') -->`,
     steps: [
       { title: "Open your HTML file", description: "Find your index.html or main HTML file", code: "" },
       { title: "Add before </body>", description: "Paste the stub and widget script", code: "" },
