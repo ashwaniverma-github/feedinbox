@@ -19,11 +19,16 @@ export default function SettingsPage() {
     useEffect(() => {
         let active = true;
         fetch("/api/usage")
-            .then((res) => (res.ok ? res.json() : null))
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to load billing status");
+                return res.json();
+            })
             .then((data) => {
-                if (active && data) setIsPro(!!data.isPro);
+                if (active) setIsPro(!!data.isPro);
             })
             .catch(() => {
+                // Fall back to the Free view so the Upgrade action stays usable
+                // instead of leaving the button stuck disabled.
                 if (active) setIsPro(false);
             });
         return () => {
