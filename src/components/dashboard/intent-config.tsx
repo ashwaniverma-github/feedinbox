@@ -72,15 +72,20 @@ export function IntentConfig({ projectId }: { projectId: string }) {
         setSaving(true);
         setSaved(false);
         setSaveError(false);
+        const sent = JSON.stringify(settings);
         try {
             const res = await fetch(`/api/projects/${projectId}/intent-settings`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(settings),
+                body: sent,
             });
             if (!res.ok) throw new Error(`Save failed: ${res.status}`);
             const data = await res.json();
-            if (data.settings) setSettings(data.settings);
+            // Apply the server's normalized copy only if the user hasn't edited
+            // during the request, so an in-flight response can't clobber newer edits.
+            if (data.settings) {
+                setSettings((cur) => (JSON.stringify(cur) === sent ? data.settings : cur));
+            }
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);
         } catch (e) {
