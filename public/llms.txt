@@ -76,6 +76,12 @@ From the site's own pricing / checkout code:
     // are never asked.
     window.feedinbox('event', 'converted')
 
+    // Stand down because the visitor is progressing, not leaving (signing in,
+    // starting signup). Note this is a command, not an event: no name to
+    // configure. Unlike 'converted' it does not end the session, so a later
+    // high_intent re-arms normally.
+    window.feedinbox('cancel')
+
 Rules:
 - Event names must match the dashboard config. Defaults: 'high_intent',
   'abandoned', and 'converted'. Pro users can rename them; use whatever the
@@ -162,6 +168,33 @@ Right (fire high_intent on mount, let the widget handle the exit):
       window.feedinbox('event', 'high_intent', { plan: 'pro' })
     }, [])
 
+### When to call cancel
+
+After high_intent the widget assumes that leaving the buying surface means
+abandonment. That is wrong when the visitor is moving deeper into the funnel,
+so call cancel on actions like:
+- Sign in / log in clicked from the pricing page.
+- Sign up or "Start free trial" started (before any payment).
+- Any step that takes them forward without being a purchase.
+
+This matters most in single-page apps. On a client-side route change the
+document is never torn down, so the armed timer and exit listeners survive the
+navigation and the card can appear on your login or signup page seconds later.
+A full page load does not have this problem: the old document is destroyed
+along with everything the widget had armed.
+
+    function SignInButton() {
+      const signIn = () => {
+        window.feedinbox('cancel')   // they are progressing, not leaving
+        router.push('/login')
+      }
+      return <button onClick={signIn}>Sign in</button>
+    }
+
+Do not use 'converted' for this. It also marks the session answered, so a
+visitor who signs in, returns to pricing, and then genuinely abandons would
+never be asked.
+
 ### Where to fire converted
 
 On the real success step, so people who paid are excluded:
@@ -192,7 +225,8 @@ Customizing the question/options/delay length/event names is a Pro feature.
   that timer has been switched off in the dashboard. A converted event cancels
   everything.
 - Once a visitor answers, converts, or dismisses the card, they are not asked
-  again for that browser session.
+  again for that browser session. A cancel is different: it only stands the
+  triggers down, so the visitor can still be asked after a later high_intent.
 - Responses appear in the dashboard (Why-Not-Buy tab), tagged with the context
   (e.g. plan) and country, plus a weekly summary email.
 
@@ -210,6 +244,9 @@ Customizing the question/options/delay length/event names is a Pro feature.
 - Card appears while the visitor is still reading: the fallback timer is too
   short. Raise the delay, or switch the timer off so the card only appears on a
   real exit signal.
+- Card appears on the login or signup page: a high_intent event was armed on
+  pricing and the client-side navigation never disarmed it. Call
+  window.feedinbox('cancel') on the sign-in / signup action.
 - Buyers are being asked: the converted event is not firing. Fire it on the
   real success step.
 - Nothing loads at all: verify the project key and that the script tag is

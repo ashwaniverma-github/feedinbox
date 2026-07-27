@@ -106,8 +106,28 @@
         var pending = _pendingEvents;
         _pendingEvents = [];
         for (var i = 0; i < pending.length; i++) {
-            handleEvent(pending[i][0], pending[i][1]);
+            // Replay in the original order so a cancel still undoes a high-intent
+            // event that was fired before it.
+            if (pending[i].type === 'cancel') handleCancel();
+            else handleEvent(pending[i].name, pending[i].context);
         }
+    }
+
+    // Public: window.feedinbox('cancel')
+    // Stands down any pending Why-Not-Buy triggers because the visitor is
+    // progressing rather than leaving (signing in, starting signup, moving to a
+    // step that isn't a purchase). Deliberately does NOT mark the session
+    // answered the way a conversion does, so a later high-intent event re-arms
+    // normally and a genuine abandonment is still captured.
+    function handleCancel() {
+        if (!_settingsLoaded) {
+            if (_pendingEvents.length < MAX_PENDING_EVENTS) {
+                _pendingEvents.push({ type: 'cancel' });
+            }
+            return;
+        }
+        disarmIntentTriggers();
+        dismissIntentCard(); // get it off the screen if it already appeared
     }
 
     // Public event dispatch: window.feedinbox('event', name, context)
@@ -117,7 +137,7 @@
         // so a queue can't grow unbounded if init() never resolves)
         if (!_settingsLoaded) {
             if (_pendingEvents.length < MAX_PENDING_EVENTS) {
-                _pendingEvents.push([name, context]);
+                _pendingEvents.push({ type: 'event', name: name, context: context });
             }
             return;
         }
@@ -534,6 +554,8 @@
         var args = Array.prototype.slice.call(arguments, 1);
         if (command === 'event') {
             handleEvent(args[0], args[1]);
+        } else if (command === 'cancel') {
+            handleCancel();
         } else if (command === 'init') {
             init(args[0]);
         }

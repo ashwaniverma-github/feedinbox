@@ -29,7 +29,21 @@ window.feedinbox('event', 'abandoned')
 
 // Fire when they actually buy. This cancels the pending question,
 // so people who purchased are never asked.
-window.feedinbox('event', 'converted')`;
+window.feedinbox('event', 'converted')
+
+// Stand down because they're progressing, not leaving (signing in,
+// starting signup). A command, not an event, and unlike 'converted'
+// it doesn't end the session.
+window.feedinbox('cancel')`;
+
+const cancelExample = `function SignInButton() {
+  const signIn = () => {
+    // they're moving forward, not abandoning: don't ask them why
+    window.feedinbox('cancel')
+    router.push('/login')
+  }
+  return <button onClick={signIn}>Sign in</button>
+}`;
 
 const reactExample = `function PricingModal() {
   const openPricing = () => {
@@ -185,6 +199,21 @@ export default async function DocsPage() {
                                 Fire <Code>converted</Code> on your success step (payment confirmed, thank-you page):
                             </p>
                             <CodeBlock code={successExample} language="javascript" filename="success handler" />
+
+                            <p className="text-neutral-700 mb-3 mt-6">
+                                Call <Code>cancel</Code> when a visitor moves <em>forward</em> instead of leaving,
+                                such as clicking Sign in or starting a signup:
+                            </p>
+                            <CodeBlock code={cancelExample} language="javascript" filename="SignInButton.jsx" />
+                            <Callout>
+                                <strong>This matters most in single-page apps.</strong> On a client-side route
+                                change the document is never torn down, so the armed timer and exit listeners
+                                survive the navigation and the card can surface on your login or signup page
+                                seconds later. A full page load doesn't have this problem, since the old document
+                                is destroyed along with everything the widget had armed. Don't reach for{" "}
+                                <Code>converted</Code> here: it also ends the session, so someone who signs in,
+                                comes back to pricing, and then genuinely bails would never be asked.
+                            </Callout>
                             <Callout>
                                 Good <Code>high_intent</Code> moments: pricing modal opens, pricing page loads,
                                 checkout starts, "Upgrade" clicked. Good <Code>abandoned</Code> moments: pricing
@@ -274,7 +303,8 @@ export default async function DocsPage() {
                                 </li>
                                 <li>
                                     Once a visitor answers, converts, or dismisses the card, they aren't asked
-                                    again for the rest of that session.
+                                    again for the rest of that session. <Code>cancel</Code> is different: it only
+                                    stands the triggers down, so a later <Code>high_intent</Code> can still ask.
                                 </li>
                                 <li>
                                     Responses land in your dashboard (Why-Not-Buy tab), tagged by plan and country,
@@ -302,6 +332,11 @@ export default async function DocsPage() {
                                     <strong>Card interrupts people still reading:</strong> the fallback timer is
                                     too short. Raise the delay, or switch the timer off so the card only appears
                                     on a real exit signal.
+                                </li>
+                                <li>
+                                    <strong>Card appears on your login or signup page:</strong> a{" "}
+                                    <Code>high_intent</Code> armed on pricing survived the client-side navigation.
+                                    Call <Code>window.feedinbox('cancel')</Code> on the sign-in or signup action.
                                 </li>
                                 <li>
                                     <strong>Buyers get asked:</strong> your <Code>converted</Code> event isn't firing.

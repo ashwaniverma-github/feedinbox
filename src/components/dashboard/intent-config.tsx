@@ -356,6 +356,8 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                     <div>window.feedinbox('event', '{settings.abandonEvent}')</div>
                     <div className="mt-1.5 text-neutral-500">{"// fire on successful purchase"}</div>
                     <div>window.feedinbox('event', '{settings.conversionEvent}')</div>
+                    <div className="mt-1.5 text-neutral-500">{"// stand down when they move forward instead of leaving (sign in, signup)"}</div>
+                    <div>window.feedinbox('cancel')</div>
                 </div>
 
                 <p className="text-xs text-muted-foreground">
