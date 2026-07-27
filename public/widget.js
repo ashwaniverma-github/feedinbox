@@ -133,7 +133,10 @@
             return;
         }
         disarmIntentTriggers();
-        dismissIntentCard(); // get it off the screen if it already appeared
+        // Remove synchronously: a fading card still in the DOM would make the
+        // already-showing guard swallow a high_intent fired right after this,
+        // and cancel's contract is that a later high_intent re-arms.
+        dismissIntentCard(true);
     }
 
     // Public event dispatch: window.feedinbox('event', name, context)
@@ -291,8 +294,11 @@
     }
 
     // Removes the intent card (if present) plus its styles and Escape listener.
-    // Safe to call whether or not the card is showing.
-    function dismissIntentCard() {
+    // Safe to call whether or not the card is showing. Pass immediate to skip
+    // the 300ms exit animation: while the fading card is still in the DOM, the
+    // already-showing guards ignore new events, so any path that promises a
+    // re-arm right after dismissal (cancel) must remove the card synchronously.
+    function dismissIntentCard(immediate) {
         if (_intentKeyHandler) {
             document.removeEventListener('keydown', _intentKeyHandler);
             _intentKeyHandler = null;
@@ -301,10 +307,12 @@
         var styleEl = document.getElementById('feedinbox-intent-style');
         if (card) {
             card.classList.remove('open');
-            setTimeout(function () {
+            var remove = function () {
                 if (card.parentNode) card.parentNode.removeChild(card);
                 if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
-            }, 300);
+            };
+            if (immediate) remove();
+            else setTimeout(remove, 300);
         } else if (styleEl && styleEl.parentNode) {
             styleEl.parentNode.removeChild(styleEl);
         }
