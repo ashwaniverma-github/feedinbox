@@ -152,7 +152,8 @@ On the real success step, so people who paid are excluded:
 Toggling features is done in the dashboard, not in code:
 - Feedback button: Widget editor toggle.
 - Why-Not-Buy: Why-Not-Buy tab > Configure toggle.
-Both toggles are free. Customizing the question/options/delay is a Pro feature.
+Both toggles are free, as is switching the fallback timer on or off.
+Customizing the question/options/delay length/event names is a Pro feature.
 
 ## Behavior
 

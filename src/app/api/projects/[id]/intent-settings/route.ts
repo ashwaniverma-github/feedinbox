@@ -53,7 +53,8 @@ export async function GET(
 }
 
 // PUT /api/projects/[id]/intent-settings
-// `enabled` toggle allowed for all tiers; customization (question/options/delay/events) is Pro-only.
+// `enabled`, notifyFrequency and the fallback-timer toggle are allowed for all
+// tiers; customization (question/options/delay length/events) is Pro-only.
 export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -98,6 +99,13 @@ export async function PUT(
             next.notifyFrequency = body.notifyFrequency;
         }
 
+        // fallbackEnabled: whether to ask visitors who go quiet without an exit
+        // signal. A "don't interrupt my readers" choice rather than customization,
+        // so every tier gets it. The delay length itself stays Pro.
+        if (typeof body.fallbackEnabled === "boolean") {
+            next.fallbackEnabled = body.fallbackEnabled;
+        }
+
         // Customization fields: Pro only. Non-Pro edits to these are ignored.
         if (userIsPro) {
             if (typeof body.question === "string" && body.question.trim().length > 0) {
@@ -129,9 +137,6 @@ export async function PUT(
                     MAX_DELAY_SECONDS,
                     Math.max(MIN_DELAY_SECONDS, Math.round(body.delaySeconds))
                 );
-            }
-            if (typeof body.fallbackEnabled === "boolean") {
-                next.fallbackEnabled = body.fallbackEnabled;
             }
             if (typeof body.highIntentEvent === "string" && body.highIntentEvent.trim().length > 0) {
                 next.highIntentEvent = body.highIntentEvent.trim().slice(0, 100);

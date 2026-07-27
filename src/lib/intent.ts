@@ -66,8 +66,9 @@ export function readIntentSettings(projectSettings: unknown): IntentSettings {
 }
 
 // Resolve the settings the public widget should use.
-// `enabled` is honored for every tier; question/options/delay/event customization
-// only applies for Pro; free tier always serves the defaults for those fields.
+// `enabled` and `fallbackEnabled` are honored for every tier; question/options/
+// delay/event customization only applies for Pro; free tier always serves the
+// defaults for those fields.
 export function resolveIntentSettingsForWidget(
     projectSettings: unknown,
     ownerIsPro: boolean
@@ -77,5 +78,6 @@ export function resolveIntentSettingsForWidget(
     return {
         ...DEFAULT_INTENT_SETTINGS,
         enabled: stored.enabled,
+        fallbackEnabled: stored.fallbackEnabled,
     };
 }

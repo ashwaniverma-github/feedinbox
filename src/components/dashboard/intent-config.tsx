@@ -173,6 +173,66 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                     </div>
                 </div>
 
+                {/* Fallback timer (free for all tiers). Kept outside the Pro block below,
+                    whose overlay would otherwise swallow the toggle's clicks. Only the
+                    seconds value is Pro. */}
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <span className="text-sm font-medium">Fallback timer</span>
+                            <p className="text-xs text-muted-foreground">
+                                Off means the card only appears on a real exit signal, so someone
+                                still reading is never interrupted.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            role="switch"
+                            aria-checked={settings.fallbackEnabled}
+                            onClick={() => update("fallbackEnabled", !settings.fallbackEnabled)}
+                            aria-label="Toggle fallback timer"
+                            className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.fallbackEnabled
+                                ? "bg-black border-white"
+                                : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
+                                }`}
+                        >
+                            <div
+                                className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${settings.fallbackEnabled ? "translate-x-6" : "translate-x-0.5"
+                                    }`}
+                            />
+                        </button>
+                    </div>
+
+                    {settings.fallbackEnabled && (
+                        <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
+                            <div className="flex items-center justify-between">
+                                <label className="text-sm font-medium">
+                                    Show anyway after {!isPro && <span className="text-xs font-normal text-muted-foreground">(Pro)</span>}
+                                </label>
+                                <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
+                            </div>
+                            <input
+                                type="range"
+                                min={MIN_DELAY_SECONDS}
+                                max={MAX_DELAY_SECONDS}
+                                value={settings.delaySeconds}
+                                disabled={!isPro}
+                                onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
+                                className="w-full accent-primary"
+                            />
+                        </div>
+                    )}
+
+                    <p className="text-xs text-muted-foreground">
+                        The card normally waits for an exit signal: your abandon event (fire it
+                        when someone closes your pricing modal or checkout without buying), the
+                        cursor leaving through the top of the page, or the tab being hidden.
+                        {settings.fallbackEnabled
+                            ? " This timer is the safety net for visitors who go quiet without any of those."
+                            : " With the timer off, visitors who go quiet without one of those are never asked. Touch devices have no cursor signal, so mobile relies on the abandon event or the tab being hidden."}
+                    </p>
+                </div>
+
                 {/* Customization (Pro). For non-Pro, a transparent overlay captures
                     clicks to open pricing, since disabled inputs don't emit focus/mouse events. */}
                 <div className="relative space-y-6">
@@ -234,62 +294,6 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                         </div>
                     </div>
 
-                    {/* Fallback delay */}
-                    <div className={`space-y-3 ${!isPro ? "opacity-60" : ""}`}>
-                        <div className="flex items-center justify-between gap-3">
-                            <div>
-                                <span className="text-sm font-medium">Fallback timer</span>
-                                <p className="text-xs text-muted-foreground">
-                                    Off means the card only appears on a real exit signal, so
-                                    someone still reading is never interrupted.
-                                </p>
-                            </div>
-                            <button
-                                type="button"
-                                role="switch"
-                                aria-checked={settings.fallbackEnabled}
-                                disabled={!isPro}
-                                onClick={() => update("fallbackEnabled", !settings.fallbackEnabled)}
-                                aria-label="Toggle fallback timer"
-                                className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.fallbackEnabled
-                                    ? "bg-black border-white"
-                                    : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
-                                    }`}
-                            >
-                                <div
-                                    className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${settings.fallbackEnabled ? "translate-x-6" : "translate-x-0.5"
-                                        }`}
-                                />
-                            </button>
-                        </div>
-
-                        {settings.fallbackEnabled && (
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium">Show anyway after</label>
-                                    <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
-                                </div>
-                                <input
-                                    type="range"
-                                    min={MIN_DELAY_SECONDS}
-                                    max={MAX_DELAY_SECONDS}
-                                    value={settings.delaySeconds}
-                                    disabled={!isPro}
-                                    onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
-                                    className="w-full accent-primary"
-                                />
-                            </div>
-                        )}
-
-                        <p className="text-xs text-muted-foreground">
-                            The card normally waits for an exit signal: your abandon event (fire it
-                            when someone closes your pricing modal or checkout without buying), the
-                            cursor leaving through the top of the page, or the tab being hidden.
-                            {settings.fallbackEnabled
-                                ? " This timer is the safety net for visitors who go quiet without any of those."
-                                : " With the timer off, visitors who go quiet without one of those are never asked. Touch devices have no cursor signal, so mobile relies on the abandon event or the tab being hidden."}
-                        </p>
-                    </div>
 
                     {/* Event names */}
                     <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 ${!isPro ? "opacity-60" : ""}`}>

@@ -231,7 +231,7 @@ export default async function DocsPage() {
                             <p className="text-neutral-700 mt-4">
                                 Toggle the feedback button in <span className="font-medium">Widget editor</span> and
                                 Why-Not-Buy in the <span className="font-medium">Why-Not-Buy tab → Configure</span>.
-                                Both toggles are free.
+                                Both toggles are free, as is switching the fallback timer on or off.
                             </p>
                         </Section>
 
