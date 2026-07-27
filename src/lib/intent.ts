@@ -13,6 +13,12 @@ export interface IntentSettings {
     // shows anyway after this many seconds. Exit signals (pointer leaving the
     // viewport top, tab hidden, or the abandon event) can show it sooner.
     delaySeconds: number;
+    // When false the fallback timer is skipped entirely and the card waits for a
+    // real exit signal, so a visitor still reading is never interrupted. Safe
+    // because the automatic signals stay armed, but it narrows mobile coverage:
+    // there is no mouseout on touch devices, leaving only tab-hidden and the
+    // abandon event.
+    fallbackEnabled: boolean;
     highIntentEvent: string;
     conversionEvent: string;
     // Host-fired "closed pricing/checkout without buying" signal. Shows the
@@ -35,6 +41,7 @@ export const DEFAULT_INTENT_SETTINGS: IntentSettings = {
         { id: "just_looking", label: "Just looking" },
     ],
     delaySeconds: 30,
+    fallbackEnabled: true,
     highIntentEvent: "high_intent",
     conversionEvent: "converted",
     abandonEvent: "abandoned",

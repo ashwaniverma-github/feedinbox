@@ -168,8 +168,12 @@
         _intentArmedAt = Date.now();
 
         // Fallback: show anyway after the configured delay (explicit 0 = immediately).
-        var delaySeconds = typeof _intentSettings.delaySeconds === 'number' ? _intentSettings.delaySeconds : 30;
-        _intentTimer = setTimeout(triggerIntentCard, Math.max(0, delaySeconds * 1000));
+        // Can be switched off entirely, in which case the card waits for a real
+        // exit signal and a visitor who is still reading is never interrupted.
+        if (_intentSettings.fallbackEnabled !== false) {
+            var delaySeconds = typeof _intentSettings.delaySeconds === 'number' ? _intentSettings.delaySeconds : 30;
+            _intentTimer = setTimeout(triggerIntentCard, Math.max(0, delaySeconds * 1000));
+        }
 
         // Desktop exit signal: pointer leaves through the top of the viewport
         // (heading for the tab bar / close button).

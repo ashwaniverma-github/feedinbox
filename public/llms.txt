@@ -90,7 +90,11 @@ Rules:
      viewport, or the tab being hidden (automatic signals are ignored for the
      first ~3 seconds after high_intent to avoid stray-mouse false fires),
   3. a fallback timer (delaySeconds, default 30) so visitors who go quiet
-     without any exit signal still get asked.
+     without any exit signal still get asked. This timer can be switched off
+     in the dashboard, in which case the card waits for a real exit signal and
+     a visitor who is still reading is never interrupted. Note that touch
+     devices have no cursor signal, so with the timer off mobile relies on the
+     abandoned event or the tab being hidden.
 - 'abandoned' also works standalone: if high_intent never fired, it arms and
   shows the card in one call (context can be passed on it directly).
 
@@ -154,8 +158,9 @@ Both toggles are free. Customizing the question/options/delay is a Pro feature.
 
 - After high_intent, the card shows on the first exit signal: the abandoned
   event, the cursor leaving the viewport top, or the tab being hidden. If none
-  fire, the fallback timer (delaySeconds, default 30) shows it anyway. A
-  converted event cancels everything.
+  fire, the fallback timer (delaySeconds, default 30) shows it anyway, unless
+  that timer has been switched off in the dashboard. A converted event cancels
+  everything.
 - Once a visitor answers, converts, or dismisses the card, they are not asked
   again for that browser session.
 - Responses appear in the dashboard (Why-Not-Buy tab), tagged with the context

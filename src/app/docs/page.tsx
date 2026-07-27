@@ -249,6 +249,12 @@ export default async function DocsPage() {
                                     shows the card anyway. <Code>converted</Code> cancels everything.
                                 </li>
                                 <li>
+                                    You can switch that timer off entirely, so the card waits for a real exit
+                                    signal and nobody is interrupted mid-read. Worth knowing: touch devices have
+                                    no cursor signal, so with the timer off mobile relies on your{" "}
+                                    <Code>abandoned</Code> event or the tab being hidden.
+                                </li>
+                                <li>
                                     <Code>abandoned</Code> also works on its own: if <Code>high_intent</Code>{" "}
                                     never fired, it arms and shows the card in a single call, so you can wire
                                     just that one event if it suits your flow better.

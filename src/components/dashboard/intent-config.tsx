@@ -235,28 +235,59 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                     </div>
 
                     {/* Fallback delay */}
-                    <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
-                        <div className="flex items-center justify-between">
-                            <label className="text-sm font-medium">
-                                Fallback: show anyway after
-                            </label>
-                            <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
+                    <div className={`space-y-3 ${!isPro ? "opacity-60" : ""}`}>
+                        <div className="flex items-center justify-between gap-3">
+                            <div>
+                                <span className="text-sm font-medium">Fallback timer</span>
+                                <p className="text-xs text-muted-foreground">
+                                    Off means the card only appears on a real exit signal, so
+                                    someone still reading is never interrupted.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={settings.fallbackEnabled}
+                                disabled={!isPro}
+                                onClick={() => update("fallbackEnabled", !settings.fallbackEnabled)}
+                                aria-label="Toggle fallback timer"
+                                className={`relative w-12 h-6 shrink-0 rounded-full transition-colors border ${settings.fallbackEnabled
+                                    ? "bg-black border-white"
+                                    : "bg-neutral-300 dark:bg-neutral-600 border-neutral-400 dark:border-neutral-500"
+                                    }`}
+                            >
+                                <div
+                                    className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${settings.fallbackEnabled ? "translate-x-6" : "translate-x-0.5"
+                                        }`}
+                                />
+                            </button>
                         </div>
-                        <input
-                            type="range"
-                            min={MIN_DELAY_SECONDS}
-                            max={MAX_DELAY_SECONDS}
-                            value={settings.delaySeconds}
-                            disabled={!isPro}
-                            onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
-                            className="w-full accent-primary"
-                        />
+
+                        {settings.fallbackEnabled && (
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-sm font-medium">Show anyway after</label>
+                                    <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min={MIN_DELAY_SECONDS}
+                                    max={MAX_DELAY_SECONDS}
+                                    value={settings.delaySeconds}
+                                    disabled={!isPro}
+                                    onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
+                                    className="w-full accent-primary"
+                                />
+                            </div>
+                        )}
+
                         <p className="text-xs text-muted-foreground">
                             The card normally waits for an exit signal: your abandon event (fire it
                             when someone closes your pricing modal or checkout without buying), the
                             cursor leaving through the top of the page, or the tab being hidden.
-                            This timer is the safety net for visitors who go quiet without any of
-                            those.
+                            {settings.fallbackEnabled
+                                ? " This timer is the safety net for visitors who go quiet without any of those."
+                                : " With the timer off, visitors who go quiet without one of those are never asked. Touch devices have no cursor signal, so mobile relies on the abandon event or the tab being hidden."}
                         </p>
                     </div>
 

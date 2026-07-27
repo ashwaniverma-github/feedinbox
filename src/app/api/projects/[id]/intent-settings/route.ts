@@ -130,6 +130,9 @@ export async function PUT(
                     Math.max(MIN_DELAY_SECONDS, Math.round(body.delaySeconds))
                 );
             }
+            if (typeof body.fallbackEnabled === "boolean") {
+                next.fallbackEnabled = body.fallbackEnabled;
+            }
             if (typeof body.highIntentEvent === "string" && body.highIntentEvent.trim().length > 0) {
                 next.highIntentEvent = body.highIntentEvent.trim().slice(0, 100);
             }
