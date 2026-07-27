@@ -14,8 +14,9 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
     const [isAnimating, setIsAnimating] = useState(false);
 
     // Ordered so the pricing modal (the sharpest, most reliable trigger) is what
-    // renders on first paint. Keep "your pricing modal." the longest string here:
-    // the invisible sizer below reserves width from it.
+    // renders on first paint. Order is free otherwise: the grid stack below sizes
+    // itself to the widest phrase, so no entry has to be listed first to reserve
+    // width. Colors are index-based, so keep that in sync when editing.
     const animatedTexts = ["your pricing modal.", "your paywall."];
 
     useEffect(() => {
@@ -38,24 +39,29 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 lg:text-6xl mb-6 leading-[1.1]">
                             Know why they closed
                             <br />
-                            {/* overflow-hidden drives the slide-up animation, so it also clips
-                                horizontally. The right padding is the buffer that keeps the final
-                                glyph (the full stop) off that clip edge: the absolutely positioned
-                                text rounds its width differently than the inline sizer below. */}
-                            <span className="inline-block relative overflow-hidden align-bottom pr-4" style={{ height: '1.15em' }}>
-                                <span className="invisible" aria-hidden="true">your pricing modal.</span>
-                                <span
-                                    className={cn(
-                                        "absolute left-0 top-0 transition-all duration-500 ease-out whitespace-nowrap",
-                                        isAnimating
-                                            ? "opacity-0 -translate-y-full"
-                                            : "opacity-100 translate-y-0",
-                                        currentTextIndex === 0 && "text-red-500",
-                                        currentTextIndex === 1 && "text-amber-500"
-                                    )}
-                                >
-                                    {animatedTexts[currentTextIndex]}
-                                </span>
+                            {/* Every phrase is stacked in one grid cell, so the box is always as
+                                wide as the widest phrase and no phrase can overflow it. The older
+                                approach measured with a separate invisible span, which wrapped when
+                                the column got narrow and left the real (nowrap) text wider than its
+                                own box, clipping the final glyph against overflow-hidden. That
+                                overflow-hidden is still what gives the slide its masked edge. */}
+                            <span className="inline-grid overflow-hidden align-bottom" style={{ height: '1.15em' }}>
+                                {animatedTexts.map((text, i) => (
+                                    <span
+                                        key={text}
+                                        aria-hidden={i !== currentTextIndex}
+                                        className={cn(
+                                            "col-start-1 row-start-1 whitespace-nowrap transition-all duration-500 ease-out",
+                                            i === currentTextIndex && !isAnimating
+                                                ? "opacity-100 translate-y-0"
+                                                : "opacity-0 -translate-y-full",
+                                            i === 0 && "text-red-500",
+                                            i === 1 && "text-amber-500"
+                                        )}
+                                    >
+                                        {text}
+                                    </span>
+                                ))}
                             </span>
                         </h1>
                         <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
