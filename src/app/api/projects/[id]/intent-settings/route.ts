@@ -151,29 +151,41 @@ export async function PUT(
         // project out of unrelated updates (the enabled toggle and notification
         // preference are free for every tier, yet non-Pro callers cannot edit event
         // names to repair the collision themselves). Untouched values are migrated.
-        const EVENT_KEYS = ["highIntentEvent", "abandonEvent", "conversionEvent"] as const;
-        const edited = new Set(
-            EVENT_KEYS.filter(
-                (k) => userIsPro && typeof body[k] === "string" && body[k].trim().length > 0
-            )
+        // Ordered so abandonEvent yields on a legacy collision: the other two are
+        // names a customer's site is already firing, while abandonEvent is new and
+        // has no call site yet.
+        const EVENT_KEYS = ["highIntentEvent", "conversionEvent", "abandonEvent"] as const;
+        // Only names this request actually changes count as edits. The dashboard
+        // round-trips all three fields on every save, so comparing against the
+        // stored value is what separates a real edit from an untouched legacy one.
+        const edited = EVENT_KEYS.filter(
+            (k) =>
+                userIsPro &&
+                typeof body[k] === "string" &&
+                body[k].trim().length > 0 &&
+                next[k] !== current[k]
         );
 
-        const claimed = new Set<string>();
-        // Caller-supplied names claim their value first, so a migration can never
-        // silently rename something the caller just set.
-        for (const key of EVENT_KEYS) {
-            if (!edited.has(key)) continue;
-            if (claimed.has(next[key])) {
+        // A collision the caller just introduced is rejected. Migrating the other
+        // name instead would silently stop routing an event their site still fires.
+        for (const key of edited) {
+            if (EVENT_KEYS.some((other) => other !== key && next[other] === next[key])) {
                 return NextResponse.json(
                     { error: "High-intent, conversion, and abandon event names must be distinct" },
                     { status: 400 }
                 );
             }
-            claimed.add(next[key]);
         }
-        // Remaining values are stored/legacy: deterministically repair collisions.
+
+        // Anything still colliding is pre-existing state: settings saved before
+        // abandonEvent existed can clash with its default. Migrate rather than
+        // reject, since non-Pro callers cannot edit event names to repair it
+        // themselves and would otherwise lose the free enabled toggle. Edited
+        // values are claimed up front so a migration can never overwrite them.
+        const editedSet = new Set<(typeof EVENT_KEYS)[number]>(edited);
+        const claimed = new Set<string>(edited.map((k) => next[k]));
         for (const key of EVENT_KEYS) {
-            if (edited.has(key)) continue;
+            if (editedSet.has(key)) continue;
             if (!claimed.has(next[key])) {
                 claimed.add(next[key]);
                 continue;
