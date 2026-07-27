@@ -13,7 +13,10 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    const animatedTexts = ["don't buy.", "abandon checkout.", "skip your pricing."];
+    // Ordered so the pricing modal (the sharpest, most reliable trigger) is what
+    // renders on first paint. Keep "your pricing modal." the longest string here:
+    // the invisible sizer below reserves width from it.
+    const animatedTexts = ["your pricing modal.", "your checkout.", "your paywall."];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -33,10 +36,10 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                 <div className="grid gap-16 lg:grid-cols-2 lg:gap-8 items-center">
                     <div className="max-w-2xl">
                         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 lg:text-6xl mb-6 leading-[1.1]">
-                            Know why visitors
+                            Know why they closed
                             <br />
                             <span className="inline-block relative overflow-hidden align-bottom pr-2" style={{ height: '1.15em' }}>
-                                <span className="invisible" aria-hidden="true">abandon checkout.</span>
+                                <span className="invisible" aria-hidden="true">your pricing modal.</span>
                                 <span
                                     className={cn(
                                         "absolute left-0 top-0 transition-all duration-500 ease-out whitespace-nowrap",
@@ -53,7 +56,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                             </span>
                         </h1>
                         <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
-                            When a visitor leaves your pricing without buying, one question asks why. The reason lands in your dashboard, plus a weekly digest straight to your inbox.
+                            The moment someone closes your pricing modal without buying, one question asks why. The reason lands in your dashboard, plus a weekly digest straight to your inbox.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 items-center flex-wrap">
                             <Link

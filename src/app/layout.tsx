@@ -20,11 +20,11 @@ const siteUrl = "https://feedinbox.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Feedinbox: Find out why visitors don't buy",
+    default: "Feedinbox: Know why they closed your pricing modal",
     template: "%s | Feedinbox",
   },
-  description: "When someone abandons your pricing or checkout, Feedinbox asks one question and tells you why, tagged by plan and country. Plus a feedback widget. One script tag, free to start.",
-  keywords: ["exit intent", "why visitors don't buy", "checkout abandonment", "pricing page abandonment", "conversion feedback", "cart abandonment survey", "exit survey", "feedback widget", "user feedback tool", "customer feedback widget", "in-app feedback", "saas feedback tool"],
+  description: "The moment someone closes your pricing modal without buying, Feedinbox asks one question and tells you why, tagged by plan and country. Plus a feedback widget. One script tag, free to start.",
+  keywords: ["pricing modal", "pricing modal abandonment", "exit intent", "why visitors don't buy", "checkout abandonment", "pricing page abandonment", "conversion feedback", "cart abandonment survey", "exit survey", "feedback widget", "user feedback tool", "customer feedback widget", "in-app feedback", "saas feedback tool"],
   authors: [{ name: "Feedinbox" }],
   creator: "Feedinbox",
   publisher: "Feedinbox",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Feedinbox",
-    title: "Feedinbox - Collect User Feedback to Your Inbox",
-    description: "Collect feedback, bug reports, and feature requests from your users. Embed one snippet of code, receive everything straight to your inbox.",
+    title: "Feedinbox: Know why they closed your pricing modal",
+    description: "The moment someone closes your pricing modal without buying, one question asks why. The reason lands in your inbox. One script tag, free to start.",
     images: [
       {
         url: "/OG.png?v=2",
@@ -57,8 +57,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Feedinbox - Collect User Feedback to Your Inbox",
-    description: "Collect feedback, bug reports, and feature requests from your users. Embed one snippet of code, receive everything straight to your inbox.",
+    title: "Feedinbox: Know why they closed your pricing modal",
+    description: "The moment someone closes your pricing modal without buying, one question asks why. The reason lands in your inbox. One script tag, free to start.",
     images: ["/OG.png?v=2"],
     creator: "@feedinbox",
   },
