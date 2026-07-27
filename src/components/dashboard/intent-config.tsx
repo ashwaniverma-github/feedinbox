@@ -252,9 +252,11 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                             className="w-full accent-primary"
                         />
                         <p className="text-xs text-muted-foreground">
-                            The card normally waits for an exit signal: your abandon event, the
-                            cursor leaving the page, or the tab being hidden. This timer is the
-                            safety net for visitors who go quiet without any of those.
+                            The card normally waits for an exit signal: your abandon event (fire it
+                            when someone closes your pricing modal or checkout without buying), the
+                            cursor leaving through the top of the page, or the tab being hidden.
+                            This timer is the safety net for visitors who go quiet without any of
+                            those.
                         </p>
                     </div>
 
