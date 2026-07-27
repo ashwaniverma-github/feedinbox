@@ -16,7 +16,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
     // Ordered so the pricing modal (the sharpest, most reliable trigger) is what
     // renders on first paint. Keep "your pricing modal." the longest string here:
     // the invisible sizer below reserves width from it.
-    const animatedTexts = ["your pricing modal.", "your checkout.", "your paywall."];
+    const animatedTexts = ["your pricing modal.", "your paywall."];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -47,8 +47,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                                             ? "opacity-0 -translate-y-full"
                                             : "opacity-100 translate-y-0",
                                         currentTextIndex === 0 && "text-red-500",
-                                        currentTextIndex === 1 && "text-amber-500",
-                                        currentTextIndex === 2 && "text-neutral-900"
+                                        currentTextIndex === 1 && "text-amber-500"
                                     )}
                                 >
                                     {animatedTexts[currentTextIndex]}
