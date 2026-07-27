@@ -136,9 +136,22 @@ export async function PUT(
             if (typeof body.conversionEvent === "string" && body.conversionEvent.trim().length > 0) {
                 next.conversionEvent = body.conversionEvent.trim().slice(0, 100);
             }
+            if (typeof body.abandonEvent === "string" && body.abandonEvent.trim().length > 0) {
+                next.abandonEvent = body.abandonEvent.trim().slice(0, 100);
+            }
             if (typeof body.hideBranding === "boolean") {
                 next.hideBranding = body.hideBranding;
             }
+        }
+
+        // The three event names route to different behaviors in the widget, so
+        // they must stay distinct or the dispatcher becomes ambiguous.
+        const eventNames = [next.highIntentEvent, next.conversionEvent, next.abandonEvent];
+        if (new Set(eventNames).size !== eventNames.length) {
+            return NextResponse.json(
+                { error: "High-intent, conversion, and abandon event names must be distinct" },
+                { status: 400 }
+            );
         }
 
         const existingSettings = (project.settings as Record<string, unknown>) || {};

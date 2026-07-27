@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Check } from "lucide-react";
 // import { Sparkles } from "lucide-react"; // LTD removed
 import { cn } from "@/lib/utils";
@@ -55,15 +55,18 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
     }, [isOpen]);
 
     // Dogfood Why-Not-Buy: opening the pricing modal is a high-intent signal.
-    // If the visitor doesn't convert within the configured delay, the card asks why.
+    // Closing it without buying is the abandonment signal that shows the card
+    // right away (checkout clicks navigate to Dodo before the modal ever closes,
+    // so they never fire a false abandon).
+    const wasOpen = useRef(false);
     useEffect(() => {
+        const feedinbox = (window as unknown as { feedinbox?: (...args: unknown[]) => void }).feedinbox;
         if (isOpen) {
-            (window as unknown as { feedinbox?: (...args: unknown[]) => void }).feedinbox?.(
-                "event",
-                "high_intent",
-                { plan: "pro" }
-            );
+            feedinbox?.("event", "high_intent", { plan: "pro" });
+        } else if (wasOpen.current) {
+            feedinbox?.("event", "abandoned", { plan: "pro" });
         }
+        wasOpen.current = isOpen;
     }, [isOpen]);
 
     const handleUpgrade = async () => {

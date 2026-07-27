@@ -24,8 +24,9 @@ export default function RootLayout({ children }) {
   )
 }
 
-// Then, from your pricing/checkout code, fire high-intent events:
+// Then, from your pricing/checkout code, fire the events:
 //   window.feedinbox('event', 'high_intent', { plan: 'pro' }) // e.g. pricing modal opened
+//   window.feedinbox('event', 'abandoned')                    // pricing/checkout closed without buying
 //   window.feedinbox('event', 'converted')                    // on successful purchase`;
   }
 
@@ -34,8 +35,9 @@ export default function RootLayout({ children }) {
 <script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>
 <script async src="${origin}/widget.js" data-project-key="${projectKey}"></script>
 
-<!-- Then fire high-intent events from your pricing/checkout code:
+<!-- Then fire the events from your pricing/checkout code:
      window.feedinbox('event', 'high_intent', { plan: 'pro' })  // pricing modal opened
+     window.feedinbox('event', 'abandoned')                     // pricing/checkout closed without buying
      window.feedinbox('event', 'converted')                     // on successful purchase -->`;
   }
 
@@ -44,7 +46,8 @@ export default function RootLayout({ children }) {
 <script>window.feedinbox=window.feedinbox||function(){(window.feedinbox.q=window.feedinbox.q||[]).push(arguments)}</script>
 <script async src="${origin}/widget.js" data-project-key="${projectKey}"></script>
 
-<!-- Then fire high-intent events from your pricing/checkout code:
+<!-- Then fire the events from your pricing/checkout code:
      window.feedinbox('event', 'high_intent', { plan: 'pro' })  // pricing modal opened
+     window.feedinbox('event', 'abandoned')                     // pricing/checkout closed without buying
      window.feedinbox('event', 'converted')                     // on successful purchase -->`;
 }

@@ -9,7 +9,7 @@ import { getEmbedCode } from "@/lib/snippets";
 export const metadata: Metadata = {
     title: "Docs: Install Feedinbox",
     description:
-        "How to install Feedinbox: add one script, then fire high_intent and converted events to capture why visitors don't buy. Examples for Next.js, React, and plain HTML.",
+        "How to install Feedinbox: add one script, then fire high_intent, abandoned, and converted events to capture why visitors don't buy. Examples for Next.js, React, and plain HTML.",
     alternates: { canonical: "https://feedinbox.com/docs" },
 };
 
@@ -23,17 +23,26 @@ const events = `// Fire when a visitor reaches a buying surface
 // (opens your pricing modal, starts checkout, clicks "Upgrade")
 window.feedinbox('event', 'high_intent', { plan: 'pro' })
 
+// Fire when they close that surface without buying (recommended:
+// the most accurate trigger; shows the card right away)
+window.feedinbox('event', 'abandoned')
+
 // Fire when they actually buy. This cancels the pending question,
 // so people who purchased are never asked.
 window.feedinbox('event', 'converted')`;
 
-const reactExample = `function PricingButton() {
+const reactExample = `function PricingModal() {
   const openPricing = () => {
     setPricingOpen(true)
     // tell Feedinbox this is a high-intent moment
     window.feedinbox('event', 'high_intent', { plan: 'pro' })
   }
-  return <button onClick={openPricing}>See pricing</button>
+  const closePricing = () => {
+    setPricingOpen(false)
+    // they left without buying: ask why, right now
+    window.feedinbox('event', 'abandoned')
+  }
+  // ...
 }`;
 
 const successExample = `// On your payment-success / thank-you step
@@ -87,8 +96,8 @@ export default async function DocsPage() {
                         <p className="text-lg text-neutral-600 leading-relaxed">
                             Feedinbox is two features on one script: a <strong>feedback widget</strong> (a
                             floating button) and <strong>Why-Not-Buy</strong> (a one-question card that fires
-                            when a visitor abandons your pricing or checkout). You add one script, then fire two
-                            events for the Why-Not-Buy part.
+                            when a visitor abandons your pricing or checkout). You add one script, then fire a
+                            few events for the Why-Not-Buy part.
                         </p>
 
                         {/* Overview */}
@@ -97,13 +106,14 @@ export default async function DocsPage() {
                                 <li>Add the script to your site (once). This powers both features.</li>
                                 <li>
                                     For Why-Not-Buy, fire a <Code>high_intent</Code> event when a visitor shows
-                                    buying intent, and a <Code>converted</Code> event when they purchase.
+                                    buying intent, an <Code>abandoned</Code> event when they leave that surface
+                                    without buying, and a <Code>converted</Code> event when they purchase.
                                 </li>
                                 <li>Turn each feature on or off from your dashboard. No redeploy needed.</li>
                             </ol>
                             <Callout>
                                 The feedback widget needs only the script. Why-Not-Buy needs the script <em>and</em>{" "}
-                                the two event calls, because the card only fires when you signal intent.
+                                the event calls, because the card only fires when you signal intent.
                             </Callout>
                         </Section>
 
@@ -141,7 +151,14 @@ export default async function DocsPage() {
                             <ul className="list-disc pl-5 space-y-2 text-neutral-700 mt-4">
                                 <li>
                                     Event names must match your dashboard config. Defaults are{" "}
-                                    <Code>high_intent</Code> and <Code>converted</Code> (Pro can rename them).
+                                    <Code>high_intent</Code>, <Code>abandoned</Code>, and <Code>converted</Code>{" "}
+                                    (Pro can rename them).
+                                </li>
+                                <li>
+                                    <Code>abandoned</Code> is optional but recommended: without it, the card
+                                    relies on automatic exit signals (cursor leaving the page, tab hidden) and a
+                                    fallback timer. With it, the card appears at the exact moment they pass on
+                                    buying, and readers are never interrupted mid-scroll.
                                 </li>
                                 <li>
                                     The <Code>context</Code> object is optional metadata (e.g. <Code>{`{ plan: 'pro' }`}</Code>).
@@ -157,17 +174,21 @@ export default async function DocsPage() {
                         {/* Where */}
                         <Section id="where" title="Where to fire them">
                             <p className="text-neutral-700 mb-3">
-                                Fire <Code>high_intent</Code> at the exact moment of intent. A React example:
+                                Fire <Code>high_intent</Code> at the exact moment of intent, and{" "}
+                                <Code>abandoned</Code> when the same surface is closed without buying. A React
+                                example:
                             </p>
-                            <CodeBlock code={reactExample} language="javascript" filename="PricingButton.jsx" />
+                            <CodeBlock code={reactExample} language="javascript" filename="PricingModal.jsx" />
                             <p className="text-neutral-700 mb-3 mt-6">
                                 Fire <Code>converted</Code> on your success step (payment confirmed, thank-you page):
                             </p>
                             <CodeBlock code={successExample} language="javascript" filename="success handler" />
                             <Callout>
                                 Good <Code>high_intent</Code> moments: pricing modal opens, pricing page loads,
-                                checkout starts, "Upgrade" clicked. Good <Code>converted</Code> moments: payment
-                                success callback, subscription-created webhook echoed to the client, thank-you page.
+                                checkout starts, "Upgrade" clicked. Good <Code>abandoned</Code> moments: pricing
+                                modal closed, checkout cancelled, navigating away from pricing. Good{" "}
+                                <Code>converted</Code> moments: payment success callback, subscription-created
+                                webhook echoed to the client, thank-you page.
                             </Callout>
                         </Section>
 
@@ -216,10 +237,18 @@ export default async function DocsPage() {
                         <Section id="behavior" title="How the card behaves">
                             <ul className="list-disc pl-5 space-y-2 text-neutral-700">
                                 <li>
-                                    The card appears the configured number of seconds after <Code>high_intent</Code>,
-                                    only if <Code>converted</Code> hasn't fired.
+                                    After <Code>high_intent</Code>, the card appears on the first exit signal:
+                                    your <Code>abandoned</Code> event, the cursor leaving through the top of the
+                                    page, or the tab being hidden. Visitors who are still reading are left alone.
                                 </li>
-                                <li>Once a visitor answers, they aren't asked again for the rest of that session.</li>
+                                <li>
+                                    If no exit signal fires, a fallback timer (default 30 seconds, configurable)
+                                    shows the card anyway. <Code>converted</Code> cancels everything.
+                                </li>
+                                <li>
+                                    Once a visitor answers, converts, or dismisses the card, they aren't asked
+                                    again for the rest of that session.
+                                </li>
                                 <li>
                                     Responses land in your dashboard (Why-Not-Buy tab), tagged by plan and country,
                                     plus a weekly summary email.
@@ -231,9 +260,10 @@ export default async function DocsPage() {
                         <Section id="troubleshoot" title="Troubleshooting">
                             <ul className="list-disc pl-5 space-y-2 text-neutral-700">
                                 <li>
-                                    <strong>Card never appears:</strong> confirm Why-Not-Buy is enabled, your{" "}
-                                    <Code>high_intent</Code> event name matches the dashboard, and that{" "}
-                                    <Code>converted</Code> isn't firing too early.
+                                    <strong>Card never appears:</strong> confirm Why-Not-Buy is enabled, your
+                                    event names match the dashboard, and that <Code>converted</Code> isn't firing
+                                    too early. If you already answered or dismissed it while testing, clear the{" "}
+                                    <Code>feedinbox_intent_</Code> keys from sessionStorage (or use a new tab).
                                 </li>
                                 <li>
                                     <strong>Buyers get asked:</strong> your <Code>converted</Code> event isn't firing.

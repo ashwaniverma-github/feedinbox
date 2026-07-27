@@ -67,18 +67,32 @@ From the site's own pricing / checkout code:
     // (opens pricing modal, loads pricing page, starts checkout, clicks Upgrade)
     window.feedinbox('event', 'high_intent', { plan: 'pro' })
 
+    // Fire when they leave that surface without buying (e.g. pricing modal
+    // close handler). Shows the card immediately. RECOMMENDED: this is the
+    // most accurate trigger and lets visitors read pricing undisturbed.
+    window.feedinbox('event', 'abandoned')
+
     // Fire when they actually buy. Cancels the pending question so buyers
     // are never asked.
     window.feedinbox('event', 'converted')
 
 Rules:
-- Event names must match the dashboard config. Defaults: 'high_intent' and
-  'converted'. Pro users can rename them; use whatever the dashboard shows.
+- Event names must match the dashboard config. Defaults: 'high_intent',
+  'abandoned', and 'converted'. Pro users can rename them; use whatever the
+  dashboard shows.
 - The third argument (context) is optional metadata, e.g. { plan: 'pro' }.
   It is stored and shown tagged on each response. Pass useful commercial
   context (plan viewed, price, billing period) when available.
-- The card appears N seconds after high_intent (configurable delay) only if
-  'converted' has not fired in that window.
+- After high_intent, the card shows on the FIRST of these signals (unless
+  'converted' fires first):
+  1. the 'abandoned' event (immediate; strongest signal),
+  2. an automatic exit signal: the cursor leaving through the top of the
+     viewport, or the tab being hidden (automatic signals are ignored for the
+     first ~3 seconds after high_intent to avoid stray-mouse false fires),
+  3. a fallback timer (delaySeconds, default 30) so visitors who go quiet
+     without any exit signal still get asked.
+- 'abandoned' also works standalone: if high_intent never fired, it arms and
+  shows the card in one call (context can be passed on it directly).
 
 ### Where to fire high_intent
 
@@ -96,6 +110,23 @@ React example:
         window.feedinbox('event', 'high_intent', { plan: 'pro' })
       }
       return <button onClick={openPricing}>See pricing</button>
+    }
+
+### Where to fire abandoned
+
+In the close/leave handler of the same surface that fired high_intent:
+- Pricing modal close button / backdrop click.
+- Navigating away from the pricing page without starting checkout.
+- Checkout back/cancel action.
+
+React example:
+
+    function PricingModal({ onClose }) {
+      const close = () => {
+        onClose()
+        window.feedinbox('event', 'abandoned')
+      }
+      // ...
     }
 
 ### Where to fire converted
@@ -121,17 +152,21 @@ Both toggles are free. Customizing the question/options/delay is a Pro feature.
 
 ## Behavior
 
-- Card shows `delaySeconds` after high_intent, unless converted fires first.
-- Once a visitor answers (or converts), they are not asked again for that browser session.
-- If a visitor dismisses the card without answering, the session flag is NOT set,
-  so a later high_intent event in the same session can show the card again.
+- After high_intent, the card shows on the first exit signal: the abandoned
+  event, the cursor leaving the viewport top, or the tab being hidden. If none
+  fire, the fallback timer (delaySeconds, default 30) shows it anyway. A
+  converted event cancels everything.
+- Once a visitor answers, converts, or dismisses the card, they are not asked
+  again for that browser session.
 - Responses appear in the dashboard (Why-Not-Buy tab), tagged with the context
   (e.g. plan) and country, plus a weekly summary email.
 
 ## Troubleshooting
 
-- Card never appears: confirm Why-Not-Buy is enabled, the high_intent event
-  name matches the dashboard, and converted is not firing immediately.
+- Card never appears: confirm Why-Not-Buy is enabled, the event names match
+  the dashboard, and converted is not firing immediately. Also check whether
+  it was already answered or dismissed this session (sessionStorage keys
+  prefixed feedinbox_intent_).
 - Buyers are being asked: the converted event is not firing. Fire it on the
   real success step.
 - Nothing loads at all: verify the project key and that the script tag is
@@ -139,6 +174,9 @@ Both toggles are free. Customizing the question/options/delay is a Pro feature.
 
 ## Verifying the install
 
-After adding the code, trigger a high_intent (e.g. open the pricing modal),
-wait past the delay without converting, and confirm the card appears. Submit
-an answer and confirm it shows in the dashboard's Why-Not-Buy tab.
+After adding the code, open the pricing surface (fires high_intent), then
+close it (fires abandoned) and confirm the card appears immediately. Or, with
+only high_intent wired, move the cursor out through the top of the viewport
+after ~3 seconds. Submit an answer and confirm it shows in the dashboard's
+Why-Not-Buy tab. To re-test in the same tab, clear sessionStorage keys
+starting with feedinbox_intent_.

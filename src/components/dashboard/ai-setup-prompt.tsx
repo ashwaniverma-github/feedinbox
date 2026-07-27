@@ -16,7 +16,7 @@ Add the Feedinbox feedback widget using data-project-key="${projectKey}". Includ
 
     const bothLine =
         mode === "both"
-            ? `\n4. This also turns on the floating feedback widget, which needs no extra code.`
+            ? `\n5. This also turns on the floating feedback widget, which needs no extra code.`
             : "";
 
     return `${guide}
@@ -25,7 +25,8 @@ Project key: ${projectKey}
 
 1. Add the widget script with data-project-key="${projectKey}" (include the queue stub line before it).
 2. Fire window.feedinbox('event', 'high_intent', { plan: '<plan the visitor viewed>' }) when someone opens pricing or starts checkout.
-3. Fire window.feedinbox('event', 'converted') on my payment-success step so buyers are never asked.${bothLine}`;
+3. Fire window.feedinbox('event', 'abandoned') when they close/leave that surface without buying (e.g. the pricing modal's close handler) so the question appears right then.
+4. Fire window.feedinbox('event', 'converted') on my payment-success step so buyers are never asked.${bothLine}`;
 }
 
 export function AISetupPrompt({

@@ -9,9 +9,15 @@ export interface IntentSettings {
     enabled: boolean;
     question: string;
     options: IntentOption[];
+    // Fallback timer: if no exit signal fires after highIntentEvent, the card
+    // shows anyway after this many seconds. Exit signals (pointer leaving the
+    // viewport top, tab hidden, or the abandon event) can show it sooner.
     delaySeconds: number;
     highIntentEvent: string;
     conversionEvent: string;
+    // Host-fired "closed pricing/checkout without buying" signal. Shows the
+    // card immediately; also works standalone without a prior high-intent event.
+    abandonEvent: string;
     // Remove the "Powered by Feedinbox" footer on the card (Pro customization).
     hideBranding: boolean;
     // How the owner is notified of responses: an email per response, a weekly
@@ -28,9 +34,10 @@ export const DEFAULT_INTENT_SETTINGS: IntentSettings = {
         { id: "missing_feature", label: "Need a feature you don't have" },
         { id: "just_looking", label: "Just looking" },
     ],
-    delaySeconds: 5,
+    delaySeconds: 30,
     highIntentEvent: "high_intent",
     conversionEvent: "converted",
+    abandonEvent: "abandoned",
     hideBranding: false,
     notifyFrequency: "weekly",
 };

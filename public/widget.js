@@ -25,10 +25,14 @@
     var _settingsLoaded = false;
     var _pendingEvents = [];           // events received before settings finished loading
     var MAX_PENDING_EVENTS = 20;       // cap the queue in case init() never resolves
-    var _intentTimer = null;
+    var _intentTimer = null;           // fallback "show anyway" timer
     var _intentEventName = '';
     var _intentContext = {};
     var _intentKeyHandler = null;      // Escape-to-dismiss handler for the intent card
+    var _intentArmedAt = 0;            // when high_intent armed the triggers (0 = not armed)
+    var _intentMouseOutHandler = null; // desktop exit signal: pointer leaves viewport top
+    var _intentVisibilityHandler = null; // tab-hidden exit signal
+    var EXIT_SIGNAL_FLOOR_MS = 3000;   // ignore automatic exit signals right after arming
 
     function detectApiUrl() {
         var scripts = document.getElementsByTagName('script');
@@ -120,7 +124,7 @@
         if (!_intentSettings) return; // feature disabled or unavailable
 
         if (name === _intentSettings.conversionEvent) {
-            if (_intentTimer) { clearTimeout(_intentTimer); _intentTimer = null; }
+            disarmIntentTriggers();
             // Converting counts as "done" for this session, so no later high_intent
             // event re-asks a visitor who already bought.
             markIntentAnswered();
@@ -128,21 +132,83 @@
             return;
         }
 
-        if (name === _intentSettings.highIntentEvent) {
-            if (intentAlreadyAnswered()) return;
+        if (name === _intentSettings.abandonEvent) {
+            // Host-driven abandonment (e.g. pricing modal closed without buying):
+            // the strongest signal, so it shows immediately with no dwell floor.
+            // Works standalone too: if high_intent never fired, this call arms
+            // the card with its own name/context.
+            if (intentClosedThisSession()) return;
             if (document.getElementById('feedinbox-intent')) return; // already showing
-            if (_intentTimer) clearTimeout(_intentTimer);
-            _intentEventName = name;
-            _intentContext = (context && typeof context === 'object') ? context : {};
-            // Use the configured delay; only fall back to 5 when unset/non-numeric
-            // (so an explicit 0 schedules immediately).
-            var delaySeconds = typeof _intentSettings.delaySeconds === 'number' ? _intentSettings.delaySeconds : 5;
-            var delayMs = Math.max(0, delaySeconds * 1000);
-            _intentTimer = setTimeout(function () {
-                _intentTimer = null;
-                renderIntentCard();
-            }, delayMs);
+            if (!_intentArmedAt) {
+                _intentEventName = name;
+                _intentContext = (context && typeof context === 'object') ? context : {};
+            }
+            triggerIntentCard();
+            return;
         }
+
+        if (name === _intentSettings.highIntentEvent) {
+            if (intentClosedThisSession()) return;
+            if (document.getElementById('feedinbox-intent')) return; // already showing
+            armIntentTriggers(name, context);
+        }
+    }
+
+    // high_intent arms three ways for the card to appear; the first one to fire
+    // wins and disarms the rest:
+    //   1. the host's abandon event (handled in handleEvent above),
+    //   2. an automatic exit signal (pointer out the top, or tab hidden),
+    //   3. the fallback timer (delaySeconds), so a silent walk-away still asks.
+    // Automatic signals are ignored for EXIT_SIGNAL_FLOOR_MS after arming so a
+    // stray mouse flick right after opening pricing can't trigger the card.
+    function armIntentTriggers(name, context) {
+        disarmIntentTriggers(); // reset any previous arming
+        _intentEventName = name;
+        _intentContext = (context && typeof context === 'object') ? context : {};
+        _intentArmedAt = Date.now();
+
+        // Fallback: show anyway after the configured delay (explicit 0 = immediately).
+        var delaySeconds = typeof _intentSettings.delaySeconds === 'number' ? _intentSettings.delaySeconds : 30;
+        _intentTimer = setTimeout(triggerIntentCard, Math.max(0, delaySeconds * 1000));
+
+        // Desktop exit signal: pointer leaves through the top of the viewport
+        // (heading for the tab bar / close button).
+        _intentMouseOutHandler = function (e) {
+            if (e.relatedTarget || e.clientY > 0) return;
+            if (Date.now() - _intentArmedAt < EXIT_SIGNAL_FLOOR_MS) return;
+            triggerIntentCard();
+        };
+        document.addEventListener('mouseout', _intentMouseOutHandler);
+
+        // Tab hidden (works on mobile, where there is no mouse-out): render the
+        // card while hidden so it greets the visitor when they come back.
+        _intentVisibilityHandler = function () {
+            if (!document.hidden) return;
+            if (Date.now() - _intentArmedAt < EXIT_SIGNAL_FLOOR_MS) return;
+            triggerIntentCard();
+        };
+        document.addEventListener('visibilitychange', _intentVisibilityHandler);
+    }
+
+    function disarmIntentTriggers() {
+        if (_intentTimer) { clearTimeout(_intentTimer); _intentTimer = null; }
+        if (_intentMouseOutHandler) {
+            document.removeEventListener('mouseout', _intentMouseOutHandler);
+            _intentMouseOutHandler = null;
+        }
+        if (_intentVisibilityHandler) {
+            document.removeEventListener('visibilitychange', _intentVisibilityHandler);
+            _intentVisibilityHandler = null;
+        }
+        _intentArmedAt = 0;
+    }
+
+    // Shared gate: whichever signal fires first lands here; disarm the others,
+    // re-check the session guards, and show the card.
+    function triggerIntentCard() {
+        disarmIntentTriggers();
+        if (intentClosedThisSession()) return;
+        renderIntentCard();
     }
 
     function intentSessionId() {
@@ -171,6 +237,27 @@
         try {
             sessionStorage.setItem('feedinbox_intent_done_' + _projectKey, '1');
         } catch (e) { /* ignore */ }
+    }
+
+    // Dismissing the card (close button / Escape) suppresses it for the rest of
+    // the session, tracked separately from "answered" so the semantics stay clear.
+    function intentDismissedThisSession() {
+        try {
+            return sessionStorage.getItem('feedinbox_intent_dismissed_' + _projectKey) === '1';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function markIntentDismissed() {
+        try {
+            sessionStorage.setItem('feedinbox_intent_dismissed_' + _projectKey, '1');
+        } catch (e) { /* ignore */ }
+    }
+
+    // A visitor who answered, converted, or dismissed is done for this session.
+    function intentClosedThisSession() {
+        return intentAlreadyAnswered() || intentDismissedThisSession();
     }
 
     // Removes the intent card (if present) plus its styles and Escape listener.
@@ -255,10 +342,18 @@
 
         textInput.addEventListener('input', refreshSubmit);
 
-        closeBtn.addEventListener('click', dismissIntentCard);
+        closeBtn.addEventListener('click', function () {
+            markIntentDismissed();
+            dismissIntentCard();
+        });
 
         // Escape-to-dismiss (listener removed inside dismissIntentCard)
-        _intentKeyHandler = function (e) { if (e.key === 'Escape') dismissIntentCard(); };
+        _intentKeyHandler = function (e) {
+            if (e.key === 'Escape') {
+                markIntentDismissed();
+                dismissIntentCard();
+            }
+        };
         document.addEventListener('keydown', _intentKeyHandler);
 
         // Move focus into the dialog for keyboard users

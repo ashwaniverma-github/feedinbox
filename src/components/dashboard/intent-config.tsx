@@ -234,11 +234,11 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                         </div>
                     </div>
 
-                    {/* Delay */}
+                    {/* Fallback delay */}
                     <div className={`space-y-2 ${!isPro ? "opacity-60" : ""}`}>
                         <div className="flex items-center justify-between">
                             <label className="text-sm font-medium">
-                                Show after (seconds without converting)
+                                Fallback: show anyway after
                             </label>
                             <span className="text-sm text-muted-foreground">{settings.delaySeconds}s</span>
                         </div>
@@ -251,16 +251,28 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                             onChange={(e) => update("delaySeconds", parseInt(e.target.value))}
                             className="w-full accent-primary"
                         />
+                        <p className="text-xs text-muted-foreground">
+                            The card normally waits for an exit signal: your abandon event, the
+                            cursor leaving the page, or the tab being hidden. This timer is the
+                            safety net for visitors who go quiet without any of those.
+                        </p>
                     </div>
 
                     {/* Event names */}
-                    <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 ${!isPro ? "opacity-60" : ""}`}>
+                    <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 ${!isPro ? "opacity-60" : ""}`}>
                         <Input
                             label="High-intent event"
                             value={settings.highIntentEvent}
                             maxLength={100}
                             disabled={!isPro}
                             onChange={(e) => update("highIntentEvent", e.target.value)}
+                        />
+                        <Input
+                            label="Abandon event"
+                            value={settings.abandonEvent}
+                            maxLength={100}
+                            disabled={!isPro}
+                            onChange={(e) => update("abandonEvent", e.target.value)}
                         />
                         <Input
                             label="Conversion event"
@@ -303,6 +315,8 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                 <div className="rounded-lg bg-neutral-100 dark:bg-neutral-800 p-3 text-xs font-mono overflow-x-auto">
                     <div className="text-neutral-500">{"// fire when a visitor hits a high-intent surface"}</div>
                     <div>window.feedinbox('event', '{settings.highIntentEvent}', {"{ plan: 'pro' }"})</div>
+                    <div className="mt-1.5 text-neutral-500">{"// fire when they close pricing/checkout without buying (shows the card right away)"}</div>
+                    <div>window.feedinbox('event', '{settings.abandonEvent}')</div>
                     <div className="mt-1.5 text-neutral-500">{"// fire on successful purchase"}</div>
                     <div>window.feedinbox('event', '{settings.conversionEvent}')</div>
                 </div>

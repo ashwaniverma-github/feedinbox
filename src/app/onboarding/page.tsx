@@ -170,6 +170,9 @@ export default function OnboardingPage() {
     const eventSnippet = `// When a visitor opens pricing or starts checkout:
 window.feedinbox('event', 'high_intent', { plan: 'pro' })
 
+// When they close it without buying (shows the question right away):
+window.feedinbox('event', 'abandoned')
+
 // When they actually buy (this cancels the question):
 window.feedinbox('event', 'converted')`;
 
@@ -354,8 +357,8 @@ window.feedinbox('event', 'converted')`;
                                                         Tell it when a visitor shows intent
                                                     </h3>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Call this from your pricing or checkout code. If they don't buy
-                                                        within a few seconds, the question appears.
+                                                        Call these from your pricing or checkout code. When a visitor
+                                                        leaves without buying, the question appears.
                                                     </p>
                                                     <CodeBlock code={eventSnippet} language="javascript" filename="Your pricing / checkout code" />
                                                 </div>
