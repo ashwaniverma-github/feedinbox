@@ -4,6 +4,22 @@ import { useCases } from '@/data/use-cases'
 import { integrations } from '@/data/integrations'
 import { alternatives } from '@/data/alternatives'
 
+/**
+ * Real content dates, deliberately not `new Date()`.
+ *
+ * Using the current date stamps every URL as modified on every build. Google
+ * then learns that lastModified here is meaningless and starts discounting it,
+ * which costs us the one signal that matters when asking for a recrawl after a
+ * rewrite. These are the actual dates the underlying content last changed.
+ *
+ * Bump the relevant constant whenever you edit that content.
+ */
+const HOME_UPDATED = new Date('2026-07-28')     // pricing-modal repositioning
+const DOCS_UPDATED = new Date('2026-07-27')     // abandoned/cancel event docs
+const CONTENT_UPDATED = new Date('2026-07-26')  // features/use-cases/integrations/alternatives
+const AUTH_UPDATED = new Date('2025-12-20')
+const LEGAL_UPDATED = new Date('2026-01-03')
+
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = 'https://feedinbox.com'
 
@@ -11,31 +27,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
-            lastModified: new Date(),
+            lastModified: HOME_UPDATED,
             changeFrequency: 'weekly',
             priority: 1,
         },
         {
             url: `${baseUrl}/docs`,
-            lastModified: new Date(),
+            lastModified: DOCS_UPDATED,
             changeFrequency: 'monthly',
             priority: 0.7,
         },
         {
             url: `${baseUrl}/login`,
-            lastModified: new Date(),
+            lastModified: AUTH_UPDATED,
             changeFrequency: 'monthly',
             priority: 0.5,
         },
         {
             url: `${baseUrl}/privacy`,
-            lastModified: new Date(),
+            lastModified: LEGAL_UPDATED,
             changeFrequency: 'yearly',
             priority: 0.3,
         },
         {
             url: `${baseUrl}/terms`,
-            lastModified: new Date(),
+            lastModified: LEGAL_UPDATED,
             changeFrequency: 'yearly',
             priority: 0.3,
         },
@@ -45,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const featureIndexPage: MetadataRoute.Sitemap = [
         {
             url: `${baseUrl}/features`,
-            lastModified: new Date(),
+            lastModified: CONTENT_UPDATED,
             changeFrequency: 'weekly',
             priority: 0.9,
         },
@@ -54,7 +70,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Feature pages
     const featurePages: MetadataRoute.Sitemap = features.map((feature) => ({
         url: `${baseUrl}/features/${feature.slug}`,
-        lastModified: new Date(),
+        lastModified: CONTENT_UPDATED,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
     }))
@@ -63,7 +79,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const useCaseIndexPage: MetadataRoute.Sitemap = [
         {
             url: `${baseUrl}/use-cases`,
-            lastModified: new Date(),
+            lastModified: CONTENT_UPDATED,
             changeFrequency: 'weekly',
             priority: 0.9,
         },
@@ -72,7 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Use case pages
     const useCasePages: MetadataRoute.Sitemap = useCases.map((useCase) => ({
         url: `${baseUrl}/use-cases/${useCase.slug}`,
-        lastModified: new Date(),
+        lastModified: CONTENT_UPDATED,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
     }))
@@ -81,7 +97,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const integrationIndexPage: MetadataRoute.Sitemap = [
         {
             url: `${baseUrl}/integrations`,
-            lastModified: new Date(),
+            lastModified: CONTENT_UPDATED,
             changeFrequency: 'weekly',
             priority: 0.9,
         },
@@ -90,7 +106,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Integration pages
     const integrationPages: MetadataRoute.Sitemap = integrations.map((integration) => ({
         url: `${baseUrl}/integrations/${integration.slug}`,
-        lastModified: new Date(),
+        lastModified: CONTENT_UPDATED,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
     }))
@@ -99,7 +115,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const alternativeIndexPage: MetadataRoute.Sitemap = [
         {
             url: `${baseUrl}/alternatives`,
-            lastModified: new Date(),
+            lastModified: CONTENT_UPDATED,
             changeFrequency: 'weekly',
             priority: 0.9,
         },
@@ -108,7 +124,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Alternative pages
     const alternativePages: MetadataRoute.Sitemap = alternatives.map((alternative) => ({
         url: `${baseUrl}/alternatives/${alternative.slug}`,
-        lastModified: new Date(),
+        lastModified: CONTENT_UPDATED,
         changeFrequency: 'monthly' as const,
         priority: 0.8,
     }))
