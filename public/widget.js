@@ -121,7 +121,13 @@
     // normally and a genuine abandonment is still captured.
     function handleCancel() {
         if (!_settingsLoaded) {
-            if (_pendingEvents.length < MAX_PENDING_EVENTS) {
+            // A cancel is never dropped on a full queue. Events fail safe when
+            // discarded (no card), but discarding a cancel fails the other way:
+            // a high_intent still queued ahead of it would replay and arm the
+            // card the host just stood down. Consecutive cancels coalesce, so
+            // the queue stays bounded (each one needs an event before it).
+            var last = _pendingEvents[_pendingEvents.length - 1];
+            if (!last || last.type !== 'cancel') {
                 _pendingEvents.push({ type: 'cancel' });
             }
             return;
