@@ -9,7 +9,7 @@ import { getEmbedCode } from "@/lib/snippets";
 export const metadata: Metadata = {
     title: "Docs: Install Feedinbox",
     description:
-        "How to install Feedinbox: add one script, then fire high_intent, abandoned, and converted events to capture why visitors don't buy. Examples for Next.js, React, and plain HTML.",
+        "How to install Feedinbox: add one script, then fire high_intent and converted events (plus an optional abandoned event) to capture why visitors don't buy. Examples for Next.js, React, and plain HTML.",
     alternates: { canonical: "https://feedinbox.com/docs" },
 };
 
@@ -106,8 +106,9 @@ export default async function DocsPage() {
                                 <li>Add the script to your site (once). This powers both features.</li>
                                 <li>
                                     For Why-Not-Buy, fire a <Code>high_intent</Code> event when a visitor shows
-                                    buying intent, an <Code>abandoned</Code> event when they leave that surface
-                                    without buying, and a <Code>converted</Code> event when they purchase.
+                                    buying intent and a <Code>converted</Code> event when they purchase. Adding an{" "}
+                                    <Code>abandoned</Code> event when they leave without buying is optional but
+                                    recommended: it gives the card its most accurate timing.
                                 </li>
                                 <li>Turn each feature on or off from your dashboard. No redeploy needed.</li>
                             </ol>
@@ -156,9 +157,10 @@ export default async function DocsPage() {
                                 </li>
                                 <li>
                                     <Code>abandoned</Code> is optional but recommended: without it, the card
-                                    relies on automatic exit signals (cursor leaving the page, tab hidden) and a
-                                    fallback timer. With it, the card appears at the exact moment they pass on
-                                    buying, and readers are never interrupted mid-scroll.
+                                    relies on automatic exit signals (the cursor leaving through the top of the
+                                    viewport, or the tab being hidden) and a fallback timer. With it, the card
+                                    appears at the exact moment they pass on buying, and readers are never
+                                    interrupted mid-scroll.
                                 </li>
                                 <li>
                                     The <Code>context</Code> object is optional metadata (e.g. <Code>{`{ plan: 'pro' }`}</Code>).
@@ -239,11 +241,17 @@ export default async function DocsPage() {
                                 <li>
                                     After <Code>high_intent</Code>, the card appears on the first exit signal:
                                     your <Code>abandoned</Code> event, the cursor leaving through the top of the
-                                    page, or the tab being hidden. Visitors who are still reading are left alone.
+                                    viewport, or the tab being hidden. Visitors who are still reading are left
+                                    alone.
                                 </li>
                                 <li>
                                     If no exit signal fires, a fallback timer (default 30 seconds, configurable)
                                     shows the card anyway. <Code>converted</Code> cancels everything.
+                                </li>
+                                <li>
+                                    <Code>abandoned</Code> also works on its own: if <Code>high_intent</Code>{" "}
+                                    never fired, it arms and shows the card in a single call, so you can wire
+                                    just that one event if it suits your flow better.
                                 </li>
                                 <li>
                                     Once a visitor answers, converts, or dismisses the card, they aren't asked

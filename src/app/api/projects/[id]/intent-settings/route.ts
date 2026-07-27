@@ -145,13 +145,45 @@ export async function PUT(
         }
 
         // The three event names route to different behaviors in the widget, so
-        // they must stay distinct or the dispatcher becomes ambiguous.
-        const eventNames = [next.highIntentEvent, next.conversionEvent, next.abandonEvent];
-        if (new Set(eventNames).size !== eventNames.length) {
-            return NextResponse.json(
-                { error: "High-intent, conversion, and abandon event names must be distinct" },
-                { status: 400 }
-            );
+        // they must stay distinct or the dispatcher becomes ambiguous. Reject only
+        // collisions this request introduced: settings saved before abandonEvent
+        // existed can collide with its default, and rejecting those would lock the
+        // project out of unrelated updates (the enabled toggle and notification
+        // preference are free for every tier, yet non-Pro callers cannot edit event
+        // names to repair the collision themselves). Untouched values are migrated.
+        const EVENT_KEYS = ["highIntentEvent", "abandonEvent", "conversionEvent"] as const;
+        const edited = new Set(
+            EVENT_KEYS.filter(
+                (k) => userIsPro && typeof body[k] === "string" && body[k].trim().length > 0
+            )
+        );
+
+        const claimed = new Set<string>();
+        // Caller-supplied names claim their value first, so a migration can never
+        // silently rename something the caller just set.
+        for (const key of EVENT_KEYS) {
+            if (!edited.has(key)) continue;
+            if (claimed.has(next[key])) {
+                return NextResponse.json(
+                    { error: "High-intent, conversion, and abandon event names must be distinct" },
+                    { status: 400 }
+                );
+            }
+            claimed.add(next[key]);
+        }
+        // Remaining values are stored/legacy: deterministically repair collisions.
+        for (const key of EVENT_KEYS) {
+            if (edited.has(key)) continue;
+            if (!claimed.has(next[key])) {
+                claimed.add(next[key]);
+                continue;
+            }
+            const base = DEFAULT_INTENT_SETTINGS[key];
+            let candidate = base;
+            let n = 2;
+            while (claimed.has(candidate)) candidate = `${base}_${n++}`;
+            next[key] = candidate;
+            claimed.add(candidate);
         }
 
         const existingSettings = (project.settings as Record<string, unknown>) || {};
