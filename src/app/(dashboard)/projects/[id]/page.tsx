@@ -13,6 +13,7 @@ import { SwipeableFeedbackCard } from "@/components/ui/swipeable-feedback-card";
 import { ExportDropdown } from "@/components/ui/export-dropdown";
 import { PricingModal } from "@/components/ui/pricing-modal";
 import { IntentResponses } from "@/components/dashboard/intent-responses";
+import { CopyFeedback } from "@/components/dashboard/copy-feedback";
 import { formatDate } from "@/lib/utils";
 import { Settings, MessageSquare, Bug, Lightbulb, HelpCircle, Palette, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -265,6 +266,7 @@ export default function ProjectDetailPage({
                                                     <span className="text-xs text-neutral-400">
                                                         {formatDate(feedback.createdAt)}
                                                     </span>
+                                                    <CopyFeedback feedback={feedback} className="ml-auto" />
                                                 </div>
                                                 {feedback.pageUrl && (
                                                     <p className="mt-1 truncate text-xs text-neutral-400">

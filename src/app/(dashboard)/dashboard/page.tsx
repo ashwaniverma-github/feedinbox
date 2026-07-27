@@ -15,6 +15,7 @@ import { PricingModal } from "@/components/ui/pricing-modal";
 import { SwipeableFeedbackCard } from "@/components/ui/swipeable-feedback-card";
 import { formatDate } from "@/lib/utils";
 import { OverviewGraph } from "@/components/dashboard/overview-graph";
+import { CopyFeedback } from "@/components/dashboard/copy-feedback";
 import { WhyNotBuyOverview } from "@/components/dashboard/why-not-buy-overview";
 import { Plus, MessageSquare, Bug, Lightbulb, HelpCircle, ArrowUpRight, Inbox, CheckCircle2 } from "lucide-react";
 
@@ -38,6 +39,10 @@ interface Feedback {
     category: string;
     isRead: boolean;
     createdAt: string;
+    // Optional on the widget form, so absent on plenty of rows. The feedbacks
+    // API selects no subset, so both are present in the payload.
+    userEmail?: string | null;
+    pageUrl?: string | null;
     project: { name: string };
 }
 
@@ -320,9 +325,15 @@ export default function DashboardPage() {
                                                     <Badge variant={feedback.isRead ? "secondary" : "default"}>
                                                         {feedback.category}
                                                     </Badge>
-                                                    <span className="text-xs text-muted-foreground">
+                                                    {feedback.userEmail && (
+                                                        <span className="max-w-[180px] truncate text-xs text-muted-foreground">
+                                                            {feedback.userEmail}
+                                                        </span>
+                                                    )}
+                                                    <span className="shrink-0 text-xs text-muted-foreground">
                                                         {formatDate(feedback.createdAt)}
                                                     </span>
+                                                    <CopyFeedback feedback={feedback} className="ml-auto" />
                                                 </div>
                                             </div>
                                         </div>
