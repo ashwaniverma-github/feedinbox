@@ -25,7 +25,7 @@ Project key: ${projectKey}
 
 1. Add the widget script with data-project-key="${projectKey}" (include the queue stub line before it).
 2. Fire window.feedinbox('event', 'high_intent', { plan: '<plan the visitor viewed>' }) when someone opens pricing or starts checkout.
-3. Fire window.feedinbox('event', 'abandoned') when they close/leave that surface without buying (e.g. the pricing modal's close handler) so the question appears right then.
+3. Fire window.feedinbox('event', 'abandoned') from a deliberate close action (the pricing modal's close button, checkout cancel) so the question appears right then. Do NOT fire it from a useEffect cleanup, unmount, or beforeunload: React Strict Mode double-invokes effects so it would fire on arrival, and the widget already detects page-level exits on its own.
 4. Fire window.feedinbox('event', 'converted') on my payment-success step so buyers are never asked.${bothLine}`;
 }
 

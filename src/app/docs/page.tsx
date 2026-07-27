@@ -188,9 +188,22 @@ export default async function DocsPage() {
                             <Callout>
                                 Good <Code>high_intent</Code> moments: pricing modal opens, pricing page loads,
                                 checkout starts, "Upgrade" clicked. Good <Code>abandoned</Code> moments: pricing
-                                modal closed, checkout cancelled, navigating away from pricing. Good{" "}
+                                modal closed, checkout cancelled, "Maybe later" clicked. Good{" "}
                                 <Code>converted</Code> moments: payment success callback, subscription-created
                                 webhook echoed to the client, thank-you page.
+                            </Callout>
+
+                            <Callout>
+                                <strong>Don't fire <Code>abandoned</Code> from an unmount.</strong> Not a{" "}
+                                <Code>useEffect</Code> cleanup, <Code>onDestroy</Code>, router-leave hook, or{" "}
+                                <Code>beforeunload</Code>. React Strict Mode (on by default in Next.js dev)
+                                double-invokes effects as mount, unmount, mount, so a cleanup-based{" "}
+                                <Code>abandoned</Code> fires milliseconds after <Code>high_intent</Code> and the
+                                card appears the instant the page loads. The same misfire happens in production
+                                any time the component remounts. It's also unnecessary: the widget already
+                                detects page-level exits by itself, so navigating away or closing the tab is
+                                covered. Fire <Code>abandoned</Code> only from a deliberate user action like a
+                                close button.
                             </Callout>
                         </Section>
 
@@ -278,6 +291,17 @@ export default async function DocsPage() {
                                     event names match the dashboard, and that <Code>converted</Code> isn't firing
                                     too early. If you already answered or dismissed it while testing, clear the{" "}
                                     <Code>feedinbox_intent_</Code> keys from sessionStorage (or use a new tab).
+                                </li>
+                                <li>
+                                    <strong>Card appears the instant the page loads:</strong> something is firing{" "}
+                                    <Code>abandoned</Code> on arrival, almost always from a{" "}
+                                    <Code>useEffect</Code> cleanup or other unmount hook that React Strict Mode
+                                    triggers immediately. Remove it; page-level exits are detected for you.
+                                </li>
+                                <li>
+                                    <strong>Card interrupts people still reading:</strong> the fallback timer is
+                                    too short. Raise the delay, or switch the timer off so the card only appears
+                                    on a real exit signal.
                                 </li>
                                 <li>
                                     <strong>Buyers get asked:</strong> your <Code>converted</Code> event isn't firing.

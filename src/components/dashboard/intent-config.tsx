@@ -358,6 +358,13 @@ export function IntentConfig({ projectId, onSaved }: { projectId: string; onSave
                     <div>window.feedinbox('event', '{settings.conversionEvent}')</div>
                 </div>
 
+                <p className="text-xs text-muted-foreground">
+                    Fire <span className="font-mono">{settings.abandonEvent}</span> from a real close action, not
+                    from a component unmount or useEffect cleanup. React Strict Mode double-invokes effects, so a
+                    cleanup fires it on arrival and the card shows immediately. Leaving the page is detected for
+                    you.
+                </p>
+
                 <div className="flex items-center gap-3">
                     <Button size="sm" onClick={save} disabled={saving}>
                         {saving ? (

@@ -118,10 +118,10 @@ React example:
 
 ### Where to fire abandoned
 
-In the close/leave handler of the same surface that fired high_intent:
-- Pricing modal close button / backdrop click.
-- Navigating away from the pricing page without starting checkout.
-- Checkout back/cancel action.
+Fire it from an explicit user action that closes a buying surface:
+- Pricing modal close button / backdrop click / Escape.
+- Checkout back or cancel action.
+- A "Maybe later" / "No thanks" button.
 
 React example:
 
@@ -132,6 +132,35 @@ React example:
       }
       // ...
     }
+
+IMPORTANT: do NOT fire abandoned from a component unmount, useEffect cleanup,
+onDestroy, router-leave hook, or beforeunload.
+
+Two reasons:
+
+1. React Strict Mode (on by default in Next.js dev) deliberately double-invokes
+   effects: mount, unmount, mount. A cleanup-based abandoned therefore fires
+   milliseconds after high_intent, and because abandoned is the strongest signal
+   and has no dwell floor, the card appears instantly on arrival instead of
+   waiting. The same misfire happens in production whenever a component
+   remounts (a parent key change, a layout shift, a route-group re-render).
+
+2. It is redundant. The widget already detects page-level exits on its own
+   (cursor leaving through the viewport top, tab hidden), so navigating away or
+   closing the tab is covered without any code from you.
+
+Wrong:
+
+    useEffect(() => {
+      window.feedinbox('event', 'high_intent', { plan: 'pro' })
+      return () => window.feedinbox('event', 'abandoned')  // fires on arrival
+    }, [])
+
+Right (fire high_intent on mount, let the widget handle the exit):
+
+    useEffect(() => {
+      window.feedinbox('event', 'high_intent', { plan: 'pro' })
+    }, [])
 
 ### Where to fire converted
 
@@ -173,6 +202,14 @@ Customizing the question/options/delay length/event names is a Pro feature.
   the dashboard, and converted is not firing immediately. Also check whether
   it was already answered or dismissed this session (sessionStorage keys
   prefixed feedinbox_intent_).
+- Card appears the instant the page loads: something is firing abandoned on
+  arrival. The usual cause is an abandoned call in a useEffect cleanup or other
+  unmount hook, which React Strict Mode triggers immediately on mount. Remove
+  it; page-level exits are detected automatically. See "Where to fire
+  abandoned".
+- Card appears while the visitor is still reading: the fallback timer is too
+  short. Raise the delay, or switch the timer off so the card only appears on a
+  real exit signal.
 - Buyers are being asked: the converted event is not firing. Fire it on the
   real success step.
 - Nothing loads at all: verify the project key and that the script tag is
