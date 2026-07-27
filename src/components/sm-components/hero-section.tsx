@@ -38,7 +38,11 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 lg:text-6xl mb-6 leading-[1.1]">
                             Know why they closed
                             <br />
-                            <span className="inline-block relative overflow-hidden align-bottom pr-2" style={{ height: '1.15em' }}>
+                            {/* overflow-hidden drives the slide-up animation, so it also clips
+                                horizontally. The right padding is the buffer that keeps the final
+                                glyph (the full stop) off that clip edge: the absolutely positioned
+                                text rounds its width differently than the inline sizer below. */}
+                            <span className="inline-block relative overflow-hidden align-bottom pr-4" style={{ height: '1.15em' }}>
                                 <span className="invisible" aria-hidden="true">your pricing modal.</span>
                                 <span
                                     className={cn(
