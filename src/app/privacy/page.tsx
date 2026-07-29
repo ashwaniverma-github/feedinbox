@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
+import { SUPPORT_EMAIL } from "@/lib/constants";
 
 export const metadata: Metadata = {
     title: "Privacy Policy",
@@ -13,8 +14,6 @@ export const metadata: Metadata = {
 // that always claims to have been updated today is meaningless. Bump it when
 // the policy actually changes.
 const LAST_UPDATED = "28 July 2026";
-
-const CONTACT_EMAIL = "ap8606574@gmail.com";
 
 export default function PrivacyPage() {
     return (
@@ -172,7 +171,7 @@ export default function PrivacyPage() {
                     </P>
                     <P>
                         To delete your entire account and everything in it, email us at{" "}
-                        <A href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</A> and we will action it.
+                        <A href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</A> and we will action it.
                         Backups may retain copies for a short period before being rotated out.
                     </P>
                 </Section>
@@ -217,7 +216,7 @@ export default function PrivacyPage() {
                 <Section title="12. Contact">
                     <P>
                         Questions about this policy or about your data:{" "}
-                        <A href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</A>.
+                        <A href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</A>.
                     </P>
                 </Section>
             </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
+import { SUPPORT_EMAIL } from "@/lib/constants";
 
 export const metadata: Metadata = {
     title: "Terms of Service",
@@ -13,8 +14,6 @@ export const metadata: Metadata = {
 // that always claims to have been updated today is meaningless. Bump it when
 // the terms actually change.
 const LAST_UPDATED = "28 July 2026";
-
-const CONTACT_EMAIL = "ap8606574@gmail.com";
 
 export default function TermsPage() {
     return (
@@ -206,7 +205,7 @@ export default function TermsPage() {
                 <Section title="14. Contact">
                     <P>
                         Questions about these terms:{" "}
-                        <A href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</A>.
+                        <A href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</A>.
                     </P>
                 </Section>
             </div>

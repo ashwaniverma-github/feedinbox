@@ -8,4 +8,4 @@ export const isEmailConfigured = Boolean(process.env.RESEND_API_KEY);
 
 export const resend = new Resend(process.env.RESEND_API_KEY || "re_missing_key_placeholder");
 
-export const FROM_EMAIL = "Feedinbox <hello@feedinbox.com>";
+export const FROM_EMAIL = "Feedinbox <support@feedinbox.com>";
