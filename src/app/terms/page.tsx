@@ -1,86 +1,246 @@
 import Link from "next/link";
+import { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
+
+export const metadata: Metadata = {
+    title: "Terms of Service",
+    description:
+        "The terms covering your use of Feedinbox: accounts, plans and billing, usage limits, your responsibilities when installing the widget, and data ownership.",
+    alternates: { canonical: "https://feedinbox.com/terms" },
+};
+
+// Fixed effective date. Never derive this from new Date(): a legal document
+// that always claims to have been updated today is meaningless. Bump it when
+// the terms actually change.
+const LAST_UPDATED = "28 July 2026";
+
+const CONTACT_EMAIL = "ap8606574@gmail.com";
 
 export default function TermsPage() {
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-background text-foreground">
             <div className="mx-auto max-w-3xl px-6 py-12 sm:py-20">
                 <div className="mb-8">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-neutral-900 transition-colors"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Back to Home
                     </Link>
                 </div>
 
-                <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-2">
-                    Terms of Service
-                </h1>
-                <p className="text-neutral-500 mb-10">Last updated: {new Date().toLocaleDateString()}</p>
+                <h1 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">Terms of Service</h1>
+                <p className="mb-10 text-sm text-muted-foreground">Last updated: {LAST_UPDATED}</p>
 
-                <div className="prose prose-neutral prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-blue-600 prose-p:leading-relaxed space-y-8">
-                    <div>
-                        <p className="lead text-xl text-neutral-600">
-                            Please read these Terms of Service carefully before using the Feedinbox website operated by Feedinbox.
-                        </p>
-                        <br />
-                        <p>
-                            Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use the Service.
-                        </p>
-                    </div>
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                    These terms cover your use of Feedinbox. By creating an account or installing our
+                    script on a website, you agree to them. If you are agreeing on behalf of a company,
+                    you confirm you are authorised to do so.
+                </p>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">1. Accounts</h2>
-                        <p>
-                            When you create an account with us, you must provide us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.
-                        </p>
-                    </div>
+                <Section title="1. What the service does">
+                    <P>
+                        Feedinbox provides an embeddable script with two features. The first, Why-Not-Buy,
+                        shows a one-question card when a visitor abandons a buying surface such as a
+                        pricing modal, and records the reason. The second is a feedback widget for bug
+                        reports, ideas, and questions. Both are configured from your dashboard, and
+                        responses are shown there and delivered by email according to your preference.
+                    </P>
+                </Section>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">2. Intellectual Property</h2>
-                        <p>
-                            The Service and its original content, features, and functionality are and will remain the exclusive property of Feedinbox and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries.
-                        </p>
-                    </div>
+                <Section title="2. Accounts">
+                    <P>
+                        You sign in with Google. You are responsible for activity under your account and
+                        for keeping access to your Google account secure. You must provide accurate
+                        information and be at least 13 years old. One person or entity per account.
+                    </P>
+                </Section>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">3. Links To Other Web Sites</h2>
-                        <p>
-                            Our Service may contain links to third-party web sites or services that are not owned or controlled by Feedinbox. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party web sites or services.
-                        </p>
-                    </div>
+                <Section title="3. Plans, billing, and cancellation">
+                    <P>
+                        Feedinbox has a free plan and a paid Pro plan. Payments are handled by Dodo
+                        Payments, which acts as merchant of record and whose own terms apply to the
+                        transaction itself. Subscriptions renew automatically until cancelled.
+                    </P>
+                    <P>
+                        You can cancel at any time from the billing portal linked in your account settings.
+                        Cancellation takes effect at the end of the period you have already paid for, and
+                        you keep Pro access until then. We do not provide automatic pro-rated refunds for
+                        partial periods, but if something has gone wrong, email us and we will sort it out.
+                    </P>
+                    <P>
+                        We may change pricing. Existing subscribers will be told by email before a change
+                        affects their renewal.
+                    </P>
+                </Section>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">4. Termination</h2>
-                        <p>
-                            We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
-                        </p>
-                    </div>
+                <Section title="4. Usage limits">
+                    <P>
+                        The free plan includes one project and 20 responses per month. Pro includes
+                        unlimited projects and 1,000 responses per month. That monthly allowance is shared
+                        across feedback submissions and Why-Not-Buy responses combined. Once you reach the
+                        limit, further submissions are not recorded until the next calendar month.
+                    </P>
+                </Section>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">5. Limitation of Liability</h2>
-                        <p>
-                            In no event shall Feedinbox, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.
-                        </p>
-                    </div>
+                <Section title="5. Your responsibilities when installing the widget">
+                    <P>
+                        This section matters most, because you decide what the widget asks and where it
+                        runs. You are responsible for:
+                    </P>
+                    <List>
+                        <li>
+                            Having a lawful basis to collect responses from your visitors, and disclosing
+                            the use of Feedinbox in your own privacy policy.
+                        </li>
+                        <li>
+                            Obtaining consent where the law requires it in your jurisdiction or your
+                            visitors&apos;.
+                        </li>
+                        <li>
+                            <B>Not configuring the widget to collect sensitive personal data</B>, such as
+                            health, financial, biometric, or government identifiers, and not attaching such
+                            data as event context.
+                        </li>
+                        <li>Only installing the script on websites you own or are authorised to modify.</li>
+                        <li>
+                            Responding to your own visitors&apos; privacy requests, since that data belongs
+                            to you.
+                        </li>
+                    </List>
+                </Section>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">6. Changes</h2>
-                        <p>
-                            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.
-                        </p>
-                    </div>
+                <Section title="6. Acceptable use">
+                    <P>You agree not to:</P>
+                    <List>
+                        <li>Use the service for anything unlawful, deceptive, or harmful.</li>
+                        <li>
+                            Attempt to breach or probe our security, access other customers&apos; data, or
+                            disrupt the service.
+                        </li>
+                        <li>
+                            Circumvent plan limits, for instance by spreading one site across multiple
+                            accounts.
+                        </li>
+                        <li>
+                            Resell or white-label the service without our written agreement. Removing our
+                            branding on a Pro plan is permitted and is not resale.
+                        </li>
+                        <li>Send automated or artificial submissions to inflate or pollute the data.</li>
+                    </List>
+                </Section>
 
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-neutral-900 mt-12 mb-6">7. Contact Us</h2>
-                        <p>
-                            If you have any questions about these Terms, please contact us at <a href="mailto:ap8606574@gmail.com" className="text-blue-600 hover:underline">ap8606574@gmail.com</a>.
-                        </p>
-                    </div>
-                </div>
+                <Section title="7. Your data">
+                    <P>
+                        <B>You own your data.</B> The feedback and Why-Not-Buy responses collected through
+                        your projects are yours. You grant us only the permission needed to store, process,
+                        and display that data in order to provide the service to you.
+                    </P>
+                    <P>
+                        You can export your responses at any time on a Pro plan, and delete a project to
+                        permanently remove everything in it. How we handle data is described in our{" "}
+                        <Link
+                            href="/privacy"
+                            className="font-medium text-primary underline underline-offset-2"
+                        >
+                            Privacy Policy
+                        </Link>
+                        .
+                    </P>
+                </Section>
+
+                <Section title="8. Our intellectual property">
+                    <P>
+                        The service, including the widget script, dashboard, and brand, remains our
+                        property. These terms grant you a limited, non-exclusive, revocable right to use it
+                        while your account is active, and nothing more.
+                    </P>
+                </Section>
+
+                <Section title="9. Availability and warranties">
+                    <P>
+                        We work to keep Feedinbox available and reliable, but the service is provided
+                        &ldquo;as is&rdquo; without warranties of any kind. We do not guarantee
+                        uninterrupted availability, that every submission will be captured, or that every
+                        notification email will arrive, since delivery depends on providers outside our
+                        control.
+                    </P>
+                </Section>
+
+                <Section title="10. Limitation of liability">
+                    <P>
+                        To the maximum extent permitted by law, we are not liable for indirect, incidental,
+                        special, or consequential damages, including lost profits, lost revenue, or lost
+                        data. Our total liability for any claim is limited to the amount you paid us in the
+                        twelve months before the claim arose.
+                    </P>
+                </Section>
+
+                <Section title="11. Termination">
+                    <P>
+                        You may stop using the service and delete your account at any time. We may suspend
+                        or terminate an account that breaches these terms, and will give notice and a
+                        chance to fix the problem where it is reasonable to do so. If we discontinue the
+                        service entirely, we will give you reasonable notice and an opportunity to export
+                        your data.
+                    </P>
+                </Section>
+
+                <Section title="12. Changes to these terms">
+                    <P>
+                        We may update these terms as the product evolves. Any update is reflected in the
+                        date at the top of this page, and material changes will be communicated by email
+                        before they take effect. Continuing to use the service after that means you accept
+                        the revised terms.
+                    </P>
+                </Section>
+
+                <Section title="13. Governing law">
+                    <P>
+                        These terms are governed by the laws of India, and the courts of India have
+                        exclusive jurisdiction over any dispute, without regard to conflict of law rules.
+                    </P>
+                </Section>
+
+                <Section title="14. Contact">
+                    <P>
+                        Questions about these terms:{" "}
+                        <A href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</A>.
+                    </P>
+                </Section>
             </div>
         </div>
+    );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+    return (
+        <section className="mt-12">
+            <h2 className="mb-4 text-xl font-bold tracking-tight sm:text-2xl">{title}</h2>
+            <div className="space-y-4">{children}</div>
+        </section>
+    );
+}
+
+function P({ children }: { children: React.ReactNode }) {
+    return <p className="leading-relaxed text-muted-foreground">{children}</p>;
+}
+
+function List({ children }: { children: React.ReactNode }) {
+    return (
+        <ul className="list-disc space-y-2 pl-6 leading-relaxed text-muted-foreground">{children}</ul>
+    );
+}
+
+function B({ children }: { children: React.ReactNode }) {
+    return <strong className="font-semibold text-foreground">{children}</strong>;
+}
+
+function A({ href, children }: { href: string; children: React.ReactNode }) {
+    return (
+        <a href={href} className="font-medium text-primary underline underline-offset-2">
+            {children}
+        </a>
     );
 }
