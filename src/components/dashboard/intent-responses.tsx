@@ -180,7 +180,19 @@ export function IntentResponses({ projectId }: { projectId: string }) {
                                         {formatDate(r.createdAt)}
                                     </span>
                                 </div>
-                                {r.text && <p className="mt-2 text-sm">{r.text}</p>}
+                                {r.text && (
+                                    <div className={r.optionLabel ? "mt-2 border-t border-border pt-2" : "mt-2"}>
+                                        {/* Only labeled when an option is also present, so it reads as an
+                                            addendum rather than an explanation of that option. A text-only
+                                            submission needs no label: it's the whole response. */}
+                                        {r.optionLabel && (
+                                            <p className="mb-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400">
+                                                Also said
+                                            </p>
+                                        )}
+                                        <p className="text-sm">{r.text}</p>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

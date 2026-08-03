@@ -56,12 +56,16 @@ export default function NewIntentResponseEmail({
 
                         {optionLabel && (
                             <Section style={answerBox}>
+                                <Text style={answerLabel}>Reason selected</Text>
                                 <Text style={answerText}>"{optionLabel}"</Text>
                             </Section>
                         )}
 
                         {text && (
                             <Section style={quoteBox}>
+                                {/* Only labeled when a reason is also present, so it reads as an
+                                    addendum rather than an explanation of that reason. */}
+                                {optionLabel && <Text style={quoteLabel}>Also said</Text>}
                                 <Text style={quoteText}>{text}</Text>
                             </Section>
                         )}
@@ -98,8 +102,10 @@ const eyebrow = { color: "#9ca3af", fontSize: "12px", fontWeight: "600" as const
 const heading = { color: "#171717", fontSize: "22px", fontWeight: "bold" as const, margin: "0 0 16px" };
 const paragraph = { color: "#374151", fontSize: "16px", lineHeight: "24px", margin: "0 0 20px" };
 const answerBox = { backgroundColor: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: "10px", padding: "16px 20px", marginBottom: "12px" };
+const answerLabel = { color: "#9ca3af", fontSize: "11px", fontWeight: "600" as const, letterSpacing: "0.04em", textTransform: "uppercase" as const, margin: "0 0 4px" };
 const answerText = { color: "#171717", fontSize: "18px", fontWeight: "600" as const, margin: "0" };
 const quoteBox = { borderLeft: "3px solid #e5e7eb", padding: "2px 0 2px 14px", margin: "0 0 16px" };
+const quoteLabel = { color: "#9ca3af", fontSize: "11px", fontWeight: "600" as const, letterSpacing: "0.04em", textTransform: "uppercase" as const, margin: "0 0 4px" };
 const quoteText = { color: "#374151", fontSize: "14px", lineHeight: "22px", fontStyle: "italic" as const, margin: "0" };
 const metaSection = { marginBottom: "16px" };
 const metaText = { color: "#6b7280", fontSize: "14px", lineHeight: "20px", margin: "0 0 6px" };
