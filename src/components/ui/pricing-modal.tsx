@@ -120,8 +120,10 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
     };
 
     const getPrice = () => {
+        // Annual is currently unreachable in the UI (toggle button below is
+        // commented out), so this branch is dead until that's re-enabled.
         if (billingPeriod === "annual") return "40";
-        return "5";
+        return "10.99";
     };
 
     const getPriceLabel = () => {

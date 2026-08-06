@@ -68,7 +68,7 @@ export default function AlternativesIndexPage() {
                     </h2>
                     <div className="grid sm:grid-cols-3 gap-8">
                         <div className="text-center">
-                            <div className="text-4xl font-bold text-neutral-900 mb-2">$5</div>
+                            <div className="text-4xl font-bold text-neutral-900 mb-2">$10.99</div>
                             <div className="text-neutral-600">Starting price</div>
                         </div>
                         <div className="text-center">

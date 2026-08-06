@@ -207,7 +207,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                         </div>
                         <div className="mb-6">
                             <div className="flex items-baseline gap-1">
-                                <span className="text-4xl font-bold text-neutral-900">$5</span>
+                                <span className="text-4xl font-bold text-neutral-900">$10.99</span>
                                 <span className="text-neutral-500">/month</span>
                             </div>
                         </div>

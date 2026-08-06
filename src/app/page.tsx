@@ -27,7 +27,7 @@ const jsonLd = {
     },
     {
       "@type": "Offer",
-      price: "5",
+      price: "10.99",
       priceCurrency: "USD",
       name: "Pro",
       description: "Unlimited submissions",
