@@ -24,7 +24,9 @@ function SessionGuard({ children }: { children: React.ReactNode }) {
 
 export function OnboardingShell({ children }: { children: React.ReactNode }) {
     return (
-        <SessionProvider>
+        // Same five minute poll as the dashboard shell: without it refetchInterval
+        // defaults to 0 and a focused tab never revalidates an expired session.
+        <SessionProvider refetchInterval={5 * 60} refetchWhenOffline={false}>
             <SessionGuard>{children}</SessionGuard>
         </SessionProvider>
     );

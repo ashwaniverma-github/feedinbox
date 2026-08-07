@@ -34,7 +34,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        <SessionProvider>
+        // refetchInterval defaults to 0, meaning no polling at all, so the only
+        // automatic refresh is refetchOnWindowFocus. A tab left focused would
+        // therefore keep reporting "authenticated" long after the database
+        // session expired. Five minutes bounds that window without being costly:
+        // each refetch hits /api/auth/session, which with the database strategy
+        // runs the adapter's session lookup plus the session callback's own user
+        // query, so this is two DB round trips per tab per interval.
+        <SessionProvider refetchInterval={5 * 60} refetchWhenOffline={false}>
             <SessionGuard>
                 <MobileMenuProvider
                     isOpen={isMobileMenuOpen}
