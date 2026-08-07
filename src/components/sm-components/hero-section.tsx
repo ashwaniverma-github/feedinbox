@@ -32,8 +32,12 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
         return () => clearInterval(interval);
     }, []);
 
+    // `isolate` is load-bearing: `relative` alone leaves z-index auto, which does not
+    // create a stacking context, so the -z-* background layers below would belong to
+    // the root context and paint before the landing page's bg-white wrapper, which
+    // then covers them entirely. isolation:isolate scopes them to this section.
     return (
-        <section className="relative overflow-hidden pt-32 pb-24 sm:pt-40">
+        <section className="relative isolate overflow-hidden pt-32 pb-24 sm:pt-40">
             {/* Layered background, all decorative: drifting colour orbs at the back,
                 a grid texture over them, then a colour wash on top to tie it together. */}
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 overflow-hidden">

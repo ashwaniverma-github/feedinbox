@@ -1,8 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Smartphone, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+// useLayoutEffect warns when it runs during SSR, so fall back to useEffect on
+// the server. Reading the media query in a layout effect matters here: it lands
+// the reduced-motion frame before the first paint, so a visitor who asked for
+// less motion never sees step 0 flash past on its way to FROZEN_STEP. State is
+// still initialised to 0 rather than read at init, so hydration matches the
+// server-rendered markup.
+const useIsomorphicLayoutEffect =
+    typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /**
  * A looping two-act demo of the core product loop.
@@ -39,7 +48,7 @@ export default function HeroDemo() {
     const [step, setStep] = useState(0);
     const [reduced, setReduced] = useState(false);
 
-    useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
         const apply = (matches: boolean) => {
             setReduced(matches);
