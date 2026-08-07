@@ -14,6 +14,11 @@ function SessionGuard({ children }: { children: React.ReactNode }) {
         if (status === "unauthenticated") router.replace("/");
     }, [status, router]);
 
+    // As in the dashboard shell: stop rendering the flow immediately rather than
+    // leaving it up while the async redirect lands. "loading" still renders, as
+    // the server layout already proved a session existed.
+    if (status === "unauthenticated") return null;
+
     return <>{children}</>;
 }
 

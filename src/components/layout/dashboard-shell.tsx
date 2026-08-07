@@ -20,6 +20,13 @@ function SessionGuard({ children }: { children: React.ReactNode }) {
         if (status === "unauthenticated") router.replace("/");
     }, [status, router]);
 
+    // router.replace is an async client navigation, so rendering children here
+    // would leave the whole dashboard on screen until it lands, still showing
+    // data from the session that just ended. "loading" keeps rendering, since
+    // the server layout already proved a session existed and blanking it would
+    // flash on every mount.
+    if (status === "unauthenticated") return null;
+
     return <>{children}</>;
 }
 
