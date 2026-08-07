@@ -110,8 +110,14 @@ export default function LoginPage() {
     return (
         <Suspense
             fallback={
-                <div className="flex min-h-screen items-center justify-center bg-white">
+                <div
+                    role="status"
+                    aria-live="polite"
+                    className="flex min-h-screen items-center justify-center bg-white"
+                >
                     <div className="h-6 w-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900" />
+                    {/* The spinner alone conveys nothing to a screen reader. */}
+                    <span className="sr-only">Loading sign in</span>
                 </div>
             }
         >

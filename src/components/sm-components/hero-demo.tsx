@@ -84,7 +84,10 @@ export default function HeroDemo() {
     const cursorTop = step === 3 ? 76 : step === 4 ? 230 : 132;
 
     return (
-        <div className="relative mx-auto mt-20 max-w-6xl px-4 sm:px-6">
+        // fi-demo: see globals.css. Disables every transition in this subtree under
+        // reduced motion, which a per-element guard would miss when the preference
+        // flips mid-session and the step jumps to FROZEN_STEP.
+        <div className="fi-demo relative mx-auto mt-20 max-w-6xl px-4 sm:px-6">
             {/* The animation is decorative; this is the accessible equivalent. */}
             <p className="sr-only">
                 A demonstration: when a visitor leaves your pricing page without buying,

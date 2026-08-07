@@ -392,3 +392,17 @@ select:focus {
     animation: none;
   }
 }
+
+/* The hero demo animates a lot at once: two scenes crossfading, the card, the
+   cursor, the phone notification, the caption and the progress dots. Under
+   reduced motion the step is pinned to a single frame, but a preference change
+   mid-session still swaps the step and would animate every one of those at once.
+   Killing transitions for the whole subtree in CSS covers that, and unlike a
+   React-state guard it also applies the instant the preference flips. */
+@media (prefers-reduced-motion: reduce) {
+  .fi-demo,
+  .fi-demo * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

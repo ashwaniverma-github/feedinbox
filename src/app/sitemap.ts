@@ -17,6 +17,7 @@ import { alternatives } from '@/data/alternatives'
 const HOME_UPDATED = new Date('2026-07-28')     // pricing-modal repositioning
 const DOCS_UPDATED = new Date('2026-07-27')     // abandoned/cancel event docs
 const CONTENT_UPDATED = new Date('2026-07-26')  // features/use-cases/integrations/alternatives
+const CONTACT_UPDATED = new Date('2026-08-07')  // contact page added
 const AUTH_UPDATED = new Date('2025-12-20')
 const LEGAL_UPDATED = new Date('2026-07-28')  // privacy + terms rewritten for the pivot
 
@@ -39,7 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         {
             url: `${baseUrl}/contact`,
-            lastModified: HOME_UPDATED,
+            lastModified: CONTACT_UPDATED,
             changeFrequency: 'monthly',
             priority: 0.6,
         },
