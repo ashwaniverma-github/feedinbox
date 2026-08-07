@@ -6,7 +6,7 @@ export default function TwoToolsSection() {
         <section className="py-24">
             <div className="mx-auto max-w-6xl px-4 sm:px-6">
                 <div className="text-center mb-14">
-                    <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-4">
+                    <h2 className="font-heading text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-4">
                         One script. Two ways to hear your users.
                     </h2>
                     <p className="text-lg text-neutral-600 max-w-2xl mx-auto">

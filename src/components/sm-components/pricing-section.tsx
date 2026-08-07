@@ -150,7 +150,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                         <img src="/feedinbox.png" alt="Pro" className="h-3 w-3 rounded-full" />
                         Simple Pricing
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-4">
+                    <h2 className="font-heading text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-4">
                         Start free, upgrade when ready.
                     </h2>
                     <p className="text-lg text-neutral-600 max-w-2xl mx-auto">

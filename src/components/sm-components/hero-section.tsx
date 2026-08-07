@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, FileCode } from "lucide-react";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
@@ -32,107 +32,138 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
     }, []);
 
     return (
-        <section className="relative overflow-hidden pt-32 pb-20 sm:pt-48 sm:pb-24">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                <div className="grid gap-16 lg:grid-cols-2 lg:gap-8 items-center">
-                    <div className="max-w-2xl">
-                        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 lg:text-6xl mb-6 leading-[1.1]">
-                            Know why they closed
-                            <br />
-                            {/* Every phrase is stacked in one grid cell, so the box is always as
-                                wide as the widest phrase and no phrase can overflow it. The older
-                                approach measured with a separate invisible span, which wrapped when
-                                the column got narrow and left the real (nowrap) text wider than its
-                                own box, clipping the final glyph against overflow-hidden. That
-                                overflow-hidden is still what gives the slide its masked edge. */}
-                            <span className="inline-grid overflow-hidden align-bottom" style={{ height: '1.15em' }}>
-                                {animatedTexts.map((text, i) => (
-                                    <span
-                                        key={text}
-                                        aria-hidden={i !== currentTextIndex}
+        <section className="relative overflow-hidden pt-32 pb-24 sm:pt-40">
+            {/* Layered background: grid texture under a warm glow, both decorative. */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 fi-grid" />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 fi-glow" />
+
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 text-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-4 py-1.5 text-xs font-medium text-neutral-600 shadow-sm backdrop-blur">
+                    <Sparkles className="h-3.5 w-3.5 text-red-500" />
+                    One question. At the exact moment they leave.
+                </div>
+
+                <h1 className="font-heading mt-8 text-[2.75rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-neutral-900 sm:text-6xl lg:text-7xl">
+                    Know why they closed
+                    <br />
+                    {/* Every phrase is stacked in one grid cell, so the box is always as
+                        wide as the widest phrase and no phrase can overflow it. The older
+                        approach measured with a separate invisible span, which wrapped when
+                        the column got narrow and left the real (nowrap) text wider than its
+                        own box, clipping the final glyph against overflow-hidden. That
+                        overflow-hidden is still what gives the slide its masked edge. */}
+                    <span className="inline-grid overflow-hidden align-bottom" style={{ height: "1.15em" }}>
+                        {animatedTexts.map((text, i) => (
+                            <span
+                                key={text}
+                                aria-hidden={i !== currentTextIndex}
+                                className={cn(
+                                    "col-start-1 row-start-1 whitespace-nowrap transition-all duration-500 ease-out",
+                                    i === currentTextIndex && !isAnimating
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 -translate-y-full",
+                                    i === 0 && "text-red-500",
+                                    i === 1 && "text-amber-500"
+                                )}
+                            >
+                                {text}
+                            </span>
+                        ))}
+                    </span>
+                </h1>
+
+                <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-neutral-600 sm:text-xl">
+                    The moment someone closes your pricing modal without buying, one question asks why.
+                    The reason lands in your dashboard, plus a weekly digest straight to your inbox.
+                </p>
+
+                <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+                    <Link
+                        href={isLoggedIn ? "/dashboard" : "/login"}
+                        className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-neutral-900 px-8 text-base font-semibold text-white shadow-lg shadow-neutral-900/15 transition-all hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-xl hover:shadow-neutral-900/25 sm:w-auto"
+                    >
+                        {isLoggedIn ? "Go to App" : "Start for free"}
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                    {!isLoggedIn && (
+                        <a
+                            href="#how-it-works"
+                            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-8 text-base font-medium text-neutral-900 transition-all hover:border-neutral-300 hover:bg-neutral-50 sm:w-auto"
+                        >
+                            See how it works
+                        </a>
+                    )}
+                </div>
+
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-neutral-500">
+                    {["No credit card required", "Free tier available", "Installs in minutes"].map((item) => (
+                        <div key={item} className="flex items-center gap-2">
+                            <Check className="h-4 w-4 text-green-600" />
+                            <span>{item}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Product shot: the moment the card fires, rather than an install snippet.
+                Shows what the visitor sees, which is what the page is selling. */}
+            <div className="mx-auto mt-20 max-w-4xl px-4 sm:px-6">
+                <div className="fi-float relative">
+                    <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/10">
+                        {/* Browser chrome */}
+                        <div className="flex items-center gap-2 border-b border-neutral-100 bg-neutral-50 px-4 py-3">
+                            <div className="flex gap-1.5">
+                                <div className="h-3 w-3 rounded-full bg-red-400/80" />
+                                <div className="h-3 w-3 rounded-full bg-yellow-400/80" />
+                                <div className="h-3 w-3 rounded-full bg-green-400/80" />
+                            </div>
+                            <div className="mx-auto rounded-md bg-white px-3 py-1 text-[11px] font-medium text-neutral-400 shadow-sm">
+                                yourapp.com/pricing
+                            </div>
+                        </div>
+
+                        {/* Dimmed pricing behind, with the card over it */}
+                        <div className="relative bg-neutral-50/70 px-6 py-12 sm:px-10 sm:py-16">
+                            <div aria-hidden="true" className="grid gap-4 opacity-35 sm:grid-cols-3">
+                                {["Starter", "Pro", "Scale"].map((tier, i) => (
+                                    <div
+                                        key={tier}
                                         className={cn(
-                                            "col-start-1 row-start-1 whitespace-nowrap transition-all duration-500 ease-out",
-                                            i === currentTextIndex && !isAnimating
-                                                ? "opacity-100 translate-y-0"
-                                                : "opacity-0 -translate-y-full",
-                                            i === 0 && "text-red-500",
-                                            i === 1 && "text-amber-500"
+                                            "rounded-xl border bg-white p-5",
+                                            i === 1 ? "border-neutral-900" : "border-neutral-200"
                                         )}
                                     >
-                                        {text}
-                                    </span>
+                                        <div className="text-xs font-semibold text-neutral-500">{tier}</div>
+                                        <div className="mt-2 h-7 w-20 rounded bg-neutral-200" />
+                                        <div className="mt-4 space-y-2">
+                                            <div className="h-2 w-full rounded bg-neutral-100" />
+                                            <div className="h-2 w-4/5 rounded bg-neutral-100" />
+                                            <div className="h-2 w-3/5 rounded bg-neutral-100" />
+                                        </div>
+                                        <div className="mt-5 h-8 w-full rounded-lg bg-neutral-100" />
+                                    </div>
                                 ))}
-                            </span>
-                        </h1>
-                        <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
-                            The moment someone closes your pricing modal without buying, one question asks why. The reason lands in your dashboard, plus a weekly digest straight to your inbox.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 items-center flex-wrap">
-                            <Link
-                                href={isLoggedIn ? "/dashboard" : "/login"}
-                                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-neutral-900 px-8 text-base font-semibold text-white transition-all hover:bg-neutral-800 hover:shadow-xl hover:shadow-neutral-900/20 hover:-translate-y-0.5 whitespace-nowrap shrink-0"
-                            >
-                                {isLoggedIn ? "Go to App" : "Start for free"}
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                            {!isLoggedIn && (
-                                <a
-                                    href="#how-it-works"
-                                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-8 text-base font-medium text-neutral-900 transition-all hover:border-neutral-300 hover:bg-neutral-50 whitespace-nowrap shrink-0"
-                                >
-                                    How it works
-                                </a>
-                            )}
-                            <code className="hidden sm:inline-flex h-10 items-center gap-2 rounded-lg bg-neutral-100 border border-neutral-200 px-4 text-sm font-mono text-neutral-600 whitespace-nowrap shrink-0">
-                                <FileCode className="h-4 w-4 text-neutral-400" /> Just a script tag
-                            </code>
-                        </div>
-                        <div className="mt-10 flex items-center gap-4 text-sm text-neutral-500">
-                            <div className="flex items-center gap-2">
-                                <Check className="h-4 w-4 text-green-600" />
-                                <span>No credit card required</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Check className="h-4 w-4 text-green-600" />
-                                <span>Free tier available</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Code Showcase */}
-                    <div className="relative group w-full max-w-full min-w-0">
-                        <div className="absolute -inset-4 rounded-2xl bg-gradient-to-tr from-neutral-100 to-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
-                        <div className="relative rounded-xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-200/50 overflow-hidden">
-                            {/* Header */}
-                            <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50/50 px-4 py-3">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex gap-1.5">
-                                        <div className="h-3 w-3 rounded-full bg-red-400/80" />
-                                        <div className="h-3 w-3 rounded-full bg-yellow-400/80" />
-                                        <div className="h-3 w-3 rounded-full bg-green-400/80" />
+                            {/* The Why-Not-Buy card */}
+                            <div className="pointer-events-none absolute bottom-6 right-6 w-[19rem] max-w-[calc(100%-3rem)] rounded-2xl border border-neutral-200 bg-white p-5 text-left shadow-2xl">
+                                <p className="text-[15px] font-semibold text-neutral-900">What stopped you?</p>
+                                <div className="mt-3.5 space-y-2">
+                                    <div className="rounded-lg border-2 border-red-500 bg-red-50/60 px-3 py-2.5 text-sm font-medium text-neutral-900">
+                                        Too expensive
                                     </div>
-                                    <div className="ml-2 text-xs font-mono text-neutral-400">
-                                        index.html
-                                    </div>
+                                    {["Not sure what I get", "Just looking"].map((opt) => (
+                                        <div
+                                            key={opt}
+                                            className="rounded-lg border border-neutral-200 px-3 py-2.5 text-sm text-neutral-600"
+                                        >
+                                            {opt}
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-neutral-500">
-                                    <FileCode className="h-3 w-3" />
-                                    Script
+                                <div className="mt-3 w-full rounded-lg bg-neutral-900 py-2.5 text-center text-sm font-medium text-white">
+                                    Send
                                 </div>
-                            </div>
-                            <div className="p-6 overflow-x-auto bg-white">
-                                <pre className="text-sm font-mono leading-relaxed">
-                                    <code className="language-html">
-                                        <span className="text-neutral-400">// when they open pricing / start checkout</span>
-                                        <br />
-                                        <span className="text-neutral-900">feedinbox</span><span className="text-neutral-600">(</span><span className="text-green-600">'event'</span><span className="text-neutral-600">, </span><span className="text-green-600">'high_intent'</span><span className="text-neutral-600">, {'{'} plan: </span><span className="text-green-600">'pro'</span><span className="text-neutral-600"> {'}'})</span>
-                                        <br />
-                                        <br />
-                                        <span className="text-neutral-400">// they buy? this cancels the question</span>
-                                        <br />
-                                        <span className="text-neutral-900">feedinbox</span><span className="text-neutral-600">(</span><span className="text-green-600">'event'</span><span className="text-neutral-600">, </span><span className="text-green-600">'converted'</span><span className="text-neutral-600">)</span>
-                                    </code>
-                                </pre>
                             </div>
                         </div>
                     </div>

@@ -129,7 +129,7 @@ export default function DashboardSection() {
                             <LayoutDashboard className="h-3 w-3" />
                             Your dashboard
                         </div>
-                        <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-6">
+                        <h2 className="font-heading text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl mb-6">
                             Every reason they didn't buy, in one place.
                         </h2>
                         <p className="text-lg text-neutral-600 mb-8 leading-relaxed">

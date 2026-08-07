@@ -14,7 +14,7 @@ export default function CTASection({ isLoggedIn = false }: CTASectionProps) {
             </div>
 
             <div className="mx-auto max-w-3xl px-4 sm:px-6 relative">
-                <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6">
+                <h2 className="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6">
                     Stop guessing why they don't buy.
                 </h2>
                 <p className="text-lg text-neutral-400 mb-10 max-w-xl mx-auto">
