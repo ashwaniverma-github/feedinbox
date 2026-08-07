@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import HeroDemo from "./hero-demo";
 
 interface HeroSectionProps {
     isLoggedIn?: boolean;
@@ -33,7 +34,13 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
 
     return (
         <section className="relative overflow-hidden pt-32 pb-24 sm:pt-40">
-            {/* Layered background: grid texture under a warm glow, both decorative. */}
+            {/* Layered background, all decorative: drifting colour orbs at the back,
+                a grid texture over them, then a colour wash on top to tie it together. */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 overflow-hidden">
+                <div className="fi-orb absolute -left-32 -top-24 h-[28rem] w-[28rem] bg-red-400/25" />
+                <div className="fi-orb fi-orb-slow absolute -right-32 top-10 h-[26rem] w-[26rem] bg-amber-300/25" />
+                <div className="fi-orb absolute left-1/3 top-64 h-[24rem] w-[24rem] bg-rose-300/20" />
+            </div>
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 fi-grid" />
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 fi-glow" />
 
@@ -111,76 +118,8 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                 </div>
             </div>
 
-            {/* Product shot: the moment the card fires, rather than an install snippet.
-                Shows what the visitor sees, which is what the page is selling. */}
-            <div className="mx-auto mt-20 max-w-4xl px-4 sm:px-6">
-                <div className="fi-float relative">
-                    <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/10">
-                        {/* Browser chrome */}
-                        <div className="flex items-center gap-2 border-b border-neutral-100 bg-neutral-50 px-4 py-3">
-                            <div className="flex gap-1.5">
-                                <div className="h-3 w-3 rounded-full bg-red-400/80" />
-                                <div className="h-3 w-3 rounded-full bg-yellow-400/80" />
-                                <div className="h-3 w-3 rounded-full bg-green-400/80" />
-                            </div>
-                            <div className="mx-auto rounded-md bg-white px-3 py-1 text-[11px] font-medium text-neutral-400 shadow-sm">
-                                yourapp.com/pricing
-                            </div>
-                        </div>
+            <HeroDemo />
 
-                        {/* Dimmed pricing behind, with the card over it */}
-                        <div className="relative bg-neutral-50/70 px-6 py-12 sm:px-10 sm:py-16">
-                            <div aria-hidden="true" className="grid gap-4 opacity-35 sm:grid-cols-3">
-                                {["Starter", "Pro", "Scale"].map((tier, i) => (
-                                    <div
-                                        key={tier}
-                                        className={cn(
-                                            "rounded-xl border bg-white p-5",
-                                            i === 1 ? "border-neutral-900" : "border-neutral-200"
-                                        )}
-                                    >
-                                        <div className="text-xs font-semibold text-neutral-500">{tier}</div>
-                                        <div className="mt-2 h-7 w-20 rounded bg-neutral-200" />
-                                        <div className="mt-4 space-y-2">
-                                            <div className="h-2 w-full rounded bg-neutral-100" />
-                                            <div className="h-2 w-4/5 rounded bg-neutral-100" />
-                                            <div className="h-2 w-3/5 rounded bg-neutral-100" />
-                                        </div>
-                                        <div className="mt-5 h-8 w-full rounded-lg bg-neutral-100" />
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* The Why-Not-Buy card. Decorative: it illustrates the product
-                                rather than being usable, so it is hidden from assistive tech,
-                                which would otherwise announce the options and "Send" as if
-                                they were real controls. */}
-                            <div
-                                aria-hidden="true"
-                                className="pointer-events-none absolute bottom-6 right-6 w-[19rem] max-w-[calc(100%-3rem)] rounded-2xl border border-neutral-200 bg-white p-5 text-left shadow-2xl"
-                            >
-                                <p className="text-[15px] font-semibold text-neutral-900">What stopped you?</p>
-                                <div className="mt-3.5 space-y-2">
-                                    <div className="rounded-lg border-2 border-red-500 bg-red-50/60 px-3 py-2.5 text-sm font-medium text-neutral-900">
-                                        Too expensive
-                                    </div>
-                                    {["Not sure what I get", "Just looking"].map((opt) => (
-                                        <div
-                                            key={opt}
-                                            className="rounded-lg border border-neutral-200 px-3 py-2.5 text-sm text-neutral-600"
-                                        >
-                                            {opt}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="mt-3 w-full rounded-lg bg-neutral-900 py-2.5 text-center text-sm font-medium text-white">
-                                    Send
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
     );
 }

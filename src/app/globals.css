@@ -312,20 +312,51 @@ select:focus {
    across sections without repeating long gradient declarations.
 --------------------------------------------------------------------------- */
 
-/* Faint graph-paper grid. Masked to fade out toward the edges so it never
-   competes with the content sitting on top of it. */
+/* Graph-paper grid. Masked to fade out toward the edges so it never competes
+   with the content sitting on top of it. */
 .fi-grid {
   background-image:
-    linear-gradient(to right, rgba(10, 10, 10, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(10, 10, 10, 0.05) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse 100% 70% at 50% 0%, #000 40%, transparent 100%);
-  mask-image: radial-gradient(ellipse 100% 70% at 50% 0%, #000 40%, transparent 100%);
+    linear-gradient(to right, rgba(10, 10, 10, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10, 10, 10, 0.055) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 35%, transparent 100%);
 }
 
-/* Warm glow behind the hero headline. */
+/* Three overlapping colour fields rather than one flat wash, tinted to the same
+   red and amber as the animated headline words so the page reads as one
+   palette. Layering them at different sizes and offsets is what gives the
+   background depth instead of a single dull haze. */
 .fi-glow {
-  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(239, 68, 68, 0.10), transparent 70%);
+  background:
+    radial-gradient(ellipse 65% 45% at 50% -8%, rgba(239, 68, 68, 0.15), transparent 62%),
+    radial-gradient(ellipse 45% 38% at 10% 12%, rgba(251, 191, 36, 0.13), transparent 68%),
+    radial-gradient(ellipse 50% 42% at 90% 18%, rgba(239, 68, 68, 0.10), transparent 68%);
+}
+
+/* Soft drifting orbs behind the hero. Heavily blurred so they read as light
+   rather than shapes, and slow enough to be felt but not watched. */
+@keyframes fi-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(4%, -6%, 0) scale(1.12); }
+}
+
+.fi-orb {
+  border-radius: 9999px;
+  filter: blur(90px);
+  animation: fi-drift 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+.fi-orb-slow {
+  animation-duration: 28s;
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fi-orb {
+    animation: none;
+  }
 }
 
 /* Slow float for the product mock, so the hero has motion without demanding
@@ -341,6 +372,23 @@ select:focus {
 
 @media (prefers-reduced-motion: reduce) {
   .fi-float {
+    animation: none;
+  }
+}
+
+/* Caption under the hero demo. Keyed on the step in React, so remounting
+   replays this and each line fades up as it changes. */
+@keyframes fi-caption {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fi-caption {
+  animation: fi-caption 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fi-caption {
     animation: none;
   }
 }
