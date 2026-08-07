@@ -1,31 +1,24 @@
-"use client";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 
-import { useState } from "react";
-import { SessionProvider } from "next-auth/react";
-import { Sidebar } from "@/components/layout/sidebar";
-import { MobileMenuProvider } from "@/components/layout/mobile-menu-context";
-
-export default function DashboardLayout({
+/**
+ * Every route in this group requires a session, so the check lives here rather
+ * than being repeated in each of them.
+ *
+ * It is a server check rather than middleware on purpose: the session strategy
+ * is database-backed (PrismaAdapter), so the cookie is only a token that has to
+ * be looked up. Middleware runs on the Edge runtime, where Prisma cannot, and
+ * could therefore only test that a cookie exists, not that it is valid. Doing it
+ * here means no dashboard markup is ever sent to someone without a session.
+ */
+export default async function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const session = await auth();
+    if (!session?.user) redirect("/");
 
-    return (
-        <SessionProvider>
-            <MobileMenuProvider
-                isOpen={isMobileMenuOpen}
-                onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-                <div className="flex h-screen overflow-hidden bg-background text-foreground transition-colors duration-300">
-                    <Sidebar
-                        isMobileOpen={isMobileMenuOpen}
-                        onMobileClose={() => setIsMobileMenuOpen(false)}
-                    />
-                    <main className="flex-1 overflow-y-auto overflow-x-hidden">{children}</main>
-                </div>
-            </MobileMenuProvider>
-        </SessionProvider>
-    );
+    return <DashboardShell>{children}</DashboardShell>;
 }
