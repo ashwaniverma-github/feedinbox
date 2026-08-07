@@ -73,6 +73,15 @@ export default function Navbar({ isLoggedIn = false }: NavbarProps) {
                     >
                         Docs
                     </Link>
+                    <Link
+                        href="/contact"
+                        className={cn(
+                            "hidden rounded-full px-4 py-2 text-sm font-medium text-neutral-600 transition-all hover:bg-neutral-100/50 hover:text-neutral-900 sm:inline-flex",
+                            isScrolled && "opacity-0 w-0 px-0 pointer-events-none hidden"
+                        )}
+                    >
+                        Contact
+                    </Link>
                     {!isLoggedIn && (
                         <Link
                             href="/login"
