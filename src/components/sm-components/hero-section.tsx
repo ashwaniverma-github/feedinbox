@@ -43,7 +43,13 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                     One question. At the exact moment they leave.
                 </div>
 
-                <h1 className="font-heading mt-8 text-[2.75rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-neutral-900 sm:text-6xl lg:text-7xl">
+                {/* Fluid rather than stepped, because the animated phrase below cannot
+                    wrap. At a 320px viewport the old 2.75rem base made "your pricing
+                    modal." about 396px wide against 288px of available width, so it was
+                    clipped by the section's overflow-hidden. The clamp keeps the longest
+                    phrase inside the container at every width and still tops out at the
+                    72px the old lg:text-7xl gave on desktop. */}
+                <h1 className="font-heading mt-8 text-[clamp(1.75rem,8vw,4.5rem)] font-extrabold leading-[1.05] tracking-[-0.03em] text-neutral-900">
                     Know why they closed
                     <br />
                     {/* Every phrase is stacked in one grid cell, so the box is always as
@@ -145,8 +151,14 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
                                 ))}
                             </div>
 
-                            {/* The Why-Not-Buy card */}
-                            <div className="pointer-events-none absolute bottom-6 right-6 w-[19rem] max-w-[calc(100%-3rem)] rounded-2xl border border-neutral-200 bg-white p-5 text-left shadow-2xl">
+                            {/* The Why-Not-Buy card. Decorative: it illustrates the product
+                                rather than being usable, so it is hidden from assistive tech,
+                                which would otherwise announce the options and "Send" as if
+                                they were real controls. */}
+                            <div
+                                aria-hidden="true"
+                                className="pointer-events-none absolute bottom-6 right-6 w-[19rem] max-w-[calc(100%-3rem)] rounded-2xl border border-neutral-200 bg-white p-5 text-left shadow-2xl"
+                            >
                                 <p className="text-[15px] font-semibold text-neutral-900">What stopped you?</p>
                                 <div className="mt-3.5 space-y-2">
                                     <div className="rounded-lg border-2 border-red-500 bg-red-50/60 px-3 py-2.5 text-sm font-medium text-neutral-900">
