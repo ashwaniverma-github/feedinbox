@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, CornerDownRight } from "lucide-react";
+import { AlertCircle, Check, Copy, CornerDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -92,15 +92,25 @@ const accentStyles = {
 
 export default function AnswerTranslator() {
     const [selected, setSelected] = useState(0);
-    const [copied, setCopied] = useState(false);
+    const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
     const active = answers[selected];
     const accent = accentStyles[active.accent];
 
     const copyPrompt = async () => {
         if (!active.prompt) return;
-        await navigator.clipboard.writeText(active.prompt);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        try {
+            // Rejects (or throws, when navigator.clipboard is undefined) on an
+            // insecure context or a denied permission. There is no fallback worth
+            // having here, since the prompt is already on screen below: say so and
+            // let the visitor select it. Failure gets a longer reset so the
+            // instruction stays readable.
+            await navigator.clipboard.writeText(active.prompt);
+            setCopyState("copied");
+            setTimeout(() => setCopyState("idle"), 2000);
+        } catch {
+            setCopyState("failed");
+            setTimeout(() => setCopyState("idle"), 6000);
+        }
     };
 
     return (
@@ -119,7 +129,7 @@ export default function AnswerTranslator() {
                             type="button"
                             onClick={() => {
                                 setSelected(i);
-                                setCopied(false);
+                                setCopyState("idle");
                             }}
                             aria-pressed={i === selected}
                             className={cn(
@@ -164,12 +174,19 @@ export default function AnswerTranslator() {
                                 onClick={copyPrompt}
                                 className="flex items-center gap-1.5 rounded bg-neutral-700/50 px-2 py-1 text-xs font-medium text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-neutral-200"
                             >
-                                {copied ? (
+                                {copyState === "copied" && (
                                     <>
                                         <Check className="h-3.5 w-3.5 text-green-400" />
                                         <span className="text-green-400">Copied</span>
                                     </>
-                                ) : (
+                                )}
+                                {copyState === "failed" && (
+                                    <>
+                                        <AlertCircle className="h-3.5 w-3.5 text-amber-400" />
+                                        <span className="text-amber-400">Copy blocked</span>
+                                    </>
+                                )}
+                                {copyState === "idle" && (
                                     <>
                                         <Copy className="h-3.5 w-3.5" />
                                         <span>Copy</span>
@@ -180,6 +197,18 @@ export default function AnswerTranslator() {
                         <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-neutral-200 whitespace-pre-wrap">
                             {active.prompt}
                         </pre>
+                        <p aria-live="polite" className="sr-only">
+                            {copyState === "copied" ? "Prompt copied to your clipboard." : ""}
+                            {copyState === "failed"
+                                ? "Copying was blocked by your browser. Select the prompt and copy it manually."
+                                : ""}
+                        </p>
+                        {copyState === "failed" && (
+                            <p className="border-t border-neutral-800 bg-amber-500/10 px-4 py-2.5 text-xs leading-relaxed text-amber-300">
+                                Your browser blocked clipboard access. Select the prompt above and copy
+                                it manually.
+                            </p>
+                        )}
                     </div>
                 ) : (
                     <div className="mt-6 rounded-xl border border-dashed border-neutral-300 bg-white p-5 text-sm leading-relaxed text-neutral-600">
