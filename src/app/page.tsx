@@ -15,7 +15,7 @@ const jsonLd = {
   name: "Feedinbox",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
-  description: "Exit-intent tool that asks visitors why they didn't buy the moment they close your pricing modal, plus a feedback widget, delivered to your dashboard and a weekly email.",
+  description: "Exit-intent tool that asks visitors why they didn't buy the moment they close your pricing modal, plus a feedback widget, delivered to your dashboard and emailed to you instantly.",
   url: "https://feedinbox.com",
   offers: [
     {

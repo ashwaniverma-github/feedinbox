@@ -35,7 +35,7 @@ export default function TwoToolsSection() {
                             {[
                                 "Fires on abandonment, not a form to build",
                                 "Answers tagged by plan and country",
-                                "Weekly summary in your inbox",
+                                "Emailed to you the moment it arrives",
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-3 text-sm text-neutral-700">
                                     <Check className="h-4 w-4 text-green-600 shrink-0" />

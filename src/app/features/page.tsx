@@ -16,7 +16,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 export const metadata: Metadata = {
     title: "Features - Why-Not-Buy + Feedback, In Your Inbox | Feedinbox",
-    description: "Feedinbox tells you why visitors don't buy with an exit-intent question, and collects feedback. A weekly digest plus instant emails, no dashboard required.",
+    description: "Feedinbox tells you why visitors don't buy with an exit-intent question, and collects feedback. Every answer emailed to you instantly, no dashboard required.",
     keywords: ["why visitors don't buy", "exit intent question", "conversion feedback", "feedback to email", "inbox feedback tool"],
 };
 

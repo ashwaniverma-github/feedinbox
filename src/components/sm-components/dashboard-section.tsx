@@ -133,13 +133,13 @@ export default function DashboardSection() {
                             Every reason they didn't buy, in one place.
                         </h2>
                         <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
-                            See exactly what's blocking your sales, ranked, tagged by plan and country, and trending over time. A weekly digest lands in your inbox so you never have to check.
+                            See exactly what's blocking your sales, ranked, tagged by plan and country, and trending over time. Every answer is emailed to you as it lands, so you never have to check.
                         </p>
                         <ul className="space-y-4">
                             {[
                                 "See the #1 reason people don't buy",
                                 "Tagged by plan viewed and country",
-                                "Weekly summary email",
+                                "Instant email on every answer",
                                 "Plus a feedback widget for everything else"
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-3 text-neutral-700">

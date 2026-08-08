@@ -64,7 +64,7 @@ export function ActivationChecklist({ projectId }: { projectId: string }) {
         },
         {
             label: "Get your first reason",
-            detail: "Responses appear in the Why-Not-Buy tab and your weekly email.",
+            detail: "Responses appear in the Why-Not-Buy tab and land in your inbox as they arrive.",
             done: hasResponses,
         },
     ];

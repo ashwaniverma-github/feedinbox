@@ -111,7 +111,7 @@ window.feedinbox('event', 'converted')`;
                     <p className="mt-1 text-sm text-muted-foreground">
                         When someone opens your pricing or checkout and leaves without buying, a small
                         card asks one question. Two taps, done. You get the reason in your dashboard,
-                        tagged with their plan and country, plus a weekly summary email.
+                        tagged with their plan and country, plus an email the moment it arrives.
                     </p>
                 </div>
 

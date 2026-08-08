@@ -47,7 +47,7 @@ export default function HowItWorksSection() {
                                 <BarChart3 className="h-8 w-8 text-neutral-900" />
                             </div>
                             <h3 className="font-semibold text-neutral-900">You get the reason</h3>
-                            <p className="text-sm text-neutral-500 mt-1">In your dashboard + weekly email</p>
+                            <p className="text-sm text-neutral-500 mt-1">In your dashboard + instant email</p>
                         </div>
                     </div>
 
