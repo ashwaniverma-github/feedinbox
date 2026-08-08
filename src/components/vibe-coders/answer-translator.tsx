@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertCircle, Check, Copy, CornerDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -96,21 +96,59 @@ export default function AnswerTranslator() {
     const active = answers[selected];
     const accent = accentStyles[active.accent];
 
+    // Monotonic id for the latest copy attempt. writeText can settle after the
+    // visitor has clicked Copy again or moved to another answer, and without this
+    // that stale result would label the wrong prompt as copied.
+    const copyAttempt = useRef(0);
+    const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Cancelling the pending reset before arming a new one is what keeps an older
+    // timer from clearing newer feedback, e.g. a 6s "failed" notice being wiped
+    // early by the 2s timer from a copy that happened just before it.
+    const cancelReset = () => {
+        if (resetTimer.current !== null) {
+            clearTimeout(resetTimer.current);
+            resetTimer.current = null;
+        }
+    };
+
+    useEffect(
+        () => () => {
+            if (resetTimer.current !== null) clearTimeout(resetTimer.current);
+        },
+        []
+    );
+
     const copyPrompt = async () => {
-        if (!active.prompt) return;
+        const prompt = active.prompt;
+        if (!prompt) return;
+        const attempt = ++copyAttempt.current;
+        cancelReset();
+
+        let status: "copied" | "failed";
         try {
             // Rejects (or throws, when navigator.clipboard is undefined) on an
             // insecure context or a denied permission. There is no fallback worth
             // having here, since the prompt is already on screen below: say so and
-            // let the visitor select it. Failure gets a longer reset so the
-            // instruction stays readable.
-            await navigator.clipboard.writeText(active.prompt);
-            setCopyState("copied");
-            setTimeout(() => setCopyState("idle"), 2000);
+            // let the visitor select it.
+            await navigator.clipboard.writeText(prompt);
+            status = "copied";
         } catch {
-            setCopyState("failed");
-            setTimeout(() => setCopyState("idle"), 6000);
+            status = "failed";
         }
+
+        // Superseded while we were awaiting: whatever is on screen now belongs to
+        // a newer attempt or a different answer, so leave it alone.
+        if (copyAttempt.current !== attempt) return;
+
+        setCopyState(status);
+        // Failure resets slower so the manual-copy instruction stays readable. No
+        // attempt guard needed inside the callback: cancelReset clears this timer
+        // whenever a newer attempt starts or the answer changes.
+        resetTimer.current = setTimeout(
+            () => setCopyState("idle"),
+            status === "copied" ? 2000 : 6000
+        );
     };
 
     return (
@@ -128,6 +166,10 @@ export default function AnswerTranslator() {
                             key={item.answer}
                             type="button"
                             onClick={() => {
+                                // Retires any in-flight copy so its result cannot
+                                // land as feedback on the answer being opened.
+                                copyAttempt.current += 1;
+                                cancelReset();
                                 setSelected(i);
                                 setCopyState("idle");
                             }}
