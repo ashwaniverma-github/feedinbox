@@ -12,10 +12,11 @@ import {
     ArrowRight,
     ArrowLeft,
     Check,
+    ChevronDown,
+    AlertTriangle,
     Sparkles,
     Zap,
     MessageSquare,
-    Rocket,
 } from "lucide-react";
 import { CodeBlock } from "@/components/ui/code-block";
 import { AISetupPrompt } from "@/components/dashboard/ai-setup-prompt";
@@ -164,7 +165,7 @@ export default function OnboardingPage() {
     };
 
     const handleFinish = () => {
-        router.push(wantsWhyNotBuy ? `/projects/${projectId}?tab=intent` : "/dashboard");
+        router.push("/dashboard");
     };
 
     const eventSnippet = `// When a visitor opens pricing or starts checkout:
@@ -299,95 +300,135 @@ window.feedinbox('event', 'converted')`;
                 {currentStep === 3 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-center mb-10">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                                <Rocket className="h-8 w-8 text-green-600 dark:text-green-400" />
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                                <Check className="h-7 w-7 text-green-600 dark:text-green-400" />
                             </div>
-                            <h1 className="text-3xl font-bold text-foreground">Almost there 🎉</h1>
-                            <p className="mt-2 text-muted-foreground">
-                                Hand this to your AI coding agent and it installs itself.
+                            <h1 className="text-3xl font-bold text-foreground">Project created</h1>
+                            <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+                                One last step: get the script onto your site. Hand the prompt to your
+                                AI agent, or install it yourself.
                             </p>
                         </div>
 
-                        <div className="mx-auto max-w-2xl space-y-4">
+                        <div className="mx-auto max-w-2xl space-y-5">
+                            {/* State of the project, as one quiet list rather than the pair of
+                                coloured banners that used to float between the sections. */}
+                            <div className="rounded-xl border border-border bg-card p-5">
+                                <h2 className="text-sm font-semibold text-foreground">What&apos;s ready</h2>
+                                <ul className="mt-3 space-y-2.5 text-sm">
+                                    <li className="flex items-start gap-2.5">
+                                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
+                                        <span className="text-muted-foreground">
+                                            <span className="font-medium text-foreground">{data.projectName}</span>{" "}
+                                            created, with its own project key.
+                                        </span>
+                                    </li>
+                                    {wantsWhyNotBuy && (
+                                        <li className="flex items-start gap-2.5">
+                                            {intentEnabled ? (
+                                                <>
+                                                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
+                                                    <span className="text-muted-foreground">
+                                                        <span className="font-medium text-foreground">Why-Not-Buy is on.</span>{" "}
+                                                        Change the question and options anytime in settings.
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                                                    <span className="text-muted-foreground">
+                                                        <span className="font-medium text-foreground">Why-Not-Buy is off.</span>{" "}
+                                                        Turn it on from the project&apos;s Why-Not-Buy tab to start collecting.
+                                                    </span>
+                                                </>
+                                            )}
+                                        </li>
+                                    )}
+                                    {setupMode !== "why_not_buy" && (
+                                        <li className="flex items-start gap-2.5">
+                                            <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
+                                            <span className="text-muted-foreground">
+                                                <span className="font-medium text-foreground">Feedback widget is on.</span>{" "}
+                                                It needs no extra code beyond the script.
+                                            </span>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+
                             {/* Primary path: AI agent */}
                             <AISetupPrompt projectKey={projectKey} mode={setupMode} origin={origin} />
 
-                            {wantsWhyNotBuy && intentEnabled && (
-                                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
-                                    <span className="font-medium text-foreground">✓ Why-Not-Buy is already turned on</span>{" "}
-                                    <span className="text-muted-foreground">
-                                        for this project. Edit the question and options anytime in settings.
-                                    </span>
-                                </div>
-                            )}
-                            {wantsWhyNotBuy && !intentEnabled && (
-                                <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-muted-foreground">
-                                    Turn on Why-Not-Buy from the project's Why-Not-Buy tab to start collecting responses.
-                                </div>
-                            )}
-
-                            {/* Secondary path: manual, collapsed by default */}
-                            <div>
+                            {/* Secondary path: a real disclosure rather than a bare text link,
+                                so it reads as an alternative and not an afterthought. */}
+                            <div className="overflow-hidden rounded-xl border border-border">
                                 <button
                                     onClick={() => setShowManual((s) => !s)}
-                                    className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                                    aria-expanded={showManual}
+                                    className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-medium text-foreground transition-colors hover:bg-muted/50"
                                 >
-                                    {showManual ? "Hide manual setup" : "Prefer to install manually?"}
+                                    Prefer to install it yourself?
+                                    <ChevronDown
+                                        className={cn(
+                                            "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                                            showManual && "rotate-180"
+                                        )}
+                                    />
                                 </button>
 
                                 {showManual && (
-                                    <Card className="mt-3">
-                                        <CardContent className="p-6 space-y-6">
+                                    <div className="space-y-6 border-t border-border p-5">
+                                        <div className="space-y-3">
+                                            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] text-primary-foreground">1</span>
+                                                Add the script to your site
+                                            </h3>
+                                            <p className="text-sm text-muted-foreground">
+                                                Paste this before the closing{" "}
+                                                <code className="rounded bg-muted px-1.5 py-0.5 text-xs">&lt;/body&gt;</code> tag.
+                                            </p>
+                                            <CodeBlock code={getEmbedCode("html", projectKey, origin)} language="html" filename="Your website" />
+                                        </div>
+
+                                        {wantsWhyNotBuy && (
                                             <div className="space-y-3">
-                                                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                                                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">1</span>
-                                                    Add the script to your site
+                                                <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] text-primary-foreground">2</span>
+                                                    Tell it when a visitor shows intent
                                                 </h3>
                                                 <p className="text-sm text-muted-foreground">
-                                                    Paste this before the closing{" "}
-                                                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">&lt;/body&gt;</code> tag.
+                                                    Call these from your pricing or checkout code. When a visitor
+                                                    leaves without buying, the question appears.
                                                 </p>
-                                                <CodeBlock code={getEmbedCode("html", projectKey, origin)} language="html" filename="Your website" />
+                                                <CodeBlock code={eventSnippet} language="javascript" filename="Your pricing / checkout code" />
                                             </div>
+                                        )}
 
-                                            {wantsWhyNotBuy && (
-                                                <div className="space-y-3">
-                                                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">2</span>
-                                                        Tell it when a visitor shows intent
-                                                    </h3>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Call these from your pricing or checkout code. When a visitor
-                                                        leaves without buying, the question appears.
-                                                    </p>
-                                                    <CodeBlock code={eventSnippet} language="javascript" filename="Your pricing / checkout code" />
-                                                </div>
-                                            )}
-
-                                            <p className="text-sm text-muted-foreground">
-                                                Full reference:{" "}
-                                                <a href="/docs" target="_blank" rel="noopener" className="text-primary hover:underline">/docs</a>.
-                                            </p>
-                                        </CardContent>
-                                    </Card>
+                                        <p className="text-sm text-muted-foreground">
+                                            Full reference:{" "}
+                                            <a href="/docs" target="_blank" rel="noopener" className="text-primary hover:underline">/docs</a>.
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Navigation */}
-                <div className="mt-10 flex items-center justify-between">
-                    {currentStep > 1 && currentStep < 3 ? (
-                        <Button variant="ghost" onClick={handleBack}>
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back
-                        </Button>
-                    ) : (
-                        <div />
-                    )}
+                {/* Navigation. The final step centres its single button in its own row:
+                    mx-auto inside justify-between does not actually centre it, since the
+                    empty spacer and the button share the space between them. */}
+                {currentStep < 3 ? (
+                    <div className="mt-10 flex items-center justify-between">
+                        {currentStep > 1 ? (
+                            <Button variant="ghost" onClick={handleBack}>
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Back
+                            </Button>
+                        ) : (
+                            <div />
+                        )}
 
-                    {currentStep < 3 ? (
                         <Button onClick={handleNext} disabled={!canProceed() || loading}>
                             {loading ? (
                                 <Loading size="sm" />
@@ -398,13 +439,15 @@ window.feedinbox('event', 'converted')`;
                                 </>
                             )}
                         </Button>
-                    ) : (
-                        <Button onClick={handleFinish} className="mx-auto">
-                            {wantsWhyNotBuy ? "Go to Why-Not-Buy" : "Go to Dashboard"}
+                    </div>
+                ) : (
+                    <div className="mt-10 flex justify-center">
+                        <Button onClick={handleFinish} size="lg">
+                            Go to Dashboard
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );
