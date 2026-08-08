@@ -30,7 +30,7 @@ export const useCases: UseCase[] = [
             { title: "Catch upgrade drop-off", description: "When a trial user opens pricing and doesn't subscribe, one question asks why." },
             { title: "Tagged by plan", description: "Every reason is tagged with the plan they viewed, so you see which tier is losing people." },
             { title: "Feedback widget included", description: "Bug reports and feature requests, on the same script and dashboard." },
-            { title: "Answers in your inbox", description: "Every reason someone didn't upgrade, emailed the moment they give it, alongside instant feedback emails." }
+            { title: "Answers in your inbox", description: "Every reason someone didn't upgrade is emailed to you as soon as they submit it, alongside instant feedback emails." }
         ],
         keywords: ["why saas trials don't convert", "saas conversion feedback", "saas exit intent", "saas upgrade drop-off", "saas feedback widget"]
     },
@@ -48,7 +48,7 @@ export const useCases: UseCase[] = [
             { title: "Paywall drop-off reasons", description: "Fire the high-intent event when the paywall opens and learn why people don't buy." },
             { title: "Bug reports with context", description: "The feedback widget captures what users were doing when something broke." },
             { title: "Web and WebView ready", description: "Use the script in your web app or mobile WebView." },
-            { title: "Instant alerts", description: "Bug reports and reasons people didn't buy, both emailed as they land." }
+            { title: "Instant alerts", description: "Bug reports and reasons people didn't buy, both emailed as soon as they arrive." }
         ],
         keywords: ["app paywall drop-off", "why users don't upgrade app", "mobile app feedback", "app conversion feedback", "webview feedback"]
     },
