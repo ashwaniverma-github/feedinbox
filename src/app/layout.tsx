@@ -57,9 +57,12 @@ export const metadata: Metadata = {
     description: "The moment someone closes your pricing modal without buying, one question asks why. The reason lands in your inbox. One script tag, free to start.",
     images: [
       {
-        url: "/OG.png?v=2",
-        width: 1200,
-        height: 630,
+        // ?v=N is a cache-buster for social scrapers, which key their cached
+        // preview on the exact image URL. Bump it whenever public/OG.png is
+        // replaced, or X/LinkedIn/Facebook keep serving the previous artwork.
+        url: "/OG.png?v=3",
+        width: 1917,
+        height: 961,
         alt: "Feedinbox - Feedback for Founders",
       },
     ],
@@ -68,7 +71,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Feedinbox: Know why they closed your pricing modal",
     description: "The moment someone closes your pricing modal without buying, one question asks why. The reason lands in your inbox. One script tag, free to start.",
-    images: ["/OG.png?v=2"],
+    images: ["/OG.png?v=3"],
     creator: "@feedinbox",
   },
 
