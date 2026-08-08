@@ -114,6 +114,10 @@ export default function AnswerTranslator() {
 
     useEffect(
         () => () => {
+            // Bumping the id retires any in-flight attempt, not just the timer. A
+            // writeText that resolves after unmount would otherwise pass the guard
+            // below and arm a fresh timer that nothing is left to cancel.
+            copyAttempt.current += 1;
             if (resetTimer.current !== null) clearTimeout(resetTimer.current);
         },
         []
