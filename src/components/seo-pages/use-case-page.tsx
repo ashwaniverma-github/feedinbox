@@ -109,7 +109,7 @@ export default function UseCasePage({ useCase }: UseCasePageProps) {
                         Answers, straight to your inbox
                     </h2>
                     <p className="text-lg text-neutral-300 mb-8 max-w-2xl mx-auto">
-                        No dashboard to babysit. A weekly summary of why visitors didn&apos;t buy, plus instant emails for any feedback they send.
+                        No dashboard to babysit. Every reason a visitor didn&apos;t buy is emailed to you the moment it arrives, along with any feedback they send.
                     </p>
                     <div className="grid sm:grid-cols-3 gap-6 text-center">
                         <div className="p-4 rounded-lg bg-neutral-800">

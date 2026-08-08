@@ -126,7 +126,7 @@ export default function IntegrationPage({ integration }: IntegrationPageProps) {
                         {[
                             { title: "Know why they don't buy", desc: "An exit-intent question catches abandoning visitors and asks why" },
                             { title: "Feedback included", desc: "A feedback widget for bugs and ideas, on the same script" },
-                            { title: "Inbox-first", desc: "A weekly Why-Not-Buy summary plus instant feedback emails" },
+                            { title: "Inbox-first", desc: "Why-Not-Buy answers and feedback, emailed the moment they arrive" },
                             { title: "Lightweight & free to start", desc: "Tiny script, 2-minute setup, no credit card" },
                         ].map((item, i) => (
                             <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-white border border-neutral-200">

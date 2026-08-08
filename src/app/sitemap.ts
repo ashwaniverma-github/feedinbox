@@ -14,10 +14,11 @@ import { alternatives } from '@/data/alternatives'
  *
  * Bump the relevant constant whenever you edit that content.
  */
-const HOME_UPDATED = new Date('2026-07-28')     // pricing-modal repositioning
-const DOCS_UPDATED = new Date('2026-07-27')     // abandoned/cancel event docs
-const CONTENT_UPDATED = new Date('2026-07-26')  // features/use-cases/integrations/alternatives
+const HOME_UPDATED = new Date('2026-08-08')     // weekly digest copy replaced with instant email
+const DOCS_UPDATED = new Date('2026-08-08')     // notification delivery section rewritten
+const CONTENT_UPDATED = new Date('2026-08-08')  // features/use-cases/integrations/alternatives: instant email
 const CONTACT_UPDATED = new Date('2026-08-07')  // contact page added
+const VIBE_CODERS_UPDATED = new Date('2026-08-08')  // vibe coders landing page added
 const AUTH_UPDATED = new Date('2025-12-20')
 const LEGAL_UPDATED = new Date('2026-07-28')  // privacy + terms rewritten for the pivot
 
@@ -37,6 +38,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             lastModified: DOCS_UPDATED,
             changeFrequency: 'monthly',
             priority: 0.7,
+        },
+        {
+            url: `${baseUrl}/vibe-coders`,
+            lastModified: VIBE_CODERS_UPDATED,
+            changeFrequency: 'monthly',
+            priority: 0.9,
         },
         {
             url: `${baseUrl}/contact`,

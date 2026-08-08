@@ -9,6 +9,7 @@ export default function Footer() {
                     <div>
                         <h3 className="text-white font-medium mb-4">Use Cases</h3>
                         <ul className="space-y-2">
+                            <li><Link href="/vibe-coders" className="hover:text-white transition-colors">For Vibe Coders</Link></li>
                             <li><Link href="/use-cases/saas-feedback" className="hover:text-white transition-colors">SaaS</Link></li>
                             <li><Link href="/use-cases/e-commerce-feedback" className="hover:text-white transition-colors">E-Commerce</Link></li>
                             <li><Link href="/use-cases/shopify-feedback" className="hover:text-white transition-colors">Shopify</Link></li>

@@ -3,6 +3,7 @@ import Navbar from "./sm-components/navbar";
 import HeroSection from "./sm-components/hero-section";
 import HowItWorksSection from "./sm-components/how-it-works-section";
 import TwoToolsSection from "./sm-components/two-tools-section";
+import VibeCodersCallout from "./sm-components/vibe-coders-callout";
 import DashboardSection from "./sm-components/dashboard-section";
 import PricingSection from "./sm-components/pricing-section";
 import CTASection from "./sm-components/cta-section";
@@ -19,6 +20,7 @@ export default async function LandingPage() {
             <HeroSection isLoggedIn={isLoggedIn} />
             <HowItWorksSection />
             <TwoToolsSection />
+            <VibeCodersCallout />
             <DashboardSection />
             <PricingSection isLoggedIn={isLoggedIn} subscriptionStatus={subscriptionStatus} />
             <CTASection isLoggedIn={isLoggedIn} />

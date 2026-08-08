@@ -27,15 +27,15 @@ export const features: Feature[] = [
         slug: "feedback-to-email",
         title: "Answers and feedback in your inbox",
         metaTitle: "Get Feedback and Drop-off Reasons in Your Email Inbox",
-        metaDescription: "Feedinbox tells you why visitors don't buy and collects feedback, delivered to your inbox. A weekly Why-Not-Buy digest plus instant feedback emails. Set up in minutes.",
+        metaDescription: "Feedinbox tells you why visitors don't buy and collects feedback, delivered to your inbox the moment it arrives. Instant Why-Not-Buy and feedback emails. Set up in minutes.",
         description: "Feedinbox is two things in one: a Why-Not-Buy question that catches abandoning visitors, and a feedback widget. Both land in your inbox, no dashboard hopping required.",
         icon: "Mail",
         heroHeadline: "Why they didn't buy, straight to your inbox",
-        heroSubheadline: "Feedinbox asks abandoning visitors one question and emails you a weekly summary of the reasons, plus instant emails for any feedback your users send.",
+        heroSubheadline: "Feedinbox asks abandoning visitors one question and emails you the reason the moment they give it, alongside instant emails for any feedback your users send.",
         benefits: [
             {
-                title: "Weekly Why-Not-Buy digest",
-                description: "The top reasons people didn't buy, summarized and emailed to you every week. No dashboard to babysit."
+                title: "Instant Why-Not-Buy emails",
+                description: "The reason someone didn't buy is in your inbox seconds after they give it. No dashboard to babysit."
             },
             {
                 title: "Instant feedback alerts",
@@ -83,21 +83,21 @@ export const features: Feature[] = [
     },
     {
         slug: "instant-email-alerts",
-        title: "Instant alerts and weekly summaries",
-        metaTitle: "Instant Feedback Alerts and Weekly Why-Not-Buy Summaries",
-        metaDescription: "Get instant email alerts for user feedback and a weekly summary of why visitors didn't buy. Never miss a critical bug or a costly drop-off pattern.",
-        description: "Feedback reaches you instantly. Why-Not-Buy reasons are rolled up into a weekly summary so you see the pattern, not the noise.",
+        title: "Instant email alerts",
+        metaTitle: "Instant Email Alerts for Feedback and Why-Not-Buy Answers",
+        metaDescription: "Get instant email alerts for user feedback and for every reason a visitor didn't buy. Never miss a critical bug or a costly drop-off.",
+        description: "Feedback and Why-Not-Buy answers both reach you the moment they land, so you find out why someone walked while you can still do something about it.",
         icon: "Bell",
         heroHeadline: "Never miss a reason or a bug",
-        heroSubheadline: "Critical bug from the feedback widget? Emailed right away. Why people didn't buy this week? A weekly summary.",
+        heroSubheadline: "Critical bug from the feedback widget? Emailed right away. Someone just closed your pricing? That reason is emailed right away too.",
         benefits: [
             {
                 title: "Instant feedback delivery",
                 description: "Feedback emails are sent as soon as a submission comes in, not batched."
             },
             {
-                title: "Weekly Why-Not-Buy roundup",
-                description: "The reasons people abandoned, ranked, so you can act on the pattern instead of one-off replies."
+                title: "Instant Why-Not-Buy alerts",
+                description: "Every reason someone gave for not buying is emailed as it arrives, tagged with the plan they viewed and their country."
             },
             {
                 title: "Clear subject lines",
@@ -108,7 +108,7 @@ export const features: Feature[] = [
                 description: "It's all email, so you get it on your phone and can act from wherever you are."
             }
         ],
-        keywords: ["feedback alerts", "why not buy summary", "conversion drop-off report", "bug report notifications", "weekly feedback digest"]
+        keywords: ["feedback alerts", "instant email alerts", "conversion drop-off notifications", "bug report notifications", "real-time feedback email"]
     },
     {
         slug: "no-dashboard-feedback",

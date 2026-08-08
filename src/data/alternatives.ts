@@ -28,7 +28,7 @@ export const alternatives: Alternative[] = [
         comparison: [
             { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
             { feature: "Feedback widget", feedinbox: "✓", competitor: "✓ Boards" },
-            { feature: "Answers in your inbox", feedinbox: "✓ Weekly digest", competitor: "✗ Dashboard only" },
+            { feature: "Answers in your inbox", feedinbox: "✓ Instant email", competitor: "✗ Dashboard only" },
             { feature: "Public Roadmap / Voting", feedinbox: "✗", competitor: "✓" },
             { feature: "Pricing", feedinbox: "From $10.99/mo", competitor: "From $79/mo" }
         ],
@@ -226,7 +226,7 @@ export const alternatives: Alternative[] = [
         comparison: [
             { feature: "Why-Not-Buy question", feedinbox: "✓ Exit-intent card", competitor: "✗" },
             { feature: "Feedback widget", feedinbox: "✓", competitor: "✓" },
-            { feature: "Answers in your inbox", feedinbox: "✓ Weekly digest", competitor: "✗ Portal" },
+            { feature: "Answers in your inbox", feedinbox: "✓ Instant email", competitor: "✗ Portal" },
             { feature: "Roadmap / voting / changelog", feedinbox: "✗", competitor: "✓" },
             { feature: "Pricing", feedinbox: "From $10.99/mo", competitor: "From $13/mo" }
         ],

@@ -308,7 +308,8 @@ export default async function DocsPage() {
                                 </li>
                                 <li>
                                     Responses land in your dashboard (Why-Not-Buy tab), tagged by plan and country,
-                                    plus a weekly summary email.
+                                    plus an email the moment each one arrives. You can switch that to a weekly
+                                    digest, or turn it off, in the project&apos;s Why-Not-Buy settings.
                                 </li>
                             </ul>
                         </Section>

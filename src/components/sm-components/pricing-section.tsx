@@ -183,7 +183,7 @@ export default function PricingSection({ isLoggedIn = false, subscriptionStatus 
                                 "1 project",
                                 "Why-Not-Buy + feedback widget",
                                 "20 responses/month",
-                                "Weekly Why-Not-Buy digest",
+                                "Instant email on every answer",
                                 "Feedinbox branding on widget"
                             ].map((feature, i) => (
                                 <div key={i} className="flex items-center gap-3 text-sm text-neutral-600">

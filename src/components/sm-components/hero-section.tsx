@@ -91,7 +91,7 @@ export default function HeroSection({ isLoggedIn = false }: HeroSectionProps) {
 
                 <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-neutral-600 sm:text-xl">
                     The moment someone closes your pricing modal without buying, one question asks why.
-                    The reason lands in your dashboard, plus a weekly digest straight to your inbox.
+                    The reason lands in your dashboard, and in your inbox the moment it arrives.
                 </p>
 
                 <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
